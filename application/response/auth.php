@@ -1,5 +1,9 @@
 <?php
 
+/* Sascha Watermeyer - WTRSAS001
+ * Vulamobi CS Honours project
+ * sascha.watermeyer@gmail.com */
+
 class Auth extends CI_Controller 
 {
 
@@ -10,17 +14,21 @@ class Auth extends CI_Controller
 
     public function index() 
     {
-        echo 'logged_out';
+        echo 'exit';
         die;
     }
     
+    
+    //login Vula
     public function login() 
     {
         if(!$this->session->userdata('logged_in'))
         {
             $username = $this->input->post('username');
             $password = $this->input->post('password');
-            $credentials = array(
+            
+            $credentials = array
+            (
                 'username' => $username,
                 'password' => $password,
             );
@@ -72,7 +80,6 @@ class Auth extends CI_Controller
 
             if ($resultStatus['url'] == "https://vula.uct.ac.za/portal") //if redirected it means its logged in
             {
-                //$_SESSION['cookie'] = $cookie;
                 $newdata = array(
                       'cookie' => $cookie,
                       'logged_in' => TRUE
@@ -93,10 +100,11 @@ class Auth extends CI_Controller
         } 
     }
     
+    //logout Vula
     public function logout() 
     {
         $this->session->sess_destroy();
-        echo 'logged_out';
+        echo 'exit';
     }
 }
 
