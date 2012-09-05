@@ -22,7 +22,7 @@ class Auth extends CI_Controller
     //login Vula
     public function login() 
     {
-        if(!$this->session->userdata('logged_in'))
+        if(!($this->session->userdata('logged_in')))
         {
             $username = $this->input->post('username');
             $password = $this->input->post('password');

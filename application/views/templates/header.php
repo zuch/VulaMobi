@@ -10,4 +10,4 @@
         <script src="js/vulamobi.js"></script>
     </head>
     <body>
-        <h1>Vulamobi</h1>
+        <h1>VulaMobi</h1>
