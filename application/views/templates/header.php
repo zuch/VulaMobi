@@ -9,5 +9,3 @@
         <script src="js/jquery.js"></script>
         <script src="js/vulamobi.js"></script>
     </head>
-    <body>
-        <h1>VulaMobi</h1>

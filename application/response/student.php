@@ -6,7 +6,7 @@
 
 include_once 'simple_html_dom.php';
 
-class User extends CI_Controller 
+class Student extends CI_Controller 
 {
     public function __construct() 
     {
@@ -14,6 +14,11 @@ class User extends CI_Controller
     }
 
     public function index() 
+    {
+        show_404();
+    }
+    
+    public function Student() 
     {
         show_404();
     }
@@ -64,7 +69,8 @@ class User extends CI_Controller
                     if ($count > 0)//skip workspace link  
                     {
                         $site_id = substr($a->href, 35);
-                        $site = Array($site_id,$a->title);
+                        $site = array('title' => $a->title,
+                                      'site_id' => $site_id);
                         $active_sites[] = $site;
                     }
                     $count++;
@@ -124,9 +130,10 @@ class User extends CI_Controller
     }
     
     //get grades of User for Course
-    public function grade($site_id)
+    public function grade($site_id, $json)
     {
         $exists = false;
+        $grades = array();
         
         if($this->session->userdata('logged_in'))
         {
@@ -207,14 +214,33 @@ class User extends CI_Controller
                         }
                     }
                 }
-                foreach($test_names as $name)
+                
+                for($i = 0; $i < count($test_names); $i++)
                 {
-                     echo $name."</br>";
+                    $grade = array('name' => $test_names[$i]
+                                ,'date' => $test_dates[$i]
+                                ,'mark' => $test_marks[$i]);
+                $grades[] = $grade;
                 }
+                
+                //JSON response check
+                if($json == 0)//output PHP
+                {
+                    return $grades;
+                }
+                else if($json == 1)//output JSON
+                {
+                    echo json_encode($grades);
+                }
+                else
+                {
+                    show_404();
+                }
+                
             }
             else//doesn't exist
             {
-                echo "doesn't exist";
+                show_404();
             }
         }
         else//NOT logged in
@@ -294,18 +320,31 @@ class User extends CI_Controller
                                       ,'tool_id' => $tool_id);
                         $sup_tools[] = $tool;
                         break;
+                    case 'icon-sakai-site-roster'://participants
+                        $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                        $tool_id = str_replace($temp_replace, "", $a->href);
+
+                        $tool = array('participants' => 'participants'
+                                      ,'tool_id' => $tool_id);
+                        $sup_tools[] = $tool;
+                        break;
                     default:
                         break;
                 }
             }
+            
             //JSON response check
-            if($json == 0)//false
+            if($json == 0)//output PHP
             {
                 return $sup_tools;
             }
-            else//$json == "1"
+            else if($json == 1)//output JSON
             {
                 echo json_encode($sup_tools);
+            }
+            else
+            {
+                show_404();
             }
         }
         else//NOT logged in
@@ -313,7 +352,7 @@ class User extends CI_Controller
             $this->session->sess_destroy();
             echo 'exit';
         }
-    }    
+    }
 }
 
 ?>

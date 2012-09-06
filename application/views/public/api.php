@@ -1,5 +1,5 @@
 <body>
-<h1>VulaMobi Backend API</h1>
+<h1>VulaMobi API</h1>
 <p>
     <label for="username">Username</label>
     </br>
@@ -14,12 +14,12 @@
     <input type="submit" name="submit" id="login" value="Login" onclick="login()" >
 </p>
 </br>
-<h3>AJAX Functions</h3>
+<h3>AJAX</h3>
 <p>
     <input type="submit" name="submit" id="logout" value="Logout" onclick="logout()" `>
 </p>
 <p>
-    <input type="submit" name="submit" id="name" value="Name" onclick="username();">
+    <input type="submit" name="submit" id="name" value="Name" onclick="name();">
 </p>
 <p>
     <!-- site_id for CS Honours 2012 -->
@@ -29,6 +29,6 @@
     <!-- site_id for CS Honours 2012 -->
     <input type="submit" name="submit" id="grade" value="Grade" onclick="grade('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">
 </p>
-<pre>
-http://localhost/VulaMobi/ajax.php?student/grade/a02e13fc-ba96-433e-86b0-3269c3287ea0/1
-</pre>
+<p>
+    <input type="submit" name="submit" id="login" value="Login">
+</p>
