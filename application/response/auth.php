@@ -12,6 +12,12 @@ class Auth extends CI_Controller
         parent::__construct();
     }
 
+    public function Auth()
+    {
+        echo "exit";
+        die;
+    }
+    
     public function index() 
     {
         echo 'exit';
@@ -97,6 +103,7 @@ class Auth extends CI_Controller
         else
         {
             echo 'already';
+            die;
         } 
     }
     
@@ -105,6 +112,7 @@ class Auth extends CI_Controller
     {
         $this->session->sess_destroy();
         echo 'exit';
+        die;
     }
 }
 

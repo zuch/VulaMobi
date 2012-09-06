@@ -1,7 +1,6 @@
  
  function login()
  {
-    alert('login');
     var response = "";
     var form_data = {
         username: $("#username").val(),
@@ -12,17 +11,19 @@
         type: "POST", 
         url: "ajax.php?auth/login", 
         data: form_data, 
-        success: function(data)
+        success: function(response)
         {
-            response = data;
-            alert("auth response: "+response);
             if(response == "empty")
             {
-                alert("Empty Username or Password");
+                alert("empty");
             }
             else if(response == "incorrect")
             {
-                alert("Incorrect Username or Password");
+                alert("incorrect");
+            }
+            else if(response == "already")
+            {
+                alert("already");
             }
             else if(response == "logged_in") //logged_in
             {
