@@ -8,4 +8,7 @@
         <!-- Javascript-->
         <script src="js/jquery.js"></script>
         <script src="js/vulamobi.js"></script>
+        
+        <!-- css -->
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
     </head>

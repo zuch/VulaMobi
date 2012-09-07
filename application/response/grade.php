@@ -19,7 +19,7 @@ class Grade extends CI_Controller
     }
     
     //get grades of User for Course
-    public function site($site_id, $json)
+    public function site($site_id)
     {
         $exists = false;
         $grades = array();
@@ -112,20 +112,8 @@ class Grade extends CI_Controller
                 $grades[] = $grade;
                 }
                 
-                //JSON response check
-                if($json == 0)//output PHP
-                {
-                    return $grades;
-                }
-                else if($json == 1)//output JSON
-                {
-                    echo json_encode($grades);
-                }
-                else
-                {
-                    show_404();
-                }
-                
+                //output
+                echo json_encode($grades);
             }
             else//doesn't exist
             {

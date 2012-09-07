@@ -1,0 +1,24 @@
+body 
+{
+    
+}
+
+a{text-decoration:none;}
+
+a:link{	color:red;}
+
+a:hover{color:red;}
+
+a:visted{color:red;}
+
+/*a:active{color:white;}*/
+
+h1{color:blue; }
+
+h2{color:blue }
+
+#content
+{
+    text-align:center;
+    margin:0 auto;
+}

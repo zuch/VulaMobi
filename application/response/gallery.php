@@ -61,7 +61,7 @@ class Gallery extends CI_Controller
     }
     
     //upload image to uploads/user_id
-    public function upload()
+        public function upload()
     {
         if($this->session->userdata('logged_in'))
         {   
@@ -70,8 +70,6 @@ class Gallery extends CI_Controller
             $path = getcwd();
 
             $upload_path = $path . '/uploads/' . $username . "/";
-
-            echo $upload_path;
 
             if(isset($_REQUEST['image']))
             {
@@ -88,12 +86,13 @@ class Gallery extends CI_Controller
                     $fp = fopen($file, 'w');
                     fwrite($fp, $imgData);
                     fclose($fp);
+                    echo "done";
                 }
             }
             else
             {
                 echo "</br>";
-                echo "not set";
+                echo "not_set";
             }
         }
         else//NOT logged in

@@ -135,7 +135,8 @@ function username()
         },
         dataType: "text"    
     })
-}     
+} 
+
 /********************************** id ****************************************/
 function user_id()
 {  
@@ -164,6 +165,45 @@ function gallery()
     $.ajax({
         type: "GET", 
         url: base_url + "ajax.php?gallery/dir", 
+        success: function(response)
+        {
+            alert(response);
+
+            //your code here!
+
+        },
+        dataType: "text"    
+    })
+}
+
+/********************************** role ****************************************/
+function role(site_id)
+{  
+    $.ajax({
+        type: "GET", 
+        url: base_url + "ajax.php?role/site/" + site_id, 
+        success: function(response)
+        {
+            alert(response);
+
+            //your code here!
+
+        },
+        dataType: "text"    
+    })
+}
+
+/********************************** roster *************************************/
+function roster(site_id)
+{
+    //get JSON - jQuery
+    var json = $.getJSON(base_url + "ajax.php?role/roster/" + site_id)
+    //alert(json);
+    
+    //get Text
+    $.ajax({
+        type: "GET", 
+        url: base_url + "ajax.php?role/roster/" + site_id, 
         success: function(response)
         {
             alert(response);
