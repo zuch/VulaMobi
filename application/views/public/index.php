@@ -33,8 +33,13 @@
     <input type="submit" name="submit" id="grade" value="Grade" onclick="grade('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">
 </p>
 <p>
+<p>
     <!-- site_id for CS Honours 2012 -->
     <input type="submit" name="submit" id="id" value="id" onclick="user_id();">
+</p>
+<p>
+    <!-- site_id for CS Honours 2012 -->
+    <input type="submit" name="submit" id="gallery" value="gallery" onclick="gallery();">
 </p>
 <br>
 <h3>Source Code</h3>

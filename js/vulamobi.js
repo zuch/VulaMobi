@@ -6,7 +6,7 @@
 /* Globals*/
 
 //nightmare
-//var nightmare_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';
+//var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';
 var base_url = 'http://localhost/VulaMobi/';
 
 /********************************** login *************************************/
@@ -78,7 +78,7 @@ function logout()
 /********************************** sites *************************************/
 function sites()
 {  
-    //get JSON
+    //get JSON- jQuery
     var json = $.getJSON(base_url + "ajax.php?student/sites") 
     //alert(json);
     
@@ -88,9 +88,9 @@ function sites()
     $.ajax({
         type: "GET", 
         url: base_url + "ajax.php?student/sites", 
-        success: function(php)
+        success: function(response)
         {
-            alert(php);
+            alert(response);
 
 
         },
@@ -101,7 +101,7 @@ function sites()
 /********************************** grade *************************************/
 function grade(site_id)
 {  
-    //get JSON
+    //get JSON- jQuery
     var json = $.getJSON(base_url + "ajax.php?grade/site/" + site_id + "/1")
     //alert(json);
     
@@ -109,9 +109,9 @@ function grade(site_id)
     $.ajax({
         type: "GET", 
         url: base_url + "ajax.php?grade/site/" + site_id + "/0", 
-        success: function(php)
+        success: function(response)
         {
-            alert(php);
+            alert(response);
 
             //your code here!
 
@@ -151,4 +151,26 @@ function user_id()
         },
         dataType: "text"    
     })
-}     
+} 
+
+/********************************** gallery *************************************/
+function gallery()
+{
+    //get JSON - jQuery
+    var json = $.getJSON(base_url + "ajax.php?gallery/dir")
+    //alert(json);
+    
+    //get Text
+    $.ajax({
+        type: "GET", 
+        url: base_url + "ajax.php?gallery/dir", 
+        success: function(response)
+        {
+            alert(response);
+
+            //your code here!
+
+        },
+        dataType: "text"    
+    })
+}
