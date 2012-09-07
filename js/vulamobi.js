@@ -80,11 +80,11 @@ function sites()
 {  
     //get JSON
     var json = $.getJSON(base_url + "ajax.php?student/sites") 
-    alert(json);
+    //alert(json);
     
     //your code here!
     
-    //get PHP
+    //get Text
     $.ajax({
         type: "GET", 
         url: base_url + "ajax.php?student/sites", 
@@ -102,13 +102,13 @@ function sites()
 function grade(site_id)
 {  
     //get JSON
-    var json = $.getJSON(base_url + "ajax.php?student/grade/" + site_id + "/1")
+    var json = $.getJSON(base_url + "ajax.php?grade/site/" + site_id + "/1")
     //alert(json);
     
-    //get PHP
+    //get Text
     $.ajax({
         type: "GET", 
-        url: base_url + "ajax.php?student/grade/" + site_id + "/0", 
+        url: base_url + "ajax.php?grade/site/" + site_id + "/0", 
         success: function(php)
         {
             alert(php);
@@ -126,6 +126,22 @@ function username()
     $.ajax({
         type: "GET", 
         url: base_url + "ajax.php?student/name/", 
+        success: function(response)
+        {
+            alert(response);
+
+            //your code here!
+
+        },
+        dataType: "text"    
+    })
+}     
+/********************************** id ****************************************/
+function user_id()
+{  
+    $.ajax({
+        type: "GET", 
+        url: base_url + "ajax.php?student/id/", 
         success: function(response)
         {
             alert(response);

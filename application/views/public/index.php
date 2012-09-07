@@ -16,7 +16,10 @@
 </br>
 <h3>AJAX Functions</h3>
 <p>
-    <input type="submit" name="submit" id="logout" value="Logout" onclick="logout()" `>
+    Test out the jQuery AJAX calls to the VulaMobi Backend hosted on nightmare
+</p>
+<p>
+    <input type="submit" name="submit" id="logout" value="Logout" onclick="logout()">
 </p>
 <p>
     <input type="submit" name="submit" id="name" value="Name" onclick="username();">
@@ -29,6 +32,15 @@
     <!-- site_id for CS Honours 2012 -->
     <input type="submit" name="submit" id="grade" value="Grade" onclick="grade('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">
 </p>
-<pre>
-http://localhost/VulaMobi/ajax.php?student/grade/a02e13fc-ba96-433e-86b0-3269c3287ea0/1
-</pre>
+<p>
+    <!-- site_id for CS Honours 2012 -->
+    <input type="submit" name="submit" id="id" value="id" onclick="user_id();">
+</p>
+<br>
+<h3>Source Code</h3>
+<ul>
+    <li>Client-side javasript used to interact with the VulaMobi Backend: <a href="./js/vulamobi.js">vulamobi.js</a> (Coz Im that nice)</li>
+    <li>HTML source for this <a href="https://github.com/zuch/VulaMobi/blob/master/application/views/public/index.php">page</a></li>
+</ul>
+</br>
+

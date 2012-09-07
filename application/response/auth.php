@@ -14,13 +14,13 @@ class Auth extends CI_Controller
 
     public function Auth()
     {
-        echo "exit";
+        echo "logged_out";
         die;
     }
     
     public function index() 
     {
-        echo 'exit';
+        echo 'logged_out';
         die;
     }
     
@@ -111,7 +111,7 @@ class Auth extends CI_Controller
     public function logout() 
     {
         $this->session->sess_destroy();
-        echo 'exit';
+        echo 'logged_out';
         die;
     }
 }
