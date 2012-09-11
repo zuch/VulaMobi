@@ -5,13 +5,16 @@
 
 /* Globals*/
 
+$('#container').load('http://google.com'); // SERIOUSLY!
+
 //nightmare
-//var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';
-var base_url = 'http://localhost/VulaMobi/';
+var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';
+//var base_url = 'http://localhost/VulaMobi/';
 
 /********************************** login *************************************/
 function login()
 {
+    alert('login')
     var response = "";
     var form_data = {
         username: $("#username").val(),
@@ -213,4 +216,35 @@ function roster(site_id)
         },
         dataType: "text"    
     })
+}
+
+/********************************** resources *************************************/
+function folderSelected(id)
+{
+	var form_data = {
+		username: $("#username").val(),
+		password: $("#password").val(),
+		folderid: id
+	};
+	$.ajax({ type: "POST", url: "getfolder.php", data: form_data, success: function(data){
+        	$('#metainfo').html(data);
+        	}
+        });
+}
+
+function resourceSelected(id)
+{
+	//$("#secretIFrame").attr("src","getoneitem.php?username="+$("#username").val()+"&password="+$("#password").val()+"&item="+id);
+	var form_data = {
+		username: $("#username").val(),
+		password: $("#password").val(),
+		item: id
+	};
+	
+	$.ajax({ type: "POST", url: "getoneitem.php", data: form_data, success: function(data){
+        	$.mobile.changePage('#page3');
+        	//$("#superlinks").html(data);
+        	$("#thehyperlink").attr("href",data);
+        	}
+        });
 }

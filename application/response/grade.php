@@ -65,7 +65,6 @@ class Grade extends CI_Controller
                 $test_names = array();
                 $test_dates = array();
                 $test_marks = array();
-                $formatted_marks = array();
 
                 if (($iframe_url = $html->find('iframe', 0)->src) != null) 
                 {
@@ -216,6 +215,14 @@ class Grade extends CI_Controller
                         $tool_id = str_replace($temp_replace, "", $a->href);
 
                         $tool = array('participants' => 'participants'
+                                      ,'tool_id' => $tool_id);
+                        $sup_tools[] = $tool;
+                        break;
+                    case 'icon-sakai-resources'://resources
+                        $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                        $tool_id = str_replace($temp_replace, "", $a->href);
+
+                        $tool = array('resources' => 'resources'
                                       ,'tool_id' => $tool_id);
                         $sup_tools[] = $tool;
                         break;

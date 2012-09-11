@@ -6,29 +6,27 @@
 
 include_once 'simple_html_dom.php';
 
-class Role extends CI_Controller 
+class Resources extends CI_Controller 
 {
     public function __construct() 
     {
         parent::__construct();
     }
     
-    public function Role() 
+    public function Resources() 
     {
         //show_404();
     }
     
     //get roster for a Course
-    public function roster($site_id)
+    public function site($site_id)
     {
-        $exists = false;
-        $users = array();
-        
         if($this->session->userdata('logged_in'))
         {
             //globals
             $tool_id = "";
             $exists = false;
+            $resouces = array();
             
             $cookie = $this->session->userdata('cookie');
             $cookiepath = realpath($cookie);
@@ -37,7 +35,7 @@ class Role extends CI_Controller
             $sup_tools = $this->sup_tools($site_id, 0);
             foreach ($sup_tools as $tool) 
             {
-                if(array_key_exists('participants',$tool))
+                if(array_key_exists('resources',$tool))
                 {
                     $exists = true;
                     $tool_id = $tool['tool_id'];
@@ -60,66 +58,42 @@ class Role extends CI_Controller
                 //create html dom object
                 $html_str = str_get_html($response);
                 $html = new simple_html_dom($html_str);
-
-                //globals
-                $name = array();
-                $id = array();
-                $email = array();
-                $role = array();
                 
                 if (($iframe_url = $html->find('iframe', 0)->src) != null) 
                 {
                     //echo "iframe_url: " . $iframe_url . "</br>";
-                    
+
                     curl_setopt($curl, CURLOPT_URL, $iframe_url);
                     $result = curl_exec($curl);
                     curl_close($curl);
 
                     $html = str_get_html($result);
                     
-                    if (($results_table = $html->find('form#roster_form', 0)->children(4)) != null)
+                    foreach($html->find('td[headers=title]') as $element)
                     {
-                        // loop over rows
-                        foreach ($results_table->find('tr') as $row) 
+                        $innerhtml = str_get_html($element);
+                        
+                        if($innerhtml->find('a',1)->href == "#")//folder
                         {
-                            $td_count = 1;
-                            $td = $row->find('td');
-                            foreach ($td as $val) 
-                            {
-                                if ($td_count == 1) 
-                                {
-                                    $str = $val->find('a',0)->innertext;
-                                    $name[] = $str;
-                                }
-                                if ($td_count == 2) 
-                                {
-                                    $id[] = $val->innertext;
-                                }
-                                if ($td_count == 3) 
-                                {
-                                    $str = $val->find('a',0)->innertext;
-                                    $email[] = $str;
-                                }
-                                if ($td_count == 4) 
-                                {
-                                    $role[] = $val->innertext;
-                                }
-                                $td_count++;
-                            }
+                            $valuearray = explode("'",$innerhtml->find('a',1)->onclick);
+                            $link = "https://vula.uct.ac.za/access/content" . $valuearray[7];
+                            
+                            $folder_info = array('text' => $innerhtml->find('a',1)->plaintext
+                                                ,'url' => $link
+                                                ,'onclick' => 'folderSelected($(this).attr(\'id\'))');
+                            $folder = array('folder' => $folder_info);
+                            $resouces[] = $folder;
+                        }
+                        else//resource
+                        {
+                            $resource_info = array('text' => $innerhtml->find('a',1)->plaintext
+                                                   ,'id' => $innerhtml->find('a',1)->href
+                                                   ,'onclick' => 'resourceSelected($(this).attr(\'id\'))');
+                            $resource = array('resource' => $resource_info);
+                            $resouces[] = $resource;
                         }
                     }
                 }
-                
-                for($i = 0; $i < count($name); $i++)
-                {
-                    $user = array('name' => $name[$i],
-                                    'id' => $id[$i],
-                                    'email' => $email[$i],
-                                    'role' => $role[$i]);
-                    $users[] = $user;
-                }
-               
-                echo json_encode(array('roster' => $users));
             }
             else//doesn't exist
             {
@@ -133,106 +107,6 @@ class Role extends CI_Controller
         }
     }
     
-    //get Role for user of Course
-    public function site($site_id)
-    {
-        $exists = false;
-        $users = array();
-        
-        if($this->session->userdata('logged_in'))
-        {
-            $username = $this->session->userdata('username');       
-
-            //globals
-            $tool_id = "";
-            $exists = false;
-            
-            $cookie = $this->session->userdata('cookie');
-            $cookiepath = realpath($cookie);
-            
-            //check "gradebook" in supported tools for site
-            $sup_tools = $this->sup_tools($site_id, 0);
-            foreach ($sup_tools as $tool) 
-            {
-                if(array_key_exists('participants',$tool))
-                {
-                    $exists = true;
-                    $tool_id = $tool['tool_id'];
-                }
-            }
-            
-            if($exists)
-            {
-                $url = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/" . $tool_id;
-
-                //eat cookie..yum
-                $curl = curl_init($url);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
-                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-
-                $response = curl_exec($curl);
-
-                //create html dom object
-                $html_str = str_get_html($response);
-                $html = new simple_html_dom($html_str);
-
-                //globals
-                $name = array();
-                $id = array();
-                $email = array();
-                $role = array();
-                
-                if (($iframe_url = $html->find('iframe', 0)->src) != null) 
-                {
-                    //echo "iframe_url: " . $iframe_url . "</br>";
-                    
-                    curl_setopt($curl, CURLOPT_URL, $iframe_url);
-                    $result = curl_exec($curl);
-                    curl_close($curl);
-
-                    $html = str_get_html($result);
-                    
-                    if (($results_table = $html->find('form#roster_form', 0)->children(4)) != null)
-                    {
-                        // loop over rows
-                        foreach ($results_table->find('tr') as $row) 
-                        {
-                            $found = false;
-                            $td_count = 1;
-                            $td = $row->find('td');
-                            foreach ($td as $val) 
-                            {
-                                if ($td_count == 2)//username 
-                                {
-                                    $id = $val->innertext;
-                                    if($id == $username)
-                                    {
-                                        $found = true;
-                                    }
-                                }
-                                if ($td_count == 4 && ($found))//role 
-                                {
-                                    echo $val->innertext;
-                                }
-                                $td_count++;
-                            }
-                        }
-                    }
-                }
-            }
-            else//doesn't exist
-            {
-                show_404();
-            }
-        }
-        else//NOT logged in
-        {
-            $this->session->sess_destroy();
-            echo 'logged_out';
-        }
-    }
     
     //returns array of supported tools for a site
     // - name e.g. "CS Honours"
