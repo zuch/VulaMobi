@@ -6,79 +6,79 @@
 
 include_once 'simple_html_dom.php';
 
-class Gallery extends CI_Controller 
-{
-    public function __construct() 
-    {
+class Gallery extends CI_Controller {
+
+    public function __construct() {
         parent::__construct();
     }
-    
-    public function Gallery() 
-    {
+
+    public function Gallery() {
         //show_404();
     }
-    
-    public function dir()
-    {
-        if($this->session->userdata('logged_in'))
-        {
-            $username = $this->session->userdata('username');       
+
+    public function dir() {
+        if ($this->session->userdata('logged_in')) {
+            $username = $this->session->userdata('username');
 
             //Globals
-            $base_url = "http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/uploads/";
-            $dir = "./uploads/" . $username;
-            $images = array();
-            
-            // Open a known directory, and proceed to read its contents
-            if (is_dir($dir)) 
-            {
-                if ($dh = opendir($dir)) 
-                {
-                    while (($filename = readdir($dh)) !== false) 
-                    {
-                        //echo "filename: " . $filename ."</br>";
-                        if(($filename != ".") && ($filename != ".."))
-                        {
-                            $image = array('filename' => $filename
-                                          ,'url' => $base_url . $filename );
-                            $images[] = $image;
+            //$base_url = "http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/uploads/";
+            $dir = "./uploads/" . $username . "/";
+            $files = array();
+
+
+            if (is_dir($dir)) {
+                $dh = opendir($dir);
+                $files = array();
+
+                while (($file = readdir($dh)) !== false) {
+                    if ($file != '.' AND $file != '..') {
+                        if (filetype($dir . $file) == 'file') {
+                            $files[] = array(
+                                'name' => $file,
+                                'size' => filesize($dir . $file) . ' bytes',
+                                'date' => date("F d Y H:i:s", filemtime($dir . $file)),
+                                'path' => $dir . $file,
+                            );
                         }
                     }
-                    echo json_encode($images);
-                    closedir($dh);
                 }
+            } else {
+                echo "path doesn't exist";
             }
-            else
-            {
-                echo "error";
-            }
-        }
-        else//NOT logged in
-        {
+            closedir($dh);
+
+            echo json_encode(array('files' => $files));
+        } else {//NOT logged in
             $this->session->sess_destroy();
             echo 'logged_out';
         }
     }
-    
+
     //upload image to uploads/user_id
-        public function upload()
+    public function upload() 
     {
-        if($this->session->userdata('logged_in'))
-        {   
+        if ($this->session->userdata('logged_in')) 
+        {
             $username = $this->session->userdata('username');
-            
-            $path = getcwd();
 
-            $upload_path = $path . '/uploads/' . $username . "/";
+            //$path = getcwd();
 
-            if(isset($_REQUEST['image']))
+            $upload_path = "./uploads/" . $username . "/";
+
+            //create path for user if not initialised
+            if (!is_dir($upload_path)) 
+            {
+                mkdir($upload_path, 0700);
+            }
+                
+            if (isset($_REQUEST['image'])) 
             {
                 if ($_REQUEST['image']) 
                 {
                     $imgData = base64_decode($_REQUEST['image']);
 
                     $file = $upload_path . date('Ymdgisu') . '.jpg';
-                    if (file_exists($file))
+                    if (file_exists($file)) 
                     {
                         unlink($file);
                     }
@@ -88,19 +88,20 @@ class Gallery extends CI_Controller
                     fclose($fp);
                     echo "done";
                 }
-            }
-            else
+            } 
+            else 
             {
                 echo "</br>";
                 echo "not_set";
             }
-        }
-        else//NOT logged in
-        {
+        } 
+        else 
+        {//NOT logged in
             $this->session->sess_destroy();
             echo 'logged_out';
         }
     }
+
 }
 
 ?>

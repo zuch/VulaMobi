@@ -76,7 +76,7 @@ class Student extends CI_Controller
                     $count++;
                 }
             }
-            echo json_encode($active_sites);//return array of JSON objects
+            echo json_encode(array('active_sites' => $active_sites));//return array of JSON objects
         }
         else//NOT logged in
         {

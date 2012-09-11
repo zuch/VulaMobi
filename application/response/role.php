@@ -119,7 +119,7 @@ class Role extends CI_Controller
                     $users[] = $user;
                 }
                
-                echo json_encode($users);
+                echo json_encode(array('roster' => $users));
             }
             else//doesn't exist
             {

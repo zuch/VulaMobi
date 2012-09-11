@@ -65,6 +65,7 @@ class Grade extends CI_Controller
                 $test_names = array();
                 $test_dates = array();
                 $test_marks = array();
+                $formatted_marks = array();
 
                 if (($iframe_url = $html->find('iframe', 0)->src) != null) 
                 {
@@ -95,8 +96,21 @@ class Grade extends CI_Controller
                                 {
                                     $test_dates[] = $val->innertext;
                                 }
-                                if ($td_count == 3) {
-                                    $test_marks[] = $val->innertext;
+                                if ($td_count == 3)//test marks 
+                                {
+                                    $mark = $val->innertext;
+                                    if (strpos($mark,'/') !== false) 
+                                    {
+                                        $top = strstr($mark, '/', true);
+                                        $bottom = strstr($mark, '/');
+                                        $substr = substr($bottom, 1); 
+                                        $result = ($top/$substr)*100;
+                                        $test_marks[] = $result . '%';
+                                    }
+                                    else 
+                                    {
+                                        $test_marks[] = $mark;
+                                    }
                                 }
                                 $td_count++;
                             }
@@ -113,7 +127,7 @@ class Grade extends CI_Controller
                 }
                 
                 //output
-                echo json_encode($grades);
+                echo json_encode(array('grades' => $grades));
             }
             else//doesn't exist
             {
