@@ -5,17 +5,19 @@ body
 
 a{text-decoration:none;}
 
-a:link{	color:red;}
+a:link{	color:purple;}
 
-a:hover{color:red;}
+a:hover{color:purple;}
 
-a:visted{color:red;}
+a:visted{color:purple;}
 
 /*a:active{color:white;}*/
 
 h1{color:blue; }
 
 h2{color:blue }
+
+h3{color:blue }
 
 #content
 {

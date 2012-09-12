@@ -4,6 +4,8 @@
  * Vulamobi CS Honours project
  * sascha.watermeyer@gmail.com */
 
+header('Access-Control-Allow-Origin: *');  
+
 class Auth extends CI_Controller 
 {
 
@@ -23,7 +25,6 @@ class Auth extends CI_Controller
         echo 'logged_out';
         die;
     }
-    
     
     //login Vula
     public function login() 
