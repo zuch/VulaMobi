@@ -5,13 +5,13 @@ body
 
 a{text-decoration:none;}
 
-a:link{	color:purple;}
+a:link{	color:red;}
 
-a:hover{color:purple;}
+a:hover{color:red;}
 
-a:visted{color:purple;}
+a:visted{color:red;}
 
-/*a:active{color:white;}*/
+a:active{color:red;}
 
 h1{color:blue; }
 

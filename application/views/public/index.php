@@ -11,9 +11,8 @@
     <input type="password" id="password" name="password"></input>
 </p>
 <p>
-    <input type="submit" name="submit" id="login" value="login" onclick="login();" >
-    <a href="ajax.php?auth/login">link</a></br>
-    <input type="submit" name="submit" id="logout" value="logout" onclick="logout();"><a href="ajax.php?student/logout">link</a></br>
+    <input type="submit" name="submit" id="login" value="login" onclick="login();" ></br>
+    <input type="submit" name="submit" id="logout" value="logout" onclick="logout();">
 </p>
 </br>
 <h2>AJAX Functions</h2>
@@ -70,7 +69,7 @@
 <h4><a href="https://github.com/zuch/VulaMobi/wiki">documentation</a></h4>
 <h2>Source Code</h2>
 <ul>
-    <li>Client-side javasript used to interact with the VulaMobi Backend: <a href="./js/vulamobi.js">vulamobi.js</a> (Coz Im that nice)</li>
+    <li><h3><a href="./js/vulamobi.js">vulamobi.js</a></h3></li>
     <li>HTML source for this <a href="https://github.com/zuch/VulaMobi/blob/master/application/views/public/index.php">page</a></li>
 </ul>
 </br>
