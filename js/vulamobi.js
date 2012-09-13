@@ -348,6 +348,37 @@ function announcements(site_id)
     }    
 }
 
+/********************************** chat *************************************/
+function chat(site_id)
+{  
+    if((username == "") || (password == ""))
+    {
+        alert('logged_out')
+        return "logged_out";
+    }
+    else
+    {
+        var response = "";
+        var form_data = {
+            username: username,
+            password: password,
+            is_ajax: 1
+        };
+        
+        $.ajax({
+            type: "POST", 
+            url: base_url + "ajax.php?chat/site/" + site_id, 
+            data: form_data,
+            success: function(response)
+            {
+                alert(response);
+                return response;
+            },
+            dataType: "text"//set to JSON      
+        })
+    }
+}
+
 /********************************** resources *********************************/
 function resource(site_id)
 {

@@ -26,25 +26,26 @@
 <input type="submit" name="submit" id="gallery" value="gallery" onclick="gallery();"></br>
 <input type="submit" name="submit" id="role" value="role" onclick="role('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
 <input type="submit" name="submit" id="roster" value="roster" onclick="roster('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
-<input type="submit" name="submit" id="announcements" value="announcements" onclick="announcements('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
+<input type="submit" name="submit" id="announcements_all" value="announcements_all" onclick="announcements('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">Under My_WorkSpace</br>
 <input type="submit" name="submit" id="resource" value="resource" onclick="resource('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
+<input type="submit" name="submit" id="chat" value="chat" onclick="chat('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
 <input type="submit" name="submit" id="test" value="test" onclick="test();"></br>
-<!-- Logout -->
+<!-- 
 <h3>logout</h3>
 <p>
     <b>URL: ajax.php?student/logout</br></b>
 </p>
-<!-- Username -->
+
 <h3>name</h3>
 <p>
     <b>URL: ajax.php?student/name</br></b>    
 </p>
-<!-- Sites -->
+
 <h3>active sites</h3>
 <p>
     <b>URL: ajax.php?student/sites</br></b>
 </p>
-<!-- User_id -->
+
 <h3>id</h3>
 <p>
     <b>URL: ajax.php?student/id</b></br>
@@ -67,7 +68,7 @@
 <h3>test</h3>
 <p>
     <b>URL: ajax.php?test/t</b></br>
-</p>
+</p>-->
 <h3><a href="https://github.com/zuch/VulaMobi/wiki">documentation</a></h3>
 <h2>Source Code</h2>
 <ul>

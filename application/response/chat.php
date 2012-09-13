@@ -8,19 +8,18 @@ header('Access-Control-Allow-Origin: *');
 
 include_once 'simple_html_dom.php';
 
-class Resource extends CI_Controller 
+class Chat extends CI_Controller 
 {
     public function __construct() 
     {
         parent::__construct();
     }
     
-    public function Resource() 
+    public function Chat() 
     {
         //show_404();
     }
     
-    //get roster for a Course
     public function site($site_id)
     {
         echo "***in development***";
@@ -36,10 +35,11 @@ class Resource extends CI_Controller
         $cookiepath = realpath($cookie);
 
         //check "resources" in supported tools for site
-        $sup_tools = $this->sup_tools($site_id);
+        $sup_tools = /*include_once 'sup_tools.php'*/$this->sup_tools($site_id);
+        
         foreach ($sup_tools as $tool) 
         {
-            if(array_key_exists('resources',$tool))
+            if(array_key_exists('chatroom',$tool))
             {
                 $exists = true;
                 $tool_id = $tool['tool_id'];
@@ -48,14 +48,14 @@ class Resource extends CI_Controller
 
         if($exists)
         {
-            $this->login();
+            //  include_once 'login.php';
         
             //CodeIgniter Session Class
             //$username = $this->session->userdata('username');
             $cookie = $this->session->userdata('cookie');
             $cookiepath = realpath($cookie);
 
-            $url = "https://vula.uct.ac.za/dav/" . $site_id;
+            $url = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/" . $tool_id;
 
             //eat cookie..yum
             $curl = curl_init($url);
@@ -65,108 +65,107 @@ class Resource extends CI_Controller
             curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
             $response = curl_exec($curl);
-            curl_close($curl);
-
-            /* Scrap! */
-
-            //create html dom object
-            $html_str = "";
-            $html_str = str_get_html($response);
-            $html = new simple_html_dom($html_str);
-
-            // initialize empty array to store the data array from each row
-            $theData = array();
-
-            // loop over rows
-            foreach($html->find('tr') as $row) 
-            {
-                $td_count = 1;
-                $td = $row->find('td');
-                foreach ($td as $val) 
-                {
-                    if ($td_count == 1) 
-                    {
-                        $links[] = $val->find('a',0);
-                        echo $val->find('a',0);
-                    }
-                    if ($td_count == 2) 
-                    {
-                        if($val->innertext == "")
-                        {
-                            
-                        }
-                    }
-                }
-                // initialize array to store the cell data from each row
-                /*$rowData = array();
-                foreach($row->find('td.text') as $cell) 
-                {
-                    // push the cell's text to the array
-                    $rowData[] = $cell->innertext;
-                }
-
-                // push the row's data array to the 'big' array
-                $theData[] = $rowData;*/
-            }
-            //print_r($theData);
-
             
-            /*$url = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/" . $tool_id;
-
-            //eat cookie..yum
-            $curl = curl_init($url);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-
-            $response = curl_exec($curl);
-
             //create html dom object
             $html_str = str_get_html($response);
             $html = new simple_html_dom($html_str);
+
+            //globals
+            $test_names = array();
+            $test_dates = array();
+            $test_marks = array();
 
             if (($iframe_url = $html->find('iframe', 0)->src) != null) 
             {
-                //echo "iframe_url: " . $iframe_url . "</br>";
+                echo "iframe_url: " . $iframe_url . "</br>";
 
                 curl_setopt($curl, CURLOPT_URL, $iframe_url);
+                $result = curl_exec($curl);
+                $html = str_get_html($result);
+
+
+                $chat_messages = "";
+
+                if (($chat_messages = $html->find("#topForm:chatList", 0)) != null) 
+                {
+                    foreach ($chat_messages->find('li') as $li) 
+                    {
+                        foreach ($li as $val) 
+                        {
+                            echo "li: " . $li . "</br>";
+                            $messages[] = $li;
+                        }
+                    }
+                }
+                
+       
+                /*foreach($rss->entry as $e) 
+                {
+                    echo "<li><a href=\"".$e->link['href']."\">";
+                    echo $e->title;     
+                    echo "</a></li>\n";
+                } */   
+                
+                /*curl_setopt($curl, CURLOPT_URL, $iframe_url);
                 $result = curl_exec($curl);
                 curl_close($curl);
 
                 $html = str_get_html($result);
 
-                foreach($html->find('td[headers=title]') as $element)
-                {
-                    $innerhtml = str_get_html($element);
+                $td_count = 0;
 
-                    if($innerhtml->find('a',1)->href == "#")//folder
+                if (($results_table = $html->find(".chatList", 0)) != null)
+                {*/
+                    
+                    
+                    
+                    
+                    
+                    
+                    // loop over rows
+                    /*foreach ($results_table->find('tr') as $row) 
                     {
-                        $valuearray = explode("'",$innerhtml->find('a',1)->onclick);
-                        $link = "https://vula.uct.ac.za/access/content" . $valuearray[7];
-
-                        $folder_info = array('text' => $innerhtml->find('a',1)->plaintext
-                                            ,'url' => $link
-                                            ,'onclick' => 'folderSelected($(this).attr(\'id\'))');
-                        $folder = array('folder' => $folder_info);
-                        $resouces[] = $folder;
+                        $td_count = 1;
+                        $td = $row->find('td');
+                        foreach ($td as $val) 
+                        {
+                            if ($td_count == 1) 
+                            {
+                                $test_names[] = $val->innertext;
+                            }
+                            if ($td_count == 2) 
+                            {
+                                $test_dates[] = $val->innertext;
+                            }
+                            if ($td_count == 3)//test marks 
+                            {
+                                //parse for Don
+                                $mark = $val->innertext;
+                                if (strpos($mark,'/') !== false) 
+                                {
+                                    $top = strstr($mark, '/', true);
+                                    $bottom = strstr($mark, '/');
+                                    $substr = substr($bottom, 1); 
+                                    $result = ($top/$substr)*100;
+                                    $test_marks[] = $result . '%';
+                                }
+                                else 
+                                {
+                                    $test_marks[] = $mark;
+                                }
+                            }
+                            $td_count++;
+                        }
                     }
-                    else//resource
-                    {
-                        $resource_info = array('text' => $innerhtml->find('a',1)->plaintext
-                                               ,'id' => $innerhtml->find('a',1)->href
-                                               ,'onclick' => 'resourceSelected($(this).attr(\'id\'))');
-                        $resource = array('resource' => $resource_info);
-                        $resouces[] = $resource;
-                    }
-                }
-            }*/
+                }//END loop over rows*/
+            }//END iframe
         }
         else//404
         {
             echo "you are not part of this site";
         }
     }
+    
     
     //returns array of supported tools for a site
     // - name e.g. "CS Honours"
