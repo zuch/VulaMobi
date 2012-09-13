@@ -21,7 +21,7 @@ class Announce extends CI_Controller
     }
     
     //get grades of User for Course
-    public function site($site_id)
+    public function all()
     {
         $this->login();
         
@@ -72,10 +72,64 @@ class Announce extends CI_Controller
                                      'siteTitle' => $siteTitle,
                                      'onclick' => "one_announcement('". $entityId ."')");
         }
-
         //output
-        echo json_encode(array('announcements' => $announcements));    
+        echo json_encode(array('announcements_all' => $announcements));    
     }
+    
+    public function site($site_id)
+    {
+        $this->login();
+        
+        $cookie = $this->session->userdata('cookie');
+        $cookiepath = realpath($cookie);
+        
+        $url_tool = "https://vula.uct.ac.za/direct/announcement/site/" . $site_id . ".xml?n=30&d=300";
+
+        //eat cookie..yum
+        $curl = curl_init($url_tool);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+        $response = curl_exec($curl);
+
+        $xml = simplexml_load_string($response);
+
+        $announcements = array();
+
+        foreach ($xml->children() as $child) 
+        {
+            foreach ($child->children() as $minime) 
+            {
+                switch ($t = $minime->getName()) 
+                {
+                    case 'entityTitle'://subject
+                        $entityTitle = $minime;
+                        break;
+                    case 'entityId':
+                        $entityId = $minime;
+                        break;
+                    case 'siteTitle'://Site title
+                        $siteTitle = $minime;
+                        break;
+                    case 'createdByDisplayName'://Saved by
+                        $createdByDisplayName = $minime;
+                        break;
+                    default :
+                        break;
+                }
+            }
+            $announcements[] = array('entityTitle' => $entityTitle,
+                                     'id' => $entityId,
+                                     'siteTitle' => $siteTitle,
+                                     'onclick' => "one_announcement('". $entityId ."')");
+        }
+        //output
+        echo json_encode(array('announcements_site' => $announcements)); 
+    }
+
+
     
     //login Vula
     public function login() 
@@ -93,7 +147,7 @@ class Announce extends CI_Controller
         //empty username or password
         if($username==null || $password==null)
         {
-            echo "empty";
+            echo "Empty Username or Password";;
             die;
         }
 
@@ -130,7 +184,7 @@ class Announce extends CI_Controller
         }
         else
         {
-            echo "incorrect";
+            echo "Incorrect Username or Password";
             die;
         } 
     }

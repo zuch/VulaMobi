@@ -197,11 +197,9 @@ class Chat extends CI_Controller
     //login Vula
     public function login() 
     {        
-        //$username = $this->input->post('username');
-        //$password = $this->input->post('password');
-        $username = "wtrsas001";
-        $password = "honours";
-        
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+
         $credentials = array
         (
             'username' => $username,
@@ -212,7 +210,7 @@ class Chat extends CI_Controller
         //empty username or password
         if($username==null || $password==null)
         {
-            echo "empty";
+            echo "Empty Username or Password";;
             die;
         }
 
@@ -249,7 +247,7 @@ class Chat extends CI_Controller
         }
         else
         {
-            echo "incorrect";
+            echo "Incorrect Username or Password";
             die;
         } 
     }

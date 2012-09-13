@@ -154,7 +154,7 @@ class Student extends CI_Controller
         //empty username or password
         if($username==null || $password==null)
         {
-            echo "empty";
+            echo "Empty Username or Password";;
             die;
         }
 
@@ -191,7 +191,7 @@ class Student extends CI_Controller
         }
         else
         {
-            echo "incorrect";
+            echo "Incorrect Username or Password";
             die;
         } 
     }

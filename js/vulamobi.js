@@ -8,8 +8,8 @@
 *****************************************/
 
 /* Globals*/
-var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';//production
-//var base_url = 'http://localhost/VulaMobi/';//development
+//var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';//production
+var base_url = 'http://localhost/VulaMobi/';//development
 
 var username = "";//global username set when you initially login
 var password = "";//global password set when you initially login
@@ -24,55 +24,47 @@ function login(user, pwd)
     //username = user;
     //password = pwd;
     
-    if((username == "") || (password == ""))
-    {
-        var response = "";
-        var form_data = {
-            username: username,
-            password: password,
-            is_ajax: 1
-        };
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
 
-        $.ajax({
-            type: "POST", 
-            url: base_url + "ajax.php?auth/login", 
-            data: form_data, 
-            success: function(response)
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?auth/login", 
+        data: form_data, 
+        success: function(response)
+        {
+            if(response == "empty")//username or password empty
             {
-                if(response == "empty")//username or password empty
-                {
-                    alert("empty");
-                    return "empty";
-                }
-                else if(response == "incorrect")//username or password incorrect
-                {
-                    alert("incorrect");
-                    return "incorrect";
-                }
-                else if(response == "already")//already logged in - reroute to home page
-                {
-                    alert("already");
-                    return "already";
-                }
-                else if(response == "logged_in") //logged_in
-                {
-                    alert("logged_in");
-                    return "logged_in";
-                }
-                else if(response == "logged_out") //logged_out
-                {
-                    alert("logged_out");
-                    return "logged_out";
-                }
-            },
-            dataType: "text"    
-        })
-    }
-    else
-    {
-        alert('logged_in')
-        return 'logged_in';
-    }
+                alert("empty");
+                return "empty";
+            }
+            else if(response == "incorrect")//username or password incorrect
+            {
+                alert("incorrect");
+                return "incorrect";
+            }
+            else if(response == "already")//already logged in - reroute to home page
+            {
+                alert("already");
+                return "already";
+            }
+            else if(response == "logged_in") //logged_in
+            {
+                alert("logged_in");
+                return "logged_in";
+            }
+            else if(response == "logged_out") //logged_out
+            {
+                alert("logged_out");
+                return "logged_out";
+            }
+        },
+        dataType: "text"    
+    })
 }
 
 /************************************* logout *********************************/
@@ -103,307 +95,272 @@ function logout()
 /********************************** sites *************************************/
 function sites()
 {  
-    if((username == "") || (password == ""))
-    {
-        alert('logged_out')
-        return "logged_out";
-    }
-    else
-    {
-        var response = "";
-        var form_data = {
-            username: username,
-            password: password,
-            is_ajax: 1
-        };
+    
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
         
-        $.ajax({
-            type: "POST", 
-            url: base_url + "ajax.php?student/sites", 
-            data: form_data,
-            success: function(response)
-            {
-                alert(response);
-                return response;
-            },
-            dataType: "text"    
-        })
-    }
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?student/sites", 
+        data: form_data,
+        success: function(response)
+        {
+            alert(response);
+            return response;
+        },
+        dataType: "text"    
+    })
+    
 }
 
 /********************************** grade *************************************/
 function grade(site_id)
 {  
-    if((username == "") || (password == ""))
-    {
-        alert('logged_out')
-        return "logged_out";
-    }
-    else
-    {
-        var response = "";
-        var form_data = {
-            username: username,
-            password: password,
-            is_ajax: 1
-        };
-        $.ajax({
-            type: "POST", 
-            url: base_url + "ajax.php?grade/site/" + site_id, 
-            data: form_data,
-            success: function(response)
-            {
-                alert(response);
-                return response;
-            },
-            dataType: "text"//set to JSON    
-        })
-    }
+    
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?grade/site/" + site_id, 
+        data: form_data,
+        success: function(response)
+        {
+            alert(response);
+            return response;
+        },
+        dataType: "text"//set to JSON    
+    })
+    
 }
 
 /********************************** name **************************************/
 function user_name()
 {  
-    if((username == "") || (password == ""))
-    {
-        alert('logged_out')
-        return "logged_out";
-    }
-    else
-    {
-        var response = "";
-        var form_data = {
-            username: username,
-            password: password,
-            is_ajax: 1
-        };
+    
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
 
-        $.ajax({
-            type: "POST", 
-            url: base_url + "ajax.php?student/name", 
-            data: form_data,
-            success: function(response)
-            {
-                alert(response);
-                return response;
-            },
-            dataType: "text"    
-        })
-    }
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?student/name", 
+        data: form_data,
+        success: function(response)
+        {
+            alert(response);
+            return response;
+        },
+        dataType: "text"    
+    })
+    
 } 
 
 /********************************** id ****************************************/
 function user_id()
 {  
-    if((username == "") || (password == ""))
-    {
-        alert('logged_out')
-        return "logged_out";
-    }
-    else
-    {
-        var response = "";
-        var form_data = {
-            username: username,
-            password: password,
-            is_ajax: 1
-        };
+    
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
 
-        $.ajax({
-            type: "POST", 
-            url: base_url + "ajax.php?student/id", 
-            data: form_data,
-            success: function(response)
-            {
-                alert(response);
-                return response;
-            },
-            dataType: "text"    
-        })
-    } 
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?student/id", 
+        data: form_data,
+        success: function(response)
+        {
+            alert(response);
+            return response;
+        },
+        dataType: "text"    
+    })
+     
 } 
 
 /********************************** gallery ***********************************/
 function gallery()
 {
-    if((username == "") || (password == ""))
-    {
-        alert('logged_out')
-        return "logged_out";
-    }
-    else
-    {
-        var response = "";
-        var form_data = {
-            username: username,
-            password: password,
-            is_ajax: 1
-        };
+    
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
 
-        $.ajax({
-            type: "POST", 
-            url: base_url + "ajax.php?gallery/dir", 
-            data: form_data,
-            success: function(response)
-            {
-                alert(response);
-                return response;
-            },
-            dataType: "text"//set to JSON    
-        })
-    }
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?gallery/dir", 
+        data: form_data,
+        success: function(response)
+        {
+            alert(response);
+            return response;
+        },
+        dataType: "text"//set to JSON    
+    })
+    
 
 }
 
 /********************************** role **************************************/
 function role(site_id)
 {  
-    if((username == "") || (password == ""))
-    {
-        alert('logged_out')
-        return "logged_out";
-    }
-    else
-    {
-        var response = "";
-        var form_data = {
-            username: username,
-            password: password,
-            is_ajax: 1
-        };
+    
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
 
-        $.ajax({
-            type: "POST", 
-            url: base_url + "ajax.php?role/site/" + site_id, 
-            data: form_data,
-            success: function(response)
-            {
-                alert(response);
-                return response;
-            },
-            dataType: "text"  
-        })
-    }
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?role/site/" + site_id, 
+        data: form_data,
+        success: function(response)
+        {
+            alert(response);
+            return response;
+        },
+        dataType: "text"  
+    })
+    
 }
 
 /********************************** roster ************************************/
 function roster(site_id)
 {
-    if((username == "") || (password == ""))
-    {
-        alert('logged_out')
-        return "logged_out";
-    }
-    else
-    {
-        var response = "";
-        var form_data = {
-            username: username,
-            password: password,
-            is_ajax: 1
-        };
+    
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
 
-        $.ajax({
-            type: "POST", 
-            url: base_url + "ajax.php?role/roster/" + site_id, 
-            data: form_data,
-            success: function(response)
-            {
-                alert(response);
-                return response; 
-            },
-            dataType: "text"//set to JSON    
-        })
-    }
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?role/roster/" + site_id, 
+        data: form_data,
+        success: function(response)
+        {
+            alert(response);
+            return response; 
+        },
+        dataType: "text"//set to JSON    
+    })
+    
 }
 
-/****************************** announcements_all *****************************/
-function announcements(site_id)
+/****************************** announcement_all *****************************/
+function announcement_all()
 {  
-    if((username == "") || (password == ""))
-    {
-        alert('logged_out')
-        return "logged_out";
-    }
-    else
-    {
-        var response = "";
-        var form_data = {
-            username: username,
-            password: password,
-            is_ajax: 1
-        };
+    
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
 
-        $.ajax({
-            type: "POST", 
-            url: base_url + "ajax.php?announce/site/" + site_id, 
-            data: form_data,
-            success: function(response)
-            {
-                alert(response);
-                return response;
-            },
-            dataType: "text"//set to JSON   
-        })
-    }    
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?announce/all/", 
+        data: form_data,
+        success: function(response)
+        {
+            alert(response);
+            return response;
+        },
+        dataType: "text"//set to JSON   
+    })
+       
+}
+
+/*********************** announcement_site ************************************/
+function announcement_site(site_id)
+{
+    
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
+
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?announce/site/" + site_id, 
+        data: form_data,
+        success: function(response)
+        {
+            alert(response);
+            return response; 
+        },
+        dataType: "text"//set to JSON    
+    })
+    
 }
 
 /********************************** chat *************************************/
 function chat(site_id)
 {  
-    if((username == "") || (password == ""))
-    {
-        alert('logged_out')
-        return "logged_out";
-    }
-    else
-    {
-        var response = "";
-        var form_data = {
-            username: username,
-            password: password,
-            is_ajax: 1
-        };
+    
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
         
-        $.ajax({
-            type: "POST", 
-            url: base_url + "ajax.php?chat/site/" + site_id, 
-            data: form_data,
-            success: function(response)
-            {
-                alert(response);
-                return response;
-            },
-            dataType: "text"//set to JSON      
-        })
-    }
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?chat/site/" + site_id, 
+        data: form_data,
+        success: function(response)
+        {
+            alert(response);
+            return response;
+        },
+        dataType: "text"//set to JSON      
+    })
+    
 }
 
 /********************************** resources *********************************/
 function resource(site_id)
 {
-    if((username == "") || (password == ""))
-    {
-        alert('logged_out')
-        return "logged_out";
-    }
-    else
-    {
-        var form_data = {
-            username: username,
-            password: password,
-            is_ajax: 1
-        };
+    
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
         
-        $.ajax({
-            type: "POST", 
-            url: base_url + "ajax.php?resource/site/" + site_id, 
-            data: form_data, 
-            success: function(response){
-                alert(response);
-            }
-        });
-    }
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?resource/site/" + site_id, 
+        data: form_data, 
+        success: function(response){
+            alert(response);
+        }
+    });
+    
 }
 
 function folderSelected(id)
