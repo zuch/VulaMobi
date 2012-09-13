@@ -122,9 +122,9 @@ class Role extends CI_Controller
 
             echo json_encode(array('roster' => $users));
         }
-        else//doesn't exist
+        else//404
         {
-            show_404();
+            echo "you are not part of this site";
         }
     }
     
@@ -213,9 +213,9 @@ class Role extends CI_Controller
                 }
             }
         }
-        else//doesn't exist
+        else//404
         {
-            show_404();
+            echo "you are not part of this site";
         }
     }
     

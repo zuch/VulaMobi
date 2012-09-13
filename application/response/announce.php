@@ -8,98 +8,73 @@ header('Access-Control-Allow-Origin: *');
 
 include_once 'simple_html_dom.php';
 
-class Gallery extends CI_Controller 
+class Announce extends CI_Controller 
 {
     public function __construct() 
     {
         parent::__construct();
     }
-
-    public function Gallery() 
+    
+    public function Announce() 
     {
         //show_404();
     }
-
-    public function dir() 
+    
+    //get grades of User for Course
+    public function site($site_id)
     {
         $this->login();
         
-        $username = $this->session->userdata('username');
+        $cookie = $this->session->userdata('cookie');
+        $cookiepath = realpath($cookie);
 
-        //Globals
-        $dir = "./uploads/" . $username . "/";
-        $files = array();
-        
-        if (is_dir($dir)) 
-        {
-            $dh = opendir($dir);
-            $files = array();
+       
+        $url_all = "https://vula.uct.ac.za/direct/announcement/user.xml?n=30&d=300";
 
-            while (($file = readdir($dh)) !== false) 
-            {
-                if ($file != '.' AND $file != '..')
-                {
-                    if (filetype($dir . $file) == 'file') 
-                    {
-                        $files[] = array(
-                            'name' => $file,
-                            'size' => filesize($dir . $file) . ' bytes',
-                            'date' => date("F d Y H:i:s", filemtime($dir . $file)),
-                            'path' => $dir . $file,
-                        );
-                    }
-                }
-            }
-        } 
-        else 
-        {
-            echo "empty";
-        }
-        closedir($dh);
+        //eat cookie..yum
+        $curl = curl_init($url_all);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
-        echo json_encode(array('files' => $files));
-    }
+        $response = curl_exec($curl);
 
-    //upload image to uploads/user_id
-    public function upload() 
-    {
-        $this->login();
-        
-        $username = $this->session->userdata('username');
+        $xml = simplexml_load_string($response);
 
-        //$path = getcwd();
-
-        $upload_path = "./uploads/" . $username . "/";
-
-        //create path for user if not initialised
-        if (!is_dir($upload_path)) 
-        {
-            mkdir($upload_path, 0700);
-        }
-
-        if (isset($_REQUEST['image'])) 
-        {
-            if ($_REQUEST['image']) 
-            {
-                $imgData = base64_decode($_REQUEST['image']);
-
-                $file = $upload_path . date('Ymdgisu') . '.jpg';
-                if (file_exists($file)) 
-                {
-                    unlink($file);
-                }
-                error_log("Error to check if file exists");
-                $fp = fopen($file, 'w');
-                fwrite($fp, $imgData);
-                fclose($fp);
+        $announcements = array();
+        //$entityTitle = "";
+        //$siteTitle = "";
+        //$entityId = "";
                 
-                echo "complete";
-            }
-        } 
-        else 
+        foreach ($xml->children() as $child) 
         {
-            echo "no POST";
-        }   
+            foreach ($child->children() as $minime) 
+            {
+               
+                switch ($t = $minime->getName()) 
+                {
+                    case 'entityTitle':
+                        $entityTitle = $minime;
+                        break;
+                    case 'entityId':
+                        $entityId = $minime;
+                        break;
+                    case 'siteTitle':
+                        $siteTitle = $minime;
+                        break;
+                    default :
+                        break;
+                }
+            }
+            $announcements[] = array('entityTitle' => $entityTitle,
+                                     'id' => $entityId,
+                                     'siteTitle' => $siteTitle,
+                                     'onclick' => "one_announcement('". $entityId ."')");
+        }
+
+        //output
+        echo json_encode(array('announcements' => $announcements));    
     }
     
     //login Vula
@@ -174,5 +149,4 @@ class Gallery extends CI_Controller
         return (string)$x;
     }
 }
-
 ?>

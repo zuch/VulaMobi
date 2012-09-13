@@ -26,6 +26,8 @@
 <input type="submit" name="submit" id="gallery" value="gallery" onclick="gallery();"></br>
 <input type="submit" name="submit" id="role" value="role" onclick="role('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
 <input type="submit" name="submit" id="roster" value="roster" onclick="roster('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
+<input type="submit" name="submit" id="announcements" value="announcements" onclick="announcements('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
+<input type="submit" name="submit" id="resource" value="resource" onclick="resource('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
 <input type="submit" name="submit" id="test" value="test" onclick="test();"></br>
 <!-- Logout -->
 <h3>logout</h3>
@@ -66,10 +68,10 @@
 <p>
     <b>URL: ajax.php?test/t</b></br>
 </p>
-<h4><a href="https://github.com/zuch/VulaMobi/wiki">documentation</a></h4>
+<h3><a href="https://github.com/zuch/VulaMobi/wiki">documentation</a></h3>
 <h2>Source Code</h2>
 <ul>
-    <li><h3><a href="./js/vulamobi.js">vulamobi.js</a></h3></li>
+    <li><h3><a href="./js/vulamobi.js">vulamobi.js</a>The Buttons in this page are using this file</h3></li>
     <li>HTML source for this <a href="https://github.com/zuch/VulaMobi/blob/master/application/views/public/index.php">page</a></li>
 </ul>
 </br>

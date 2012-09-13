@@ -36,7 +36,7 @@ class Grade extends CI_Controller
         $cookiepath = realpath($cookie);
 
         //check "gradebook" in supported tools for site
-        $sup_tools = $this->sup_tools($site_id, 0);
+        $sup_tools = $this->sup_tools($site_id);
         foreach ($sup_tools as $tool) 
         {
             if(array_key_exists('gradebook',$tool))
@@ -99,6 +99,7 @@ class Grade extends CI_Controller
                             }
                             if ($td_count == 3)//test marks 
                             {
+                                //parse for Don
                                 $mark = $val->innertext;
                                 if (strpos($mark,'/') !== false) 
                                 {
@@ -130,9 +131,9 @@ class Grade extends CI_Controller
             //output
             echo json_encode(array('grades' => $grades));
         }
-        else//doesn't exist
+        else//404
         {
-            show_404();
+            echo "you are not part of this site";
         }
     }
     
@@ -140,7 +141,7 @@ class Grade extends CI_Controller
     // - name e.g. "CS Honours"
     // - id e.g. "fa532f3e-a2e1-48ec-9d78-3d5722e8b60d"
     //set "$json = 1" if want JSON resposnse else "0"
-    public function sup_tools($site_id ,$json)
+    public function sup_tools($site_id)
     {
         $this->login();
         
@@ -226,20 +227,7 @@ class Grade extends CI_Controller
                     break;
             }
         }
-
-        //JSON response check
-        if($json == 0)//output PHP
-        {
-            return $sup_tools;
-        }
-        else if($json == 1)//output JSON
-        {
-            echo json_encode($sup_tools);
-        }
-        else
-        {
-            show_404();
-        }
+        return $sup_tools;
     }
     
     //login Vula

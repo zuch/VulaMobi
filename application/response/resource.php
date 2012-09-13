@@ -8,14 +8,14 @@ header('Access-Control-Allow-Origin: *');
 
 include_once 'simple_html_dom.php';
 
-class Resources extends CI_Controller 
+class Resource extends CI_Controller 
 {
     public function __construct() 
     {
         parent::__construct();
     }
     
-    public function Resources() 
+    public function Resource() 
     {
         //show_404();
     }
@@ -28,13 +28,13 @@ class Resources extends CI_Controller
         //globals
         $tool_id = "";
         $exists = false;
-        $resouces = array();
+        $links = array();
 
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
 
-        //check "gradebook" in supported tools for site
-        $sup_tools = $this->sup_tools($site_id, 0);
+        //check "resources" in supported tools for site
+        $sup_tools = $this->sup_tools($site_id);
         foreach ($sup_tools as $tool) 
         {
             if(array_key_exists('resources',$tool))
@@ -46,7 +46,70 @@ class Resources extends CI_Controller
 
         if($exists)
         {
-            $url = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/" . $tool_id;
+            $this->login();
+        
+            //CodeIgniter Session Class
+            //$username = $this->session->userdata('username');
+            $cookie = $this->session->userdata('cookie');
+            $cookiepath = realpath($cookie);
+
+            $url = "https://vula.uct.ac.za/dav/" . $site_id;
+
+            //eat cookie..yum
+            $curl = curl_init($url);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+            $response = curl_exec($curl);
+            curl_close($curl);
+
+            /* Scrap! */
+
+            //create html dom object
+            $html_str = "";
+            $html_str = str_get_html($response);
+            $html = new simple_html_dom($html_str);
+
+            // initialize empty array to store the data array from each row
+            $theData = array();
+
+            // loop over rows
+            foreach($html->find('tr') as $row) 
+            {
+                $td_count = 1;
+                $td = $row->find('td');
+                foreach ($td as $val) 
+                {
+                    if ($td_count == 1) 
+                    {
+                        $links[] = $val->find('a',0);
+                        echo $val->find('a',0);
+                    }
+                    if ($td_count == 2) 
+                    {
+                        if($val->innertext == "")
+                        {
+                            
+                        }
+                    }
+                }
+                // initialize array to store the cell data from each row
+                /*$rowData = array();
+                foreach($row->find('td.text') as $cell) 
+                {
+                    // push the cell's text to the array
+                    $rowData[] = $cell->innertext;
+                }
+
+                // push the row's data array to the 'big' array
+                $theData[] = $rowData;*/
+            }
+            //print_r($theData);
+
+            
+            /*$url = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/" . $tool_id;
 
             //eat cookie..yum
             $curl = curl_init($url);
@@ -95,12 +158,11 @@ class Resources extends CI_Controller
                         $resouces[] = $resource;
                     }
                 }
-            }
+            }*/
         }
-        else//NOT logged in
+        else//404
         {
-            $this->session->sess_destroy();
-            echo 'logged_out';
+            echo "you are not part of this site";
         }
     }
     
@@ -108,7 +170,7 @@ class Resources extends CI_Controller
     // - name e.g. "CS Honours"
     // - id e.g. "fa532f3e-a2e1-48ec-9d78-3d5722e8b60d"
     //set "$json = 1" if want JSON resposnse else "0"
-    public function sup_tools($site_id ,$json)
+    public function sup_tools($site_id)
     {
         $this->login();
         
@@ -194,20 +256,7 @@ class Resources extends CI_Controller
                     break;
             }
         }
-
-        //JSON response check
-        if($json == 0)//output PHP
-        {
-            return $sup_tools;
-        }
-        else if($json == 1)//output JSON
-        {
-            echo json_encode($sup_tools);
-        }
-        else
-        {
-            show_404();
-        }
+        return $sup_tools;
     }
     
     //login Vula
