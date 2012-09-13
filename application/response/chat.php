@@ -21,9 +21,7 @@ class Chat extends CI_Controller
     }
     
     public function site($site_id)
-    {
-        echo "***in development***";
-        
+    {   
         $this->login();
         
         //globals
@@ -71,94 +69,30 @@ class Chat extends CI_Controller
             $html = new simple_html_dom($html_str);
 
             //globals
-            $test_names = array();
-            $test_dates = array();
-            $test_marks = array();
+            $messages = array();
 
             if (($iframe_url = $html->find('iframe', 0)->src) != null) 
             {
-                echo "iframe_url: " . $iframe_url . "</br>";
+                //echo "iframe_url: " . $iframe_url . "</br>";
 
                 curl_setopt($curl, CURLOPT_URL, $iframe_url);
                 $result = curl_exec($curl);
                 $html = str_get_html($result);
 
-
                 $chat_messages = "";
 
-                if (($chat_messages = $html->find("#topForm:chatList", 0)) != null) 
+                if (($chat_messages = $html->find(".chatList", 0)) != null) 
                 {
-                    foreach ($chat_messages->find('li') as $li) 
+                    if (( $li = $chat_messages->find("li")) != null)
                     {
-                        foreach ($li as $val) 
+                        foreach($li as $val)
                         {
-                            echo "li: " . $li . "</br>";
-                            $messages[] = $li;
+                            $messages[] = $val->innertext;
                         }
                     }
                 }
-                
-       
-                /*foreach($rss->entry as $e) 
-                {
-                    echo "<li><a href=\"".$e->link['href']."\">";
-                    echo $e->title;     
-                    echo "</a></li>\n";
-                } */   
-                
-                /*curl_setopt($curl, CURLOPT_URL, $iframe_url);
-                $result = curl_exec($curl);
-                curl_close($curl);
-
-                $html = str_get_html($result);
-
-                $td_count = 0;
-
-                if (($results_table = $html->find(".chatList", 0)) != null)
-                {*/
-                    
-                    
-                    
-                    
-                    
-                    
-                    // loop over rows
-                    /*foreach ($results_table->find('tr') as $row) 
-                    {
-                        $td_count = 1;
-                        $td = $row->find('td');
-                        foreach ($td as $val) 
-                        {
-                            if ($td_count == 1) 
-                            {
-                                $test_names[] = $val->innertext;
-                            }
-                            if ($td_count == 2) 
-                            {
-                                $test_dates[] = $val->innertext;
-                            }
-                            if ($td_count == 3)//test marks 
-                            {
-                                //parse for Don
-                                $mark = $val->innertext;
-                                if (strpos($mark,'/') !== false) 
-                                {
-                                    $top = strstr($mark, '/', true);
-                                    $bottom = strstr($mark, '/');
-                                    $substr = substr($bottom, 1); 
-                                    $result = ($top/$substr)*100;
-                                    $test_marks[] = $result . '%';
-                                }
-                                else 
-                                {
-                                    $test_marks[] = $mark;
-                                }
-                            }
-                            $td_count++;
-                        }
-                    }
-                }//END loop over rows*/
             }//END iframe
+            echo json_encode(array('chat' => $messages));
         }
         else//404
         {
@@ -263,9 +197,11 @@ class Chat extends CI_Controller
     //login Vula
     public function login() 
     {        
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
-
+        //$username = $this->input->post('username');
+        //$password = $this->input->post('password');
+        $username = "wtrsas001";
+        $password = "honours";
+        
         $credentials = array
         (
             'username' => $username,

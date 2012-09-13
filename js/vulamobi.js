@@ -8,8 +8,8 @@
 *****************************************/
 
 /* Globals*/
-//var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';//production
-var base_url = 'http://localhost/VulaMobi/';//development
+var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';//production
+//var base_url = 'http://localhost/VulaMobi/';//development
 
 var username = "";//global username set when you initially login
 var password = "";//global password set when you initially login
