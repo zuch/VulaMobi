@@ -48,70 +48,8 @@ class Resource extends CI_Controller
 
         if($exists)
         {
-            $this->login();
-        
-            //CodeIgniter Session Class
-            //$username = $this->session->userdata('username');
-            $cookie = $this->session->userdata('cookie');
-            $cookiepath = realpath($cookie);
-
-            $url = "https://vula.uct.ac.za/dav/" . $site_id;
-
-            //eat cookie..yum
-            $curl = curl_init($url);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-
-            $response = curl_exec($curl);
-            curl_close($curl);
-
-            /* Scrap! */
-
-            //create html dom object
-            $html_str = "";
-            $html_str = str_get_html($response);
-            $html = new simple_html_dom($html_str);
-
-            // initialize empty array to store the data array from each row
-            $theData = array();
-
-            // loop over rows
-            foreach($html->find('tr') as $row) 
-            {
-                $td_count = 1;
-                $td = $row->find('td');
-                foreach ($td as $val) 
-                {
-                    if ($td_count == 1) 
-                    {
-                        $links[] = $val->find('a',0);
-                        echo $val->find('a',0);
-                    }
-                    if ($td_count == 2) 
-                    {
-                        if($val->innertext == "")
-                        {
-                            
-                        }
-                    }
-                }
-                // initialize array to store the cell data from each row
-                /*$rowData = array();
-                foreach($row->find('td.text') as $cell) 
-                {
-                    // push the cell's text to the array
-                    $rowData[] = $cell->innertext;
-                }
-
-                // push the row's data array to the 'big' array
-                $theData[] = $rowData;*/
-            }
-            //print_r($theData);
-
-            
-            /*$url = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/" . $tool_id;
+            echo "here";
+            $url = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/" . $tool_id;
 
             //eat cookie..yum
             $curl = curl_init($url);
@@ -126,41 +64,33 @@ class Resource extends CI_Controller
             $html_str = str_get_html($response);
             $html = new simple_html_dom($html_str);
 
-            if (($iframe_url = $html->find('iframe', 0)->src) != null) 
-            {
-                //echo "iframe_url: " . $iframe_url . "</br>";
+            //globals
+            $test_names = array();
+            $test_dates = array();
+            $test_marks = array();
 
+            if (($iframe_url = $html->find('iframe', 0)->src) != null)
+            {
+                echo "iframe_url: " . $iframe_url . "</br>";
+                
                 curl_setopt($curl, CURLOPT_URL, $iframe_url);
                 $result = curl_exec($curl);
-                curl_close($curl);
-
                 $html = str_get_html($result);
-
-                foreach($html->find('td[headers=title]') as $element)
-                {
-                    $innerhtml = str_get_html($element);
-
-                    if($innerhtml->find('a',1)->href == "#")//folder
-                    {
-                        $valuearray = explode("'",$innerhtml->find('a',1)->onclick);
-                        $link = "https://vula.uct.ac.za/access/content" . $valuearray[7];
-
-                        $folder_info = array('text' => $innerhtml->find('a',1)->plaintext
-                                            ,'url' => $link
-                                            ,'onclick' => 'folderSelected($(this).attr(\'id\'))');
-                        $folder = array('folder' => $folder_info);
-                        $resouces[] = $folder;
-                    }
-                    else//resource
-                    {
-                        $resource_info = array('text' => $innerhtml->find('a',1)->plaintext
-                                               ,'id' => $innerhtml->find('a',1)->href
-                                               ,'onclick' => 'resourceSelected($(this).attr(\'id\'))');
-                        $resource = array('resource' => $resource_info);
-                        $resouces[] = $resource;
-                    }
-                }
-            }*/
+                
+                //echo $html; 
+                
+                 if (($tr = $html->find('tr')) != null)
+                 {
+                     if (($td = $html->find('td')) != null)
+                     {
+                         echo $td."</br>";
+                     }
+                 }
+                 else
+                 {
+                     echo "null";
+                 }
+            }
         }
         else//404
         {
@@ -264,8 +194,10 @@ class Resource extends CI_Controller
     //login Vula
     public function login() 
     {        
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
+        //$username = $this->input->post('username');
+        //$password = $this->input->post('password');
+        $username = "wtrsas001";
+        $password = "honours";
 
         $credentials = array
         (

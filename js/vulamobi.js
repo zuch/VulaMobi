@@ -8,8 +8,8 @@
 *****************************************/
 
 /* Globals*/
-//var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';//production
-var base_url = 'http://localhost/VulaMobi/';//development
+var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';//production
+//var base_url = 'http://localhost/VulaMobi/';//development
 
 var username = "";//global username set when you initially login
 var password = "";//global password set when you initially login
@@ -37,6 +37,7 @@ function login(user, pwd)
         data: form_data, 
         success: function(response)
         {
+            console.log(response);
             if(response == "empty")//username or password empty
             {
                 alert("empty");
@@ -82,6 +83,7 @@ function logout()
         data: form_data,
         success: function(response)
         {
+            console.log(response);
             alert(response);
             return "logged_out";
         },
@@ -109,6 +111,7 @@ function sites()
         data: form_data,
         success: function(response)
         {
+            console.log(response);
             alert(response);
             return response;
         },
@@ -133,6 +136,7 @@ function grade(site_id)
         data: form_data,
         success: function(response)
         {
+            console.log(response);
             alert(response);
             return response;
         },
@@ -158,6 +162,7 @@ function user_name()
         data: form_data,
         success: function(response)
         {
+            console.log(response);
             alert(response);
             return response;
         },
@@ -183,6 +188,7 @@ function user_id()
         data: form_data,
         success: function(response)
         {
+            console.log(response);
             alert(response);
             return response;
         },
@@ -208,6 +214,7 @@ function gallery()
         data: form_data,
         success: function(response)
         {
+            console.log(response);
             alert(response);
             return response;
         },
@@ -234,6 +241,7 @@ function role(site_id)
         data: form_data,
         success: function(response)
         {
+            console.log(response);
             alert(response);
             return response;
         },
@@ -259,6 +267,7 @@ function roster(site_id)
         data: form_data,
         success: function(response)
         {
+            console.log(response);
             alert(response);
             return response; 
         },
@@ -284,11 +293,18 @@ function announcement_all()
         data: form_data,
         success: function(response)
         {
+            console.log(response);
             alert(response);
             return response;
         },
         dataType: "text"//set to JSON   
     })
+    
+    $.getJSON( base_url + "ajax.php?announce/all/" , function(data) 
+    {
+        
+  });
+    
        
 }
 
@@ -309,6 +325,7 @@ function announcement_site(site_id)
         data: form_data,
         success: function(response)
         {
+            console.log(response);
             alert(response);
             return response; 
         },
@@ -334,6 +351,7 @@ function chat(site_id)
         data: form_data,
         success: function(response)
         {
+            console.log(response);
             alert(response);
             return response;
         },
@@ -400,19 +418,87 @@ function resourceSelected(id)
     });
 }
 
-/********************************** test **************************************/
-function test()
+/********************************** test_t **************************************/
+function test_t()
 {
     $.ajax({
         type: "GET", 
         url: "http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/ajax.php?test/t",
         success: function(response)
+        console.log(response);
         {
             console.log(response)
             alert(response);
+        },
+        dataType: "text"//set to JSON 
+    })    
+}
 
-        //your code here!
+/********************************** example **************************************/
+function example()
+{
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?test/json", 
+        data: form_data,
+        success: function(response)
+        {
+            /*response = '[{"Language":"jQuery","ID":"1"},{"Language":"C#","ID":"2"},
+                           {"Language":"PHP","ID":"3"},{"Language":"Java","ID":"4"},
+                           {"Language":"Python","ID":"5"},{"Language":"Perl","ID":"6"},
+                           {"Language":"C++","ID":"7"},{"Language":"ASP","ID":"8"},
+                           {"Language":"Ruby","ID":"9"}]'*/
+            console.log(response);
+            
+	    var json_obj = $.parseJSON(response);//parse JSON
+            
+            var output="<ul>";
+            for (var i in json_obj) 
+            {
+                output+="<li>" + json_obj[i].Language + ",  " + json_obj[i].ID + "</li>";
+            }
+            output+="</ul>";
+            
+            $('span').html(output);
+        },
+        dataType: "json"//set to JSON    
+    })    
+}
 
-        }
+/********************************** grade example **************************************/
+function grade_example(site_id)
+{
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?grade/site/" + site_id, 
+        data: form_data,
+        success: function(response)
+        {
+           console.log(response);
+            
+	    var json_obj = $.parseJSON(response);//parse JSON
+            
+            var output="<ul>";
+            for (var i in json_obj.grades) 
+            {
+                output+="<li>" + json_obj.grades[i].name + ",  " + json_obj.grades[i].date + ",  " + json_obj.grades[i].mark + "</li>";
+            }
+            output+="</ul>";
+            
+            $('span').html(output);
+        },
+        dataType: "json"//set to JSON   
     })    
 }
