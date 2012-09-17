@@ -8,8 +8,8 @@
 *****************************************/
 
 /* Globals*/
-var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';//production
-//var base_url = 'http://localhost/VulaMobi/';//development
+//var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';//production
+var base_url = 'http://localhost/VulaMobi/';//development
 
 var username = "";//global username set when you initially login
 var password = "";//global password set when you initially login
@@ -367,55 +367,20 @@ function resource(site_id)
     var form_data = {
         username: username,
         password: password,
+        site_id: site_id,
         is_ajax: 1
     };
         
     $.ajax({
         type: "POST", 
-        url: base_url + "ajax.php?resource/site/" + site_id, 
+        url: base_url + "ajax.php?resource/site", 
         data: form_data, 
         success: function(response){
+            console.log(response)
             alert(response);
         }
     });
     
-}
-
-function folderSelected(id)
-{
-    var form_data = {
-        username: username,
-        password: password,
-        is_ajax: 1
-    };
-    $.ajax({
-        type: "POST", 
-        url: "getfolder.php", 
-        data: form_data, 
-        success: function(data){
-            $('#metainfo').html(data);
-        }
-    });
-}
-
-function resourceSelected(id)
-{
-    //$("#secretIFrame").attr("src","getoneitem.php?username="+$("#username").val()+"&password="+$("#password").val()+"&item="+id);
-    var form_data = {
-        username: username,
-        password: password,
-        is_ajax: 1
-    };
-	
-    $.ajax({
-        type: "POST", 
-        url: "getoneitem.php", 
-        data: form_data, 
-        success: function(data){
-            $.mobile.changePage('#page3');
-            $("#superlinks").html(data);
-        }
-    });
 }
 
 /********************************** test_t **************************************/
@@ -425,12 +390,11 @@ function test_t()
         type: "GET", 
         url: "http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/ajax.php?test/t",
         success: function(response)
-        console.log(response);
         {
             console.log(response)
             alert(response);
         },
-        dataType: "text"//set to JSON 
+        dataType: "text"
     })    
 }
 
