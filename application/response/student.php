@@ -145,11 +145,8 @@ class Student extends CI_Controller
     //login Vula
     public function login() 
     {        
-        //$username = $this->input->post('username');
-        //$password = $this->input->post('password');
-
-        $username = "wtrsas001";
-        $password = "honours";
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
         
         $credentials = array
         (
