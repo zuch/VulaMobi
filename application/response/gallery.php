@@ -60,8 +60,6 @@ class Gallery extends CI_Controller
         $this->output
         ->set_content_type('application/json')
         ->set_output(json_encode(array('files' => $files)));
-        
-        echo ;
     }
 
     //upload image to uploads/user_id
