@@ -73,7 +73,9 @@ class Announce extends CI_Controller
                                      'onclick' => "one_announcement('". $entityId ."')");
         }
         //output
-        echo json_encode(array('announcements_all' => $announcements));    
+        $this->output
+        ->set_content_type('application/json')
+        ->set_output(json_encode(array('announcements_all' => $announcements)));
     }
     
     public function site($site_id)
@@ -126,10 +128,10 @@ class Announce extends CI_Controller
                                      'onclick' => "one_announcement('". $entityId ."')");
         }
         //output
-        echo json_encode(array('announcements_site' => $announcements)); 
+        $this->output
+        ->set_content_type('application/json')
+        ->set_output(json_encode(array('announcements_site' => $announcements)));
     }
-
-
     
     //login Vula
     public function login() 

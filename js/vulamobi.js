@@ -436,33 +436,44 @@ function example()
 }
 
 /********************************** grade example **************************************/
-function grade_example(site_id)
+function active_sites_example()
 {
+    //$.ajaxSetup({ dataType: 'json' });
+    
     var response = "";
     var form_data = {
         username: username,
         password: password,
         is_ajax: 1
     };
+    
+    
     $.ajax({
         type: "POST", 
-        url: base_url + "ajax.php?grade/site/" + site_id, 
+        url: base_url + "ajax.php?student/sites", 
         data: form_data,
-        success: function(response)
+        dataType: "json",
+        cache: false,
+        success: function(response, status)
         {
            console.log(response);
+           console.log(status);
+            //var json_str = '[{"title":"CS Honours, 2012","site_id":"fa532f3e-a2e1-48ec-9d78-3d5722e8b60d"},{"title":"Major Project","site_id":"43271a70-b78e-460b-a5b8-8356d0989a85"},{"title":"CS agents","site_id":"69e9386d-a772-47c6-8842-4d1d14a7650c"},{"title":"DBS","site_id":"0fecefa0-3afb-4504-a888-4bb4b48523a3"},{"title":"CSC3002F,2011","site_id":"e193c143-9d00-402b-811b-58ae999498c9"},{"title":"- more sites -","site_id":false}]';
             
-	    var json_obj = $.parseJSON(response);//parse JSON
+	    var json = $.parseJSON(response);//parse JSON
             
             var output="<ul>";
-            for (var i in json_obj.grades) 
+            for (var i = 0; i < json.length; i++) 
             {
-                output+="<li>" + json_obj.grades[i].name + ",  " + json_obj.grades[i].date + ",  " + json_obj.grades[i].mark + "</li>";
+                var site = json[i];
+                output+="<li>" + site.title + ",  " + site.site_id + "</li>";
             }
+
             output+="</ul>";
             
+            var t = "<h1>test</h1>";
+            
             $('span').html(output);
-        },
-        dataType: "json"//set to JSON   
-    })    
+        }   
+    })   
 }

@@ -128,8 +128,9 @@ class Grade extends CI_Controller
             $grades[] = $grade;
             }
 
-            //output
-            echo json_encode(array('grades' => $grades));
+            $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode(array('grades' => $grades)));
         }
         else//404
         {

@@ -22,9 +22,7 @@ class Resource extends CI_Controller
     
     //get roster for a Course
     public function site()
-    {
-        //echo "***in development***</br>";
-        
+    {   
         $this->login();
 
         $site_id = $this->input->post('site_id');        
@@ -59,7 +57,7 @@ class Resource extends CI_Controller
                 {
                     $folder = array('type' => "folder",
                                     'text' => $val->children(0)->innertext,
-                                    'onclick' => "resource('". $site_id ."/". $val->children(0)->href ."')");
+                                    'onclick' => "resource('". $site_id ."/". $val->children(0)->href ."');");
                     $resources[] = $folder;
                 }
                 if($val->class == "file")

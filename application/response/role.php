@@ -120,7 +120,9 @@ class Role extends CI_Controller
                 $users[] = $user;
             }
 
-            echo json_encode(array('roster' => $users));
+            $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode(array('roster' => $users)));
         }
         else//404
         {
@@ -205,7 +207,9 @@ class Role extends CI_Controller
                             }
                             if ($td_count == 4 && ($found))//role 
                             {
-                                echo $val->innertext;
+                                $this->output
+                                ->set_content_type('text/plain')
+                                ->set_output($val->innertext);
                             }
                             $td_count++;
                         }

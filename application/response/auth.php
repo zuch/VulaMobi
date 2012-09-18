@@ -29,8 +29,6 @@ class Auth extends CI_Controller
     //login Vula
     public function login() 
     {
-        //include_once 'login.php';
-
         $username = $this->input->post('username');
         $password = $this->input->post('password');
 
