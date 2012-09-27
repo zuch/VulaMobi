@@ -32,7 +32,6 @@
 <input type="submit" name="submit" id="chat" value="chat" onclick="chat('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br></br>
 <input type="submit" name="submit" id="test_t" value="test/t" onclick="test_t();"></br>
 <input type="submit" name="submit" id="example" value="Parse JSON example" onclick="example();"><a href="https://gist.github.com/3720842">source code</a></br>
-<input type="submit" name="submit" id="active_sites_example" value="Active Sites Example" onclick="active_sites_example();">
 <!-- <input type="submit" name="submit" id="example_grade" value="Parse Grade example" onclick="grade_example('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');"><a href="https://gist.github.com/3720842">source</a></br>-->
 <div id="results"><div>
 <span style="color:green"></span>
