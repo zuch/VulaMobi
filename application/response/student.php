@@ -79,7 +79,7 @@ class Student extends CI_Controller
         //$temp = '[{"title":"CS Honours, 2012","site_id":"fa532f3e-a2e1-48ec-9d78-3d5722e8b60d"},{"title":"Major Project","site_id":"43271a70-b78e-460b-a5b8-8356d0989a85"},{"title":"CS agents","site_id":"69e9386d-a772-47c6-8842-4d1d14a7650c"},{"title":"DBS","site_id":"0fecefa0-3afb-4504-a888-4bb4b48523a3"},{"title":"CSC3002F,2011","site_id":"e193c143-9d00-402b-811b-58ae999498c9"},{"title":"- more sites -","site_id":false}]';
         $this->output
         ->set_content_type('application/json')
-        ->set_output(json_encode($active_sites));
+        ->set_output(json_encode(array('active_sites' => $active_sites)   )   );
     }
     
     //Return name of User e.g Sascha Watermeyer
@@ -147,6 +147,9 @@ class Student extends CI_Controller
     {        
         $username = $this->input->post('username');
         $password = $this->input->post('password');
+        
+        //$username = "wtrsas001";
+        //$password = "honours";
         
         $credentials = array
         (
