@@ -58,7 +58,7 @@ class Gallery extends CI_Controller
         closedir($dh);
 
         $this->output
-        ->set_content_type('application/json')
+        //->set_content_type('application/json')
         ->set_output(json_encode(array('files' => $files)));
     }
 
