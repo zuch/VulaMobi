@@ -8,6 +8,9 @@ header('Access-Control-Allow-Origin: *');
 
 include_once 'simple_html_dom.php';
 
+//globals
+$resources = array();
+
 class Resource extends CI_Controller 
 {
     public function __construct() 
@@ -21,18 +24,28 @@ class Resource extends CI_Controller
     }
     
     //get roster for a Course
-    public function site()
+    public function site($site_id)
     {   
+        echo "yo";
         $this->login();
 
-        $site_id = $this->input->post('site_id');        
-        
+        //$site_id = $this->input->post('site_id');        
+        $this->getResource($site_id);
+
+        //output
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode(array('resources' => $resources)));  
+    }
+    
+    public function getResource($site_id)
+    {
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
-        
+
         $base = "https://vula.uct.ac.za/access/content/group/";
         $url = $base . $site_id;
-        
+
         //eat cookie..yum
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -41,13 +54,10 @@ class Resource extends CI_Controller
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
         $response = curl_exec($curl);
-        
+
         //create html dom object
         $html_str = str_get_html($response);
         $html = new simple_html_dom($html_str);
-
-        //globals
-        $resources = array();
 
         if (($li = $html->find('ul li')) != null) 
         {
@@ -55,10 +65,11 @@ class Resource extends CI_Controller
             {
                 if($val->class == "folder")
                 {
-                    $folder = array('type' => "folder",
+                    $this->getResource($site_id . "/". $val->children(0)->href);
+                    /*$folder = array('type' => "folder",
                                     'text' => $val->children(0)->innertext,
                                     'onclick' => "resource('". $site_id ."/". $val->children(0)->href ."');");
-                    $resources[] = $folder;
+                    $resources[] = $folder;*/
                 }
                 if($val->class == "file")
                 {
@@ -69,9 +80,8 @@ class Resource extends CI_Controller
                 }
             }
         }
-        echo json_encode(array('resources' => $resources));  
     }
-    
+        
     //login Vula
     public function login() 
     {        
