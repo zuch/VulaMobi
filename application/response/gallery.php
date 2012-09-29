@@ -27,8 +27,8 @@ class Gallery extends CI_Controller
         $username = $this->session->userdata('username');
         
         //Globals
-        $base_url = 'http://people.cs.uct.ac.za/~swaatermeyer/VulaMobi';
-        $dir = "./uploads/" . $username . "/";
+        $base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';
+        $dir = "uploads/" . $username . "/";
         $dh = opendir($dir);
         $files = array();
         
@@ -46,20 +46,23 @@ class Gallery extends CI_Controller
                                 'name' => $file,
                                 'size' => filesize($dir. $file). ' bytes',
                                 'date' => date( "F d Y H:i:s", filemtime($dir . $file)),
-                                'path' => $base_url.$dir .$file,
-                                'thumb'=> $base_url.$dir .'thumbs/thumb_'.$file
+                                'path' => $base_url. $dir .$file,
+                                'thumb'=> $base_url. $dir .'thumbs/thumb_'.$file
                         );
                     }
                 }
             }
             closedir($dh);
         
-        echo(json_encode(array('files'=> $files)));
-        
+            //output
+            //$this->output
+            //->set_content_type('application/json')
+            //->set_output(json_encode(array('files' => $files)));
+            echo(json_encode(array('files'=> $files)));
         } 
         else 
         {
-            mkdir($dir, 0700);
+            mkdir($dir, 0777);
         }
     }
 
@@ -70,14 +73,15 @@ class Gallery extends CI_Controller
         
         $username = $this->session->userdata('username');
 
-        //$path = getcwd();
+        $path = getcwd();
+        //echo $path;
 
-        $upload_path = "./uploads/" . $username . "/";
+        $upload_path = $path . "/uploads/" . $username . "/";
 
         //create path for user if not initialised
         if (!is_dir($upload_path)) 
         {
-            mkdir($upload_path, 0700);
+            mkdir($upload_path, 0777);
         }
 
         if (isset($_REQUEST['image'])) 
@@ -93,10 +97,10 @@ class Gallery extends CI_Controller
                 }
                 error_log("Error to check if file exists");
                 $fp = fopen($file, 'w');
-                fwrite($fp, $imgData);
+                fwrite($fp, $imgData); 
                 fclose($fp);
                 
-                createThumbs($upload_path,$upload_path + "thumbs/",100);
+                //make_thumb($upload_path, $upload_path . "thumb/", 100);
                 
                 echo "complete";
             }
@@ -105,6 +109,70 @@ class Gallery extends CI_Controller
         {
             echo "no POST";
         }
+        
+        function make_thumb($src, $dest, $desired_width) {
+
+	/* read the source image */
+	$source_image = imagecreatefromjpeg($src);
+	$width = imagesx($source_image);
+	$height = imagesy($source_image);
+	
+	/* find the "desired height" of this thumbnail, relative to the desired width  */
+	$desired_height = floor($height * ($desired_width / $width));
+	
+	/* create a new, "virtual" image */
+	$virtual_image = imagecreatetruecolor($desired_width, $desired_height);
+	
+	/* copy source image at a resized size */
+	imagecopyresampled($virtual_image, $source_image, 0, 0, 0, 0, $desired_width, $desired_height, $width, $height);
+	
+	/* create the physical thumbnail image to its destination */
+	imagejpeg($virtual_image, $dest);
+        }
+
+        /*
+                Function createthumb($name,$filename,$new_w,$new_h)
+                creates a resized image
+                variables:
+                $name		Original filename
+                $filename	Filename of the resized image
+                $new_w		width of resized image
+                $new_h		height of resized image
+        */	
+        function createthumb($name,$filename,$new_w,$new_h)
+        {
+            $system=explode(".",$name);
+            if (preg_match("/jpg|jpeg/",$system[1])){$src_img=imagecreatefromjpeg($name);}
+            if (preg_match("/png/",$system[1])){$src_img=imagecreatefrompng($name);}
+            $old_x=imageSX($src_img);
+            $old_y=imageSY($src_img);
+            if ($old_x > $old_y) 
+            {
+                    $thumb_w=$new_w;
+                    $thumb_h=$old_y*($new_h/$old_x);
+            }
+            if ($old_x < $old_y) 
+            {
+                    $thumb_w=$old_x*($new_w/$old_y);
+                    $thumb_h=$new_h;
+            }
+            if ($old_x == $old_y) 
+            {
+                    $thumb_w=$new_w;
+                    $thumb_h=$new_h;
+            }
+            $dst_img=ImageCreateTrueColor($thumb_w,$thumb_h);
+            imagecopyresampled($dst_img,$src_img,0,0,0,0,$thumb_w,$thumb_h,$old_x,$old_y); 
+            if (preg_match("/png/",$system[1]))
+            {
+                    imagepng($dst_img,$filename); 
+            } else {
+                    imagejpeg($dst_img,$filename); 
+            }
+            imagedestroy($dst_img); 
+            imagedestroy($src_img); 
+        }
+        
         
         function createThumbs( $pathToImages, $pathToThumbs, $thumbWidth )
         {

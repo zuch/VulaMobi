@@ -223,6 +223,34 @@ function gallery()
     
 
 }
+/********************************** upload ***********************************/
+function upload()
+{
+    
+    var image = "rthhfghfghfghth";
+    
+    var response = "";
+    var form_data = {
+        image: image,
+        username: username,
+        password: password
+    };
+
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?gallery/upload", 
+        data: form_data,
+        success: function(response)
+        {
+            console.log(response);
+            alert(response);
+            return response;
+        },
+        dataType: "text"//set to JSON    
+    })
+    
+
+}
 
 /********************************** role **************************************/
 function role(site_id)
@@ -322,6 +350,32 @@ function announcement_site(site_id)
     $.ajax({
         type: "POST", 
         url: base_url + "ajax.php?announce/site/" + site_id, 
+        data: form_data,
+        success: function(response)
+        {
+            console.log(response);
+            alert(response);
+            return response; 
+        },
+        dataType: "text"//set to JSON    
+    })
+    
+}
+
+/*********************** announcement_shumba************************************/
+function shumba_all()
+{
+    
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
+
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?announce/shumba_all/", 
         data: form_data,
         success: function(response)
         {
