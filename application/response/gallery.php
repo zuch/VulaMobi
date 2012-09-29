@@ -25,41 +25,42 @@ class Gallery extends CI_Controller
         $this->login();
         
         $username = $this->session->userdata('username');
-
+        
         //Globals
+        $base_url = 'http://people.cs.uct.ac.za/~swaatermeyer/VulaMobi';
         $dir = "./uploads/" . $username . "/";
+        $dh = opendir($dir);
         $files = array();
         
         if (is_dir($dir)) 
         {
-            $dh = opendir($dir);
-            $files = array();
-
-            while (($file = readdir($dh)) !== false) 
+            while(($file = readdir($dh)) !== false)
             {
-                if ($file != '.' AND $file != '..')
+                if($file != '.' AND $file != '..')
                 {
-                    if (filetype($dir . $file) == 'file') 
+                    $path_parts = pathinfo($dir. $file);
+                    if(filetype($dir . $file) == 'file' AND ($path_parts['extension'] == 'jpg' OR 
+                                                             $path_parts['extension'] == 'JPG')) 
                     {
-                        $files[] = array(
-                            'name' => $file,
-                            'size' => filesize($dir . $file) . ' bytes',
-                            'date' => date("F d Y H:i:s", filemtime($dir . $file)),
-                            'path' => $dir . $file,
+                        $files[] = array (
+                                'name' => $file,
+                                'size' => filesize($dir. $file). ' bytes',
+                                'date' => date( "F d Y H:i:s", filemtime($dir . $file)),
+                                'path' => $base_url.$dir .$file,
+                                'thumb'=> $base_url.$dir .'thumbs/thumb_'.$file
                         );
                     }
                 }
             }
+            closedir($dh);
+        
+        echo(json_encode(array('files'=> $files)));
+        
         } 
         else 
         {
-            echo "empty";
+            mkdir($dir, 0700);
         }
-        closedir($dh);
-
-        $this->output
-        //->set_content_type('application/json')
-        ->set_output(json_encode(array('files' => $files)));
     }
 
     //upload image to uploads/user_id
