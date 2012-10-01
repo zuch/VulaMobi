@@ -10,23 +10,23 @@ include_once 'simple_html_dom.php';
 
 class Grade extends CI_Controller
 {
+    //-----------------------------_construct()---------------------------------
     public function __construct()
     {
         parent::__construct();
     }
     
+    //----------------------------------Grade()---------------------------------
     public function Grade()
     {
         //show_404();
     }
     
+    //----------------------------------site()----------------------------------
     //get grades of User for Course
     public function site($site_id)
     {
         $this->login();
-        
-        $exists = false;
-        $grades = array();
         
         //globals
         $tool_id = "";
@@ -127,6 +127,312 @@ class Grade extends CI_Controller
                             ,'mark' => $test_marks[$i]);
             $grades[] = $grade;
             }
+            
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(array('grades' => $grades)));
+        }
+    }
+    
+    //----------------------------------site_php()----------------------------------
+    public function site_php($site_id)
+    {
+        $this->login();
+        
+        //globals
+        $tool_id = "";
+        $exists = false;
+
+        $cookie = $this->session->userdata('cookie');
+        $cookiepath = realpath($cookie);
+
+        //check "gradebook" in supported tools for site
+        $sup_tools = $this->sup_tools($site_id);
+        foreach ($sup_tools as $tool)
+        {
+            if(array_key_exists('gradebook',$tool))
+            {
+                $exists = true;
+                $tool_id = $tool['tool_id'];
+            }
+        }
+
+        if($exists)
+        {
+            $url = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/" . $tool_id;
+
+            //eat cookie..yum
+            $curl = curl_init($url);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+            $response = curl_exec($curl);
+
+            //create html dom object
+            $html_str = str_get_html($response);
+            $html = new simple_html_dom($html_str);
+
+            //globals
+            $test_names = array();
+            $test_dates = array();
+            $test_marks = array();
+
+            if (($iframe_url = $html->find('iframe', 0)->src) != null)
+            {
+                //echo "iframe_url: " . $iframe_url . "</br>";
+
+                curl_setopt($curl, CURLOPT_URL, $iframe_url);
+                $result = curl_exec($curl);
+                curl_close($curl);
+
+                $html = str_get_html($result);
+
+                $td_count = 0;
+
+                if (($results_table = $html->find("#gbForm", 0)->children(3)) != null)
+                {
+                    // loop over rows
+                    foreach ($results_table->find('tr') as $row)
+                    {
+                        $td_count = 1;
+                        $td = $row->find('td');
+                        foreach ($td as $val)
+                        {
+                            if ($td_count == 1)
+                            {
+                                $test_names[] = $val->innertext;
+                            }
+                            if ($td_count == 2)
+                            {
+                                $test_dates[] = $val->innertext;
+                            }
+                            if ($td_count == 3)//test marks
+                            {
+                                //parse for Don
+                                $mark = $val->innertext;
+                                if (strpos($mark,'/') !== false)
+                                {
+                                    $top = strstr($mark, '/', true);
+                                    $bottom = strstr($mark, '/');
+                                    $substr = substr($bottom, 1);
+                                    $result = ($top/$substr)*100;
+                                    $test_marks[] = $result . '%';
+                                }
+                                else
+                                {
+                                    $test_marks[] = $mark;
+                                }
+                            }
+                            $td_count++;
+                        }
+                    }
+                }
+            }
+
+            for($i = 0; $i < count($test_names); $i++)
+            {
+                $grade = array('name' => $test_names[$i]
+                            ,'date' => $test_dates[$i]
+                            ,'mark' => $test_marks[$i]);
+                $grades[] = $grade;
+            }
+            
+            return $grades;
+        }
+    }
+    
+    //-----------------------------------all()----------------------------------
+    //return all Grades for Active Sites
+    public function all()
+    {
+        //login
+        $this->login();
+        
+        //get Active Site id's
+        $active[] = $this->sites();
+        foreach($active as $site)
+        {
+            foreach($site as $val)
+            {
+                $sites[] = $val['site_id'];
+            }
+        }
+        
+        //Scrap Announcements of each Active Site
+        foreach($sites as $site_id)
+        {
+            //check "gradebook" in supported tools for site
+            $sup_tools = $this->sup_tools($site_id);
+            foreach ($sup_tools as $tool) 
+            {
+                if(array_key_exists('gradebook',$tool))
+                {
+                    $exists = true;
+                    //$tool_id = $tool['tool_id'];
+                }
+            }
+
+            if($exists)
+            {
+                $Site_grades = $this->site_php($site_id);
+                
+                if(isset($Site_grades))
+                {
+                    foreach($Site_grades as $grade)
+                    {
+                        $grades[] = array('name' => $grade['name'],
+                                          'date' => $grade['date'],
+                                          'mark' => $grade['mark'] ) ;
+                    }
+                }
+                else
+                {
+                    //echo "empty";
+                }
+            }
+            else
+            {
+                //echo "this Site does not support 'gradebook'";
+            }
+        }
+        
+        //output
+        $this->output
+         ->set_content_type('application/json')
+         ->set_output(json_encode(array('grades_all' => $grades)));
+    }
+    
+    //--------------------------------don_site()-----------------------------------
+    //get grades of User for Course
+    public function don_site($site_id)
+    {
+        $this->login();
+        
+        $exists = false;
+        $grades = array();
+        
+        //globals
+        $tool_id = "";
+        $exists = false;
+
+        $cookie = $this->session->userdata('cookie');
+        $cookiepath = realpath($cookie);
+
+        //check "gradebook" in supported tools for site
+        $sup_tools = $this->sup_tools($site_id);
+        foreach ($sup_tools as $tool) 
+        {
+            if(array_key_exists('gradebook',$tool))
+            {
+                $exists = true;
+                $tool_id = $tool['tool_id'];
+            }
+        }
+
+        if($exists)
+        {
+            $url = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/" . $tool_id;
+
+            //eat cookie..yum
+            $curl = curl_init($url);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+            $response = curl_exec($curl);
+
+            //create html dom object
+            $html_str = str_get_html($response);
+            $html = new simple_html_dom($html_str);
+
+            //globals
+            $test_names = array();
+            $test_dates = array();
+            $test_marks = array();
+            $weighting = array();
+			$Subminimum = array();
+            if (($iframe_url = $html->find('iframe', 0)->src) != null) 
+            {
+                //echo "iframe_url: " . $iframe_url . "</br>";
+
+                curl_setopt($curl, CURLOPT_URL, $iframe_url);
+                $result = curl_exec($curl);
+                curl_close($curl);
+
+                $html = str_get_html($result);
+
+                $td_count = 0;
+
+                if (($results_table = $html->find("#gbForm", 0)->children(3)) != null)
+                {
+                    // loop over rows
+                    foreach ($results_table->find('tr') as $row) 
+                    {
+                        $td_count = 1;
+                        $td = $row->find('td');
+                        foreach ($td as $val) 
+                        {
+                            if ($td_count == 1) 
+                            {
+                                $test_names[] = $val->innertext;
+                            }
+                            if ($td_count == 2) 
+                            {
+                                $test_dates[] = $val->innertext;
+                            }
+                            if ($td_count == 3)//test marks 
+                            {
+                                //parse for Don
+                                $mark = $val->innertext;
+                                if (strpos($mark,'/') !== false) 
+                                {
+                                    $top = strstr($mark, '/', true);
+                                    $bottom = strstr($mark, '/');
+                                    $substr = substr($bottom, 1); 
+                                    $result = ($top/$substr)*100;
+                                    $test_marks[] = $result . '%';
+                                }
+                                else 
+                                {
+                                    $test_marks[] = $mark;
+                                }
+                            }
+                            $td_count++;
+                        }
+                    }
+                }
+            }
+
+            
+            //gets weightings from sql database -> think about the ordering later (need to get course name and year but will hardcode for now
+            $QueryString = 'SELECT * FROM weightingtable WHERE Course = "CSC honours, 2012" AND Year = "2012"';
+            $query = $this->db->query($QueryString);
+            
+            //creates the weighting and subminimum arrays
+            if ($query->num_rows() > 0) {
+            	$count =0;
+            	foreach($query->result() as $row) 
+            	{
+            
+            		$weighting[$count] = $row->Percent;
+            		$Subminimum[$count] = $row->Subminimum;
+            		$count++;
+            	}
+            }
+            
+            
+            for($i = 0; $i < count($test_names); $i++)
+            {
+                $grade = array('name' => $test_names[$i]
+                            ,'date' => $test_dates[$i]
+                            ,'mark' => $test_marks[$i]
+                			,'weighting' => $weighting[$i]
+                			,'subminimum' => $Subminimum[$i]);
+            $grades[] = $grade;
+            }
 
             $this->output
             ->set_content_type('application/json')
@@ -138,6 +444,61 @@ class Grade extends CI_Controller
         }
     }
     
+    //--------------------------------sites()-----------------------------------
+    //Return active sites of User
+    public function sites() 
+    {
+        //$this->login();
+        
+        //CodeIgniter Session Class
+        $cookie = $this->session->userdata('cookie');
+        $username = $this->session->userdata('username');
+        $cookiepath = realpath($cookie);
+
+        $url = "https://vula.uct.ac.za/portal/site/~" . $username;
+
+        //eat cookie..yum
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        /* Scrap! */
+
+        //create html dom object
+        $html_str = "";
+        $html_str = str_get_html($response);
+        $html = new simple_html_dom($html_str);
+
+        //Get User's Active Sites
+        $count = 0;
+        $active_sites = array();
+        $ul = $html->find('ul', 0); //first ul tag
+        foreach ($ul->find('li') as $li) 
+        {
+            foreach ($li->find('a') as $a) 
+            {
+                if ($count > 0)//skip workspace link  
+                {
+                    $site_id = substr($a->href, 35);
+                    if($a->title != "- more sites -")
+                    {
+                        $site = array('title' => $a->title,
+                                  'site_id' => $site_id);
+                        $active_sites[] = $site;
+                    }
+                }
+                $count++;
+            }
+        }
+        return $active_sites;
+    }
+    
+    //--------------------------------sup_tools()-------------------------------
     //returns array of supported tools for a site
     // - name e.g. "CS Honours"
     // - id e.g. "fa532f3e-a2e1-48ec-9d78-3d5722e8b60d"
@@ -231,14 +592,13 @@ class Grade extends CI_Controller
         return $sup_tools;
     }
     
+    //--------------------------------login()-----------------------------------
     //login Vula
     public function login()
     {
         $username = $this->input->post('username');
         $password = $this->input->post('password');
-        //$username = "wtrsas001";
-        //$password = "honours";
-
+        
         $credentials = array
         (
             'username' => $username,
@@ -291,6 +651,7 @@ class Grade extends CI_Controller
         }
     }
     
+    //--------------------------------salt()------------------------------------
     //returns random num from 10000 - 99999
     public function salt()
     {

@@ -145,6 +145,30 @@ function grade(site_id)
     
 }
 
+
+/********************************** grade_all *************************************/
+function grade_all(site_id)
+{  
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?grade/all", 
+        data: form_data,
+        success: function(response)
+        {
+            console.log(response);
+            alert(response);
+            return response;
+        },
+        dataType: "text"//set to JSON    
+    })
+}
+
 /********************************** name **************************************/
 function user_name()
 {  

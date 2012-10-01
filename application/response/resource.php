@@ -8,11 +8,10 @@ header('Access-Control-Allow-Origin: *');
 
 include_once 'simple_html_dom.php';
 
-//globals
-$resources = array();
-
 class Resource extends CI_Controller 
 {
+    public $global = array();
+    
     public function __construct() 
     {
         parent::__construct();
@@ -20,6 +19,7 @@ class Resource extends CI_Controller
     
     public function Resource() 
     {
+        echo "yo";
         //show_404();
     }
     
@@ -29,23 +29,28 @@ class Resource extends CI_Controller
         $this->login();
 
         //$site_id = $this->input->post('site_id');        
-        $this->getResource($site_id);
+        $result = $this->getResource($site_id);
 
+        foreach($result as $resource)
+        {
+            echo $resource['type']."</br>";
+            echo $resource['text']."</br>";
+            echo $resource['href']."</br>";
+        }
         //output
         //$this->output
          //   ->set_content_type('application/json')
          //   ->set_output(json_encode(array('resources' => $resources)));  
     }
     
-    public function getResource($site_id)
+    public function getResource($site_id, &$global = array())
     {
-        echo "resources</br>";
-        
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
 
         $base = "https://vula.uct.ac.za/access/content/group/";
         $url = $base . $site_id;
+        echo "resource path:". $url ."</br>";
 
         //eat cookie..yum
         $curl = curl_init($url);
@@ -77,10 +82,12 @@ class Resource extends CI_Controller
                     $file= array('type' => "file",
                                  'text' => $val->children(0)->innertext,
                                  'href' => $base . $val->children(0)->href );
-                    $resources[] = $file;
+                    $global[] = $file;
                 }
+                return $global;
             }
         }
+        //return $global;
     }
         
     //login Vula

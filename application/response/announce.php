@@ -45,6 +45,7 @@ class Announce extends CI_Controller
         $body = "";
         $createdByDisplayName = "";
         $createdOn = "";
+        $id = "";
         $siteTitle = "";
         $title = "";
         $entityURL = "";
