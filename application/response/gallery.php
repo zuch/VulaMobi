@@ -29,6 +29,12 @@ class Gallery extends CI_Controller
         //Globals
         $base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';
         $dir = "uploads/" . $username . "/";
+        $upload_path = $base_url . $dir;
+        
+        if (!is_dir($upload_path)) 
+        {
+             mkdir($upload_path, 0777);
+        }
         $dh = opendir($dir);
         $files = array();
         
@@ -59,10 +65,6 @@ class Gallery extends CI_Controller
             //->set_content_type('application/json')
             //->set_output(json_encode(array('files' => $files)));
             echo(json_encode(array('files'=> $files)));
-        } 
-        else 
-        {
-            mkdir($dir, 0777);
         }
     }
 
@@ -78,10 +80,9 @@ class Gallery extends CI_Controller
 
         $upload_path = $path . "/uploads/" . $username . "/";
 
-        //create path for user if not initialised
         if (!is_dir($upload_path)) 
         {
-            mkdir($upload_path, 0777);
+             mkdir($upload_path, 0777);
         }
 
         if (isset($_REQUEST['image'])) 

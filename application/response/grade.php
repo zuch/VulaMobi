@@ -142,6 +142,7 @@ class Grade extends CI_Controller
         //globals
         $tool_id = "";
         $exists = false;
+        $grades = array();
 
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
@@ -247,6 +248,8 @@ class Grade extends CI_Controller
     //return all Grades for Active Sites
     public function all()
     {
+        $grades = array();
+        
         //login
         $this->login();
         
@@ -263,6 +266,7 @@ class Grade extends CI_Controller
         //Scrap Announcements of each Active Site
         foreach($sites as $site_id)
         {
+            $exists = false;
             //check "gradebook" in supported tools for site
             $sup_tools = $this->sup_tools($site_id);
             foreach ($sup_tools as $tool) 

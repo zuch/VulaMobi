@@ -104,7 +104,7 @@ class Announce extends CI_Controller
         ->set_output(json_encode(array('announcements_all' => $announcements)));
     }
     
-    public function site($site_id, $json)
+    public function site($site_id)
     {
         $this->login();
         
@@ -182,16 +182,89 @@ class Announce extends CI_Controller
         }
         
         //output
-        if(!$json)
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode(array('announcements_site' => $announcements)));
+        
+    }
+    public function site_php($site_id)
+    {
+        $this->login();
+        
+        $cookie = $this->session->userdata('cookie');
+        $cookiepath = realpath($cookie);
+        
+        $url_tool = "https://vula.uct.ac.za/direct/announcement/site/" . $site_id . ".xml?n=100&d=300";
+
+        //eat cookie..yum
+        $curl = curl_init($url_tool);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+        $response = curl_exec($curl);
+
+        $xml = simplexml_load_string($response);
+
+        $announcements = array();
+        $attachments = "";
+        $body = "";
+        $createdByDisplayName = "";
+        $createdOn = "";
+        $siteTitle = "";
+        $title = "";
+        $entityURL = "";
+
+        foreach ($xml->children() as $child) 
         {
-            return $announcements;
+            foreach ($child->children() as $minime) 
+            {
+                switch ($t = $minime->getName()) 
+                {
+                    case 'attachments':
+                        $attachments = $minime->children();
+                        break;
+                    case 'body':
+                        $body = $minime;
+                        break;
+                    case 'createdByDisplayName'://Saved by
+                        $createdByDisplayName = $minime;
+                        break;
+                    case 'createdOn':
+                        foreach($minime[0]->attributes() as $a => $b) 
+                        {
+                           if($a == "date")
+                            $createdOn =  $b;
+                        }
+                        break;
+                    case 'id':
+                        $id = $minime;
+                        break;
+                    case 'siteTitle'://Site title
+                        $siteTitle = $minime;
+                        break;
+                    case 'title'://subject
+                        $title = $minime;
+                        break;
+                    case 'entityURL':
+                        $entityURL = $minime;
+                        break;
+                    default :
+                        break;
+                }
+            }
+            $announcements[] = array('attachments' => $attachments,
+                                     'body' => $body,
+                                     'createdByDisplayName' => $createdByDisplayName,
+                                     'createdOn' => $createdOn,
+                                     'id' => $id,
+                                     'siteTitle' => $siteTitle,
+                                     'title' => $title, 
+                                     'entityURL' => $entityURL);
         }
-        else
-        {
-            $this->output
-                ->set_content_type('application/json')
-                ->set_output(json_encode(array('announcements_site' => $announcements)));
-        }
+        return $announcements;
     }
     
     public function shumba_all()
@@ -233,7 +306,7 @@ class Announce extends CI_Controller
             if($exists)
             {
                 //get "body" from Vula xml web service
-                $site_xml = $this->site($site_id, false);
+                $site_xml = $this->site_php($site_id);
                 foreach ($site_xml as $announcement)
                 { 
                     $announcements[] = array('attachments' => $announcement['attachments'],

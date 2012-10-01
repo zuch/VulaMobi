@@ -31,14 +31,40 @@ class Auth extends CI_Controller
     {
         $username = $this->input->post('username');
         $password = $this->input->post('password');
-
+        
         $credentials = array
         (
             'username' => $username,
             'password' => $password,
         );
         $this->session->set_userdata($credentials);
+        
+        $path = getcwd();
 
+        $file_path = $path . "/application/cache/users.txt";
+        
+        $file = fopen($file_path, "r") or exit();
+        $found = false;
+        $names = array();
+        while(!feof($file))
+        {
+            $names[] = fgets($file);
+            if(fgets($file) == $username)
+            {
+                $found = true;
+            }
+        }
+        if(!$found)
+        {
+           array_push($names, $username);
+           $file = fopen("./application/cache/users.txt", "w") or exit();
+           $names_separated = implode("\n", $names);
+           fwrite($file, $names_separated); 
+        }
+        fclose($file);
+        
+        
+        
         //empty username or password
         if($username==null || $password==null)
         {

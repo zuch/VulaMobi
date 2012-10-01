@@ -32,7 +32,7 @@ class Chat extends CI_Controller
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
 
-        //check "resources" in supported tools for site
+        //check "chatroom" in supported tools for site
         $sup_tools = /*include_once 'sup_tools.php'*/$this->sup_tools($site_id);
         
         foreach ($sup_tools as $tool) 
