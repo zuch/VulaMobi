@@ -56,6 +56,9 @@ class Announce extends CI_Controller
                 
                 switch ($t = $minime->getName()) 
                 {
+                    case 'attachments':
+                        $attachments = $minime->children();
+                        break;
                     case 'body':
                         $body = $minime;
                         break;
@@ -69,6 +72,9 @@ class Announce extends CI_Controller
                             $createdOn =  $b;
                         }
                         break;
+                    case 'id':
+                        $id = $minime;
+                        break;
                     case 'siteTitle'://Site title
                         $siteTitle = $minime;
                         break;
@@ -81,9 +87,11 @@ class Announce extends CI_Controller
                     default :
                         break;
                 }
-                $announcements[] = array('body' => $body,
+                $announcements[] = array('attachments' => $attachments,
+                                     'body' => $body,
                                      'createdByDisplayName' => $createdByDisplayName,
                                      'createdOn' => $createdOn,
+                                     'id' => $id,
                                      'siteTitle' => $siteTitle,
                                      'title' => $title, 
                                      'entityURL' => $entityURL);
@@ -95,14 +103,14 @@ class Announce extends CI_Controller
         ->set_output(json_encode(array('announcements_all' => $announcements)));
     }
     
-    public function site($site_id)
+    public function site($site_id, $json)
     {
         $this->login();
         
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
         
-        $url_tool = "https://vula.uct.ac.za/direct/announcement/site/" . $site_id . ".xml?n=30&d=300";
+        $url_tool = "https://vula.uct.ac.za/direct/announcement/site/" . $site_id . ".xml?n=100&d=300";
 
         //eat cookie..yum
         $curl = curl_init($url_tool);
@@ -116,6 +124,7 @@ class Announce extends CI_Controller
         $xml = simplexml_load_string($response);
 
         $announcements = array();
+        $attachments = "";
         $body = "";
         $createdByDisplayName = "";
         $createdOn = "";
@@ -129,6 +138,9 @@ class Announce extends CI_Controller
             {
                 switch ($t = $minime->getName()) 
                 {
+                    case 'attachments':
+                        $attachments = $minime->children();
+                        break;
                     case 'body':
                         $body = $minime;
                         break;
@@ -141,6 +153,9 @@ class Announce extends CI_Controller
                            if($a == "date")
                             $createdOn =  $b;
                         }
+                        break;
+                    case 'id':
+                        $id = $minime;
                         break;
                     case 'siteTitle'://Site title
                         $siteTitle = $minime;
@@ -155,27 +170,42 @@ class Announce extends CI_Controller
                         break;
                 }
             }
-            $announcements[] = array('body' => $body,
+            $announcements[] = array('attachments' => $attachments,
+                                     'body' => $body,
                                      'createdByDisplayName' => $createdByDisplayName,
                                      'createdOn' => $createdOn,
+                                     'id' => $id,
                                      'siteTitle' => $siteTitle,
                                      'title' => $title, 
                                      'entityURL' => $entityURL);
         }
+        
         //output
-        $this->output
-         ->set_content_type('application/json')
-         ->set_output(json_encode(array('announcements_site' => $announcements)));
+        if(!$json)
+        {
+            return $announcements;
+        }
+        else
+        {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(array('announcements_site' => $announcements)));
+        }
     }
     
     public function shumba_all()
-    {
+    {   
         //globals
         $sites = array();
         $announcements = array();
+        $tool_id = "";
+        $exists = false;
+        $announce_count = 0;
         
+        //login
         $this->login();
         
+        //get Active Site id's
         $active[] = $this->sites();
         foreach($active as $site)
         {
@@ -185,75 +215,39 @@ class Announce extends CI_Controller
             }
         }
         
-        $count = 0;
-        
+        //Scrap Announcements of each Active Site
         foreach($sites as $site_id)
         {
-            $cookie = $this->session->userdata('cookie');
-            $cookiepath = realpath($cookie);
-
-            $url_tool = "https://vula.uct.ac.za/direct/announcement/site/" . $site_id . ".xml?n=30&d=300";
-
-            //eat cookie..yum
-            $curl = curl_init($url_tool);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-
-            $response = curl_exec($curl);
-
-            $xml = simplexml_load_string($response);
-            
-            $body = "";
-            $createdByDisplayName = "";
-            $createdOn = "";
-            $siteTitle = "";
-            $title = "";
-            $entityURL = "";
-
-            foreach ($xml->children() as $child) 
+            //check "announcements" in supported tools for site
+            $sup_tools = $this->sup_tools($site_id);
+            foreach ($sup_tools as $tool) 
             {
-                foreach ($child->children() as $minime) 
+                if(array_key_exists('announcements',$tool))
                 {
-                    switch ($t = $minime->getName()) 
-                    {
-                        case 'body':
-                            $body = $minime;
-                            break;
-                        case 'createdByDisplayName'://Saved by
-                            $createdByDisplayName = $minime;
-                            break;
-                        case 'createdOn':
-                            foreach($minime[0]->attributes() as $a => $b) 
-                            {
-                               if($a == "date")
-                                $createdOn =  $b;
-                            }
-                            break;
-                        case 'siteTitle'://Site title
-                            $siteTitle = $minime;
-                            break;
-                        case 'title'://subject
-                            $title = $minime;
-                            break;
-                        case 'entityURL':
-                            $entityURL = $minime;
-                            break;
-                        default :
-                            break;
-                    }
+                    $exists = true;
+                    $tool_id = $tool['tool_id'];
                 }
-                $announcements[] = array('body' => $body,
-                                         'createdByDisplayName' => $createdByDisplayName,
-                                         'createdOn' => $createdOn,
-                                         'siteTitle' => $siteTitle,
-                                         'title' => $title, 
-                                         'entityURL' => $entityURL);
             }
-            $count++;
+
+            if($exists)
+            {
+                //get "body" from Vula xml web service
+                $site_xml = $this->site($site_id, false);
+                foreach ($site_xml as $announcement)
+                { 
+                    $announcements[] = array('attachments' => $announcement['attachments'],
+                                             'body' => $announcement['body'],
+                                             'createdByDisplayName' => $announcement['createdByDisplayName'],
+                                             'createdOn' => $announcement['createdOn'],
+                                             'id' => $announcement['id'],
+                                             'siteTitle' => $announcement['siteTitle'],
+                                             'title' => $announcement['title'], 
+                                             'entityURL' => $announcement['entityURL'] );
+                    $announce_count++;
+                }
+            }
         }
-        //echo $count;
+        
         //output
         $this->output
          ->set_content_type('application/json')
@@ -319,9 +313,7 @@ class Announce extends CI_Controller
     {        
         $username = $this->input->post('username');
         $password = $this->input->post('password');
-        //$username = "wtrsas001";
-        //$password = "honours";
-
+        
         $credentials = array
         (
             'username' => $username,
@@ -386,6 +378,99 @@ class Announce extends CI_Controller
             else $found = true;
         }
         return (string)$x;
+    }
+    
+    //returns array of supported tools for a site
+    // - name e.g. "CS Honours"
+    // - id e.g. "fa532f3e-a2e1-48ec-9d78-3d5722e8b60d"
+    //set "$json = 1" if want JSON resposnse else "0"
+    public function sup_tools($site_id)
+    {
+        $this->login();
+        
+        $cookie = $this->session->userdata('cookie');
+        $cookiepath = realpath($cookie);
+
+        $url = "https://vula.uct.ac.za/portal/site/" . $site_id;
+
+        //eat cookie..yum
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        //create html dom object
+        $html_str = "";
+        $html_str = str_get_html($response);
+        $html = new simple_html_dom($html_str);
+
+        //scrap tools list
+        $tools = array();
+        $tools_ul = $html->find('#toolMenu', 0);
+        $ul = $tools_ul->children(0);
+        foreach ($ul->find('li') as $li) 
+        {
+            foreach ($li->find('a') as $a)
+            {
+                $tools[] = $a;
+            }
+        }
+
+        //Check for supported tools
+        $sup_tools = array();
+        foreach ($tools as $a) 
+        {
+            switch ($a->class) 
+            {
+                case 'icon-sakai-announcements'://announcements
+                    $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                    $tool_id = str_replace($temp_replace, "", $a->href);
+
+                    $tool = array('announcements' => 'announcements'
+                                  ,'tool_id' => $tool_id);
+                    $sup_tools[] = $tool;
+                    break;
+                case 'icon-sakai-chat'://chatroom
+                    $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                    $tool_id = str_replace($temp_replace, "", $a->href);
+
+                    $tool = array('chatroom' => 'chatroom'
+                                  ,'tool_id' => $tool_id);
+                    $sup_tools[] = $tool;
+                    break;
+                case 'icon-sakai-gradebook-tool'://gradebook
+                    $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                    $tool_id = str_replace($temp_replace, "", $a->href);
+
+                    $tool = array('gradebook' => 'gradebook'
+                                  ,'tool_id' => $tool_id);
+                    $sup_tools[] = $tool;
+                    break;
+                case 'icon-sakai-site-roster'://participants
+                    $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                    $tool_id = str_replace($temp_replace, "", $a->href);
+
+                    $tool = array('participants' => 'participants'
+                                  ,'tool_id' => $tool_id);
+                    $sup_tools[] = $tool;
+                    break;
+                case 'icon-sakai-resources'://resources
+                    $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                    $tool_id = str_replace($temp_replace, "", $a->href);
+
+                    $tool = array('resources' => 'resources'
+                                  ,'tool_id' => $tool_id);
+                    $sup_tools[] = $tool;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return $sup_tools;
     }
 }
 ?>

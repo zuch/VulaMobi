@@ -26,20 +26,21 @@ class Resource extends CI_Controller
     //get roster for a Course
     public function site($site_id)
     {   
-        echo "yo";
         $this->login();
 
         //$site_id = $this->input->post('site_id');        
         $this->getResource($site_id);
 
         //output
-        $this->output
-            ->set_content_type('application/json')
-            ->set_output(json_encode(array('resources' => $resources)));  
+        //$this->output
+         //   ->set_content_type('application/json')
+         //   ->set_output(json_encode(array('resources' => $resources)));  
     }
     
     public function getResource($site_id)
     {
+        echo "resources</br>";
+        
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
 
@@ -85,9 +86,11 @@ class Resource extends CI_Controller
     //login Vula
     public function login() 
     {        
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
-
+        //$username = $this->input->post('username');
+        //$password = $this->input->post('password');
+        $username = "wtrsas001"; 
+        $password = "honours";
+        
         $credentials = array
         (
             'username' => $username,

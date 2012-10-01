@@ -1,21 +1,21 @@
 <?php
 
 /* Sascha Watermeyer - WTRSAS001
-* Vulamobi CS Honours project
-* sascha.watermeyer@gmail.com */
+ * Vulamobi CS Honours project
+ * sascha.watermeyer@gmail.com */
 
-header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin: *');  
 
 include_once 'simple_html_dom.php';
 
-class Grade extends CI_Controller
+class Grade extends CI_Controller 
 {
-    public function __construct()
+    public function __construct() 
     {
         parent::__construct();
     }
     
-    public function Grade()
+    public function Grade() 
     {
         //show_404();
     }
@@ -37,7 +37,7 @@ class Grade extends CI_Controller
 
         //check "gradebook" in supported tools for site
         $sup_tools = $this->sup_tools($site_id);
-        foreach ($sup_tools as $tool)
+        foreach ($sup_tools as $tool) 
         {
             if(array_key_exists('gradebook',$tool))
             {
@@ -67,8 +67,9 @@ class Grade extends CI_Controller
             $test_names = array();
             $test_dates = array();
             $test_marks = array();
-
-            if (($iframe_url = $html->find('iframe', 0)->src) != null)
+            $weighting = array();
+			$Subminimum = array();
+            if (($iframe_url = $html->find('iframe', 0)->src) != null) 
             {
                 //echo "iframe_url: " . $iframe_url . "</br>";
 
@@ -83,33 +84,33 @@ class Grade extends CI_Controller
                 if (($results_table = $html->find("#gbForm", 0)->children(3)) != null)
                 {
                     // loop over rows
-                    foreach ($results_table->find('tr') as $row)
+                    foreach ($results_table->find('tr') as $row) 
                     {
                         $td_count = 1;
                         $td = $row->find('td');
-                        foreach ($td as $val)
+                        foreach ($td as $val) 
                         {
-                            if ($td_count == 1)
+                            if ($td_count == 1) 
                             {
                                 $test_names[] = $val->innertext;
                             }
-                            if ($td_count == 2)
+                            if ($td_count == 2) 
                             {
                                 $test_dates[] = $val->innertext;
                             }
-                            if ($td_count == 3)//test marks
+                            if ($td_count == 3)//test marks 
                             {
                                 //parse for Don
                                 $mark = $val->innertext;
-                                if (strpos($mark,'/') !== false)
+                                if (strpos($mark,'/') !== false) 
                                 {
                                     $top = strstr($mark, '/', true);
                                     $bottom = strstr($mark, '/');
-                                    $substr = substr($bottom, 1);
+                                    $substr = substr($bottom, 1); 
                                     $result = ($top/$substr)*100;
                                     $test_marks[] = $result . '%';
                                 }
-                                else
+                                else 
                                 {
                                     $test_marks[] = $mark;
                                 }
@@ -120,11 +121,37 @@ class Grade extends CI_Controller
                 }
             }
 
+            
+            //gets weightings from sql database -> think about the ordering later (need to get course name and year but will hardcode for now
+            /*$QueryString = 'SELECT * FROM weightingtable WHERE Course = "CSC honours, 2012" AND Year = "2012"';
+            $query = $this->db->query($QueryString);
+            
+            //creates the weighting and subminimum arrays
+            if ($query->num_rows() > 0) {
+            	$count =0;
+            	foreach($query->result() as $row) 
+            	{
+            
+            		$weighting[$count] = $row->Percent;
+            		$Subminimum[$count] = $row->Subminimum;
+            		$count++;
+            	}
+            }*/
+            
+            
+            
+            
+            
+            
+            
+            
             for($i = 0; $i < count($test_names); $i++)
             {
                 $grade = array('name' => $test_names[$i]
                             ,'date' => $test_dates[$i]
-                            ,'mark' => $test_marks[$i]);
+                            ,'mark' => $test_marks[$i]
+                			,'weighting' => $weighting[$i]
+                			,'subminimum' => $Subminimum[$i]);
             $grades[] = $grade;
             }
 
@@ -170,7 +197,7 @@ class Grade extends CI_Controller
         $tools = array();
         $tools_ul = $html->find('#toolMenu', 0);
         $ul = $tools_ul->children(0);
-        foreach ($ul->find('li') as $li)
+        foreach ($ul->find('li') as $li) 
         {
             foreach ($li->find('a') as $a)
             {
@@ -180,9 +207,9 @@ class Grade extends CI_Controller
 
         //Check for supported tools
         $sup_tools = array();
-        foreach ($tools as $a)
+        foreach ($tools as $a) 
         {
-            switch ($a->class)
+            switch ($a->class) 
             {
                 case 'icon-sakai-announcements'://announcements
                     $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
@@ -232,12 +259,10 @@ class Grade extends CI_Controller
     }
     
     //login Vula
-    public function login()
-    {
+    public function login() 
+    {        
         $username = $this->input->post('username');
         $password = $this->input->post('password');
-        //$username = "wtrsas001";
-        //$password = "honours";
 
         $credentials = array
         (
@@ -288,7 +313,7 @@ class Grade extends CI_Controller
         {
             echo "Incorrect Username or Password";
             die;
-        }
+        } 
     }
     
     //returns random num from 10000 - 99999

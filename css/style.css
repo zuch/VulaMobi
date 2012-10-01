@@ -3,7 +3,8 @@ body
     
 }
 
-a{text-decoration:none;}
+a{  text-decoration:none;
+    color:#0090cf;  }
 
 a:link{	color:#0090cf;}
 
@@ -11,7 +12,7 @@ a:hover{color:red;}
 
 a:visted{color:#0090cf;}
 
-a:active{color:red;}
+a:active{color:orange;}
 
 h1{color:blue; }
 
