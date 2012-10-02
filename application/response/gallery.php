@@ -61,10 +61,9 @@ class Gallery extends CI_Controller
             closedir($dh);
         
             //output
-            //$this->output
-            //->set_content_type('application/json')
-            //->set_output(json_encode(array('files' => $files)));
-            echo(json_encode(array('files'=> $files)));
+            $this->output
+                ->set_output(json_encode(array('files' => $files)));
+            //echo(json_encode(array('files'=> $files)));
         }
     }
 
@@ -216,8 +215,8 @@ class Gallery extends CI_Controller
     //login Vula
     public function login() 
     {        
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
+        $username = $this->input->get('username');
+        $password = $this->input->get('password');
 
         $credentials = array
         (

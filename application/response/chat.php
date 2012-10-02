@@ -93,7 +93,6 @@ class Chat extends CI_Controller
                 }
             }//END iframe
             $this->output
-            ->set_content_type('application/json')
             ->set_output(json_encode(array('chat' => $messages)));
         }
         else//404

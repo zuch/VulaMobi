@@ -324,7 +324,6 @@ class Announce extends CI_Controller
         
         //output
         $this->output
-         ->set_content_type('application/json')
          ->set_output(json_encode(array('shumba_all' => $announcements)));
     }
     
