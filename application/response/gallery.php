@@ -214,9 +214,12 @@ class Gallery extends CI_Controller
     
     //login Vula
     public function login() 
-    {        
-        $username = $this->input->get('username');
-        $password = $this->input->get('password');
+    { 
+       //$username = urldecode($this->uri->segment(2, 0));
+       // $password = urldecode($this->uri->segment(3, 0));
+       
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
 
         $credentials = array
         (
@@ -265,6 +268,8 @@ class Gallery extends CI_Controller
         }
         else
         {
+            echo $username."</br>";
+            echo $password."</br>";
             echo "Incorrect Username or Password";
             die;
         } 

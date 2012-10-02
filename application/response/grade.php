@@ -450,8 +450,8 @@ class Grade extends CI_Controller
     //login Vula
     public function login()
     {
-        $username = $this->input->get('username');
-        $password = $this->input->get('password');
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
         
         $credentials = array
         (
