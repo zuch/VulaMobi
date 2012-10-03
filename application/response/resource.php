@@ -26,21 +26,23 @@ class Resource extends CI_Controller
     //get roster for a Course
     public function site($site_id)
     {   
+        //globals
+        $files = array();
+        
         $this->login();
-
-        //$site_id = $this->input->post('site_id');        
+      
         $result = $this->getResource($site_id);
 
         foreach($result as $resource)
         {
-            echo $resource['type']."</br>";
-            echo $resource['text']."</br>";
-            echo $resource['href']."</br>";
+            $file = array('type' => $resource['type'],
+                            'title' => $resource['title'],
+                            'href' => $resource['href'] );
+            $files[] = $file;
         }
         //output
-        //$this->output
-         //   ->set_content_type('application/json')
-         //   ->set_output(json_encode(array('resources' => $resources)));  
+        $this->output
+            ->set_output(json_encode(array('resources' => $files)));  
     }
     
     public function getResource($site_id, &$global = array())
@@ -50,7 +52,7 @@ class Resource extends CI_Controller
 
         $base = "https://vula.uct.ac.za/access/content/group/";
         $url = $base . $site_id;
-        echo "resource path:". $url ."</br>";
+        //echo "resource path:". $url ."</br>";
 
         //eat cookie..yum
         $curl = curl_init($url);
@@ -65,38 +67,33 @@ class Resource extends CI_Controller
         $html_str = str_get_html($response);
         $html = new simple_html_dom($html_str);
 
-        if (($li = $html->find('ul li')) != null) 
+        if (($li = $html->find('ul li')) != null)
         {
             foreach($li as $val)
             {
                 if($val->class == "folder")
                 {
-                    $this->getResource($site_id . "/". $val->children(0)->href);
-                    /*$folder = array('type' => "folder",
-                                    'text' => $val->children(0)->innertext,
-                                    'onclick' => "resource('". $site_id ."/". $val->children(0)->href ."');");
-                    $resources[] = $folder;*/
+                    $this->getResource($site_id . "/". $val->children(0)->href, $global);
                 }
                 if($val->class == "file")
-                {
+                {   
                     $file= array('type' => "file",
-                                 'text' => $val->children(0)->innertext,
+                                 'title' => $val->children(0)->innertext,
                                  'href' => $base . $val->children(0)->href );
                     $global[] = $file;
                 }
-                return $global;
             }
         }
-        //return $global;
+        return $global;
     }
         
     //login Vula
     public function login() 
     {        
-        //$username = $this->input->post('username');
-        //$password = $this->input->post('password');
-        $username = "wtrsas001"; 
-        $password = "honours";
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        //$username = "wtrsas001"; 
+        //$password = "honours";
         
         $credentials = array
         (
