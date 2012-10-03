@@ -31,10 +31,11 @@ class Gallery extends CI_Controller
         $dir = "uploads/" . $username . "/";
         $upload_path = $base_url . $dir;
         
-        if (!is_dir($upload_path)) 
-        {
-             mkdir($upload_path, 0777);
-        }
+        if (!is_dir($upload_path))
+             mkdir($upload_path, 0777, true);
+        if (!is_dir($upload_path . 'thumbs/'))
+            mkdir($upload_path . 'thumbs/', 0777, true);
+        
         $dh = opendir($dir);
         $files = array();
         
@@ -63,7 +64,6 @@ class Gallery extends CI_Controller
             //output
             $this->output
                 ->set_output(json_encode(array('files' => $files)));
-            //echo(json_encode(array('files'=> $files)));
         }
     }
 
@@ -79,18 +79,19 @@ class Gallery extends CI_Controller
 
         $upload_path = $path . "/uploads/" . $username . "/";
 
-        if (!is_dir($upload_path)) 
-        {
-             mkdir($upload_path, 0777);
-        }
+        if (!is_dir($upload_path))
+             mkdir($upload_path, 0777, true);
+        if (!is_dir($upload_path . 'thumbs/'))
+            mkdir($upload_path . 'thumbs/', 0777, true);
 
         if (isset($_REQUEST['image'])) 
         {
             if ($_REQUEST['image']) 
             {
+                //create full image
                 $imgData = base64_decode($_REQUEST['image']);
-
-                $file = $upload_path . date('Ymdgisu') . '.jpg';
+                $filename = date('Ymdgisu') . '.jpg';
+                $file = $upload_path . $filename;
                 if (file_exists($file)) 
                 {
                     unlink($file);
@@ -100,127 +101,72 @@ class Gallery extends CI_Controller
                 fwrite($fp, $imgData); 
                 fclose($fp);
                 
-                //make_thumb($upload_path, $upload_path . "thumb/", 100);
+                //create thumb nail
+                $thumb_path = $upload_path . "thumbs/thumb_" . $filename;
+                $tn_height = "100"; 
+                $tn_width = "100";
                 
-                echo "complete";
+                $src = @ImageCreateFromJpeg($file); 
+                $dst = ImageCreateTrueColor($tn_width,$tn_height);
+                list($width, $height) = getimagesize($file);
+                ImageCopyResized($dst, $src, 0, 0, 0, 0, $tn_width,$tn_height,$width,$height);
+                ImageJpeg($dst,$thumb_path);
+                ImageDestroy($src);
+                ImageDestroy($dst);
+                
+                echo "Image Uploaded";
             }
         } 
         else 
         {
             echo "no POST";
-        }
-        
-        function make_thumb($src, $dest, $desired_width) {
-
-	/* read the source image */
-	$source_image = imagecreatefromjpeg($src);
-	$width = imagesx($source_image);
-	$height = imagesy($source_image);
-	
-	/* find the "desired height" of this thumbnail, relative to the desired width  */
-	$desired_height = floor($height * ($desired_width / $width));
-	
-	/* create a new, "virtual" image */
-	$virtual_image = imagecreatetruecolor($desired_width, $desired_height);
-	
-	/* copy source image at a resized size */
-	imagecopyresampled($virtual_image, $source_image, 0, 0, 0, 0, $desired_width, $desired_height, $width, $height);
-	
-	/* create the physical thumbnail image to its destination */
-	imagejpeg($virtual_image, $dest);
-        }
-
-        /*
-                Function createthumb($name,$filename,$new_w,$new_h)
-                creates a resized image
-                variables:
-                $name		Original filename
-                $filename	Filename of the resized image
-                $new_w		width of resized image
-                $new_h		height of resized image
-        */	
-        function createthumb($name,$filename,$new_w,$new_h)
-        {
-            $system=explode(".",$name);
-            if (preg_match("/jpg|jpeg/",$system[1])){$src_img=imagecreatefromjpeg($name);}
-            if (preg_match("/png/",$system[1])){$src_img=imagecreatefrompng($name);}
-            $old_x=imageSX($src_img);
-            $old_y=imageSY($src_img);
-            if ($old_x > $old_y) 
-            {
-                    $thumb_w=$new_w;
-                    $thumb_h=$old_y*($new_h/$old_x);
-            }
-            if ($old_x < $old_y) 
-            {
-                    $thumb_w=$old_x*($new_w/$old_y);
-                    $thumb_h=$new_h;
-            }
-            if ($old_x == $old_y) 
-            {
-                    $thumb_w=$new_w;
-                    $thumb_h=$new_h;
-            }
-            $dst_img=ImageCreateTrueColor($thumb_w,$thumb_h);
-            imagecopyresampled($dst_img,$src_img,0,0,0,0,$thumb_w,$thumb_h,$old_x,$old_y); 
-            if (preg_match("/png/",$system[1]))
-            {
-                    imagepng($dst_img,$filename); 
-            } else {
-                    imagejpeg($dst_img,$filename); 
-            }
-            imagedestroy($dst_img); 
-            imagedestroy($src_img); 
-        }
-        
-        
-        function createThumbs( $pathToImages, $pathToThumbs, $thumbWidth )
-        {
-          // open the directory
-          $dir = opendir( $pathToImages );
-
-          // loop through it, looking for any/all JPG files:
-          while (false !== ($fname = readdir( $dir ))) {
-            // parse path for the extension
-            $info = pathinfo($pathToImages . $fname);
-            // continue only if this is a JPEG image
-            if ( strtolower($info['extension']) == 'jpg' )
-            {
-              echo "Creating thumbnail for {$fname} <br />";
-
-              // load image and get image size
-              $img = imagecreatefromjpeg( "{$pathToImages}{$fname}" );
-              $width = imagesx( $img );
-              $height = imagesy( $img );
-
-              // calculate thumbnail size
-              $new_width = $thumbWidth;
-              $new_height = floor( $height * ( $thumbWidth / $width ) );
-
-              // create a new temporary image
-              $tmp_img = imagecreatetruecolor( $new_width, $new_height );
-
-              // copy and resize old image into new image
-              imagecopyresized( $tmp_img, $img, 0, 0, 0, 0, $new_width, $new_height, $width, $height );
-
-              // save thumbnail into a file
-              imagejpeg( $tmp_img, "{$pathToThumbs}{$fname}" );
-            }
-          }
-          // close the directory
-          closedir( $dir );
-        }        
+        }    
     }
     
+    function createthumb($name,$filename,$new_w,$new_h)
+    {
+        $system=explode(".",$name);
+        if (preg_match("/jpg|jpeg/",$system[1])){$src_img=imagecreatefromjpeg($name);}
+        if (preg_match("/png/",$system[1])){$src_img=imagecreatefrompng($name);}
+        $old_x=imageSX($src_img);
+        $old_y=imageSY($src_img);
+        if ($old_x > $old_y) 
+        {
+                $thumb_w=$new_w;
+                $thumb_h=$old_y*($new_h/$old_x);
+        }
+        if ($old_x < $old_y) 
+        {
+                $thumb_w=$old_x*($new_w/$old_y);
+                $thumb_h=$new_h;
+        }
+        if ($old_x == $old_y) 
+        {
+                $thumb_w=$new_w;
+                $thumb_h=$new_h;
+        }
+        $dst_img=ImageCreateTrueColor($thumb_w,$thumb_h);
+        imagecopyresampled($dst_img,$src_img,0,0,0,0,$thumb_w,$thumb_h,$old_x,$old_y); 
+        if (preg_match("/png/",$system[1]))
+        {
+                imagepng($dst_img,$filename); 
+        } else {
+                imagejpeg($dst_img,$filename); 
+        }
+        imagedestroy($dst_img); 
+        imagedestroy($src_img); 
+    }
+        
     //login Vula
     public function login() 
-    { 
-       //$username = urldecode($this->uri->segment(2, 0));
-       // $password = urldecode($this->uri->segment(3, 0));
-       
+    {  
         $username = $this->input->post('username');
         $password = $this->input->post('password');
-
+        
+        //$username = "wtrsas001";
+        //$password = "honours";
+        
+        
         $credentials = array
         (
             'username' => $username,

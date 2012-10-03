@@ -250,15 +250,28 @@ function gallery()
 /********************************** upload ***********************************/
 function upload()
 {
-    
-    var image = "rthhfghfghfghth";
-    
-    var response = "";
     var form_data = {
-        image: image,
         username: username,
         password: password
     };
+    
+    $('form').ajaxForm({
+        url: base_url + "ajax.php?gallery/upload",
+        data: form_data,
+        beforeSubmit: function() {
+            $('#results').html('Submitting...');
+        },
+        success: function(data) {
+            var $out = $('#results');
+            $out.html('Your results:');
+            $out.append('<div><pre>'+ data +'</pre></div>');
+        }
+    });
+    
+    /*var image = "rthhfghfghfghth";
+    
+    var response = "";
+    
 
     $.ajax({
         type: "POST", 
@@ -271,9 +284,7 @@ function upload()
             return response;
         },
         dataType: "text"//set to JSON    
-    })
-    
-
+    })*/
 }
 
 /********************************** role **************************************/

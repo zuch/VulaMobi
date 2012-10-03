@@ -273,7 +273,6 @@ class Grade extends CI_Controller
                 if(array_key_exists('gradebook',$tool))
                 {
                     $exists = true;
-                    //$tool_id = $tool['tool_id'];
                 }
             }
 
@@ -301,9 +300,7 @@ class Grade extends CI_Controller
     //--------------------------------sites()-----------------------------------
     //Return active sites of User
     public function sites() 
-    {
-        //$this->login();
-        
+    {   
         //CodeIgniter Session Class
         $cookie = $this->session->userdata('cookie');
         $username = $this->session->userdata('username');
