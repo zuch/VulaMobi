@@ -8,8 +8,8 @@
 *****************************************/
 
 /* Globals*/
-//var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';//production
-var base_url = 'http://localhost/VulaMobi/';//development
+var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';//production
+//var base_url = 'http://localhost/VulaMobi/';//development
 
 var username = "";//global username set when you initially login
 var password = "";//global password set when you initially login
@@ -462,6 +462,47 @@ function resource(site_id)
     $.ajax({
         type: "POST", 
         url: base_url + "ajax.php?resource/site/" + site_id, 
+        data: form_data, 
+        success: function(response){
+            console.log(response)
+            alert(response);
+        }
+    });
+    
+}
+/********************************** assign ************************************/
+function assign(site_id)
+{ 
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
+        
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?assign/site/" + site_id, 
+        data: form_data, 
+        success: function(response){
+            console.log(response)
+            alert(response);
+        }
+    });
+    
+}
+/********************************** assign_all *********************************/
+function assign_all()
+{
+    
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
+        
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?assign/all", 
         data: form_data, 
         success: function(response){
             console.log(response)

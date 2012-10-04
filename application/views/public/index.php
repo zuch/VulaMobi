@@ -32,7 +32,9 @@
 <input type="submit" name="submit" id="announcement_site" value="announce/site" onclick="announcement_site('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
 <input type="submit" name="submit" id="shumba_all" value="announce/shumba_all" onclick="shumba_all();">Announcements for All Active Sites</br>
 <input type="submit" name="submit" id="resource" value="resource/site" onclick="resource('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
-<input type="submit" name="submit" id="chat" value="chat/site" onclick="chat('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br></br>
+<input type="submit" name="submit" id="chat" value="chat/site" onclick="chat('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
+<input type="submit" name="submit" id="chat" value="assign/site" onclick="assign('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
+<input type="submit" name="submit" id="chat" value="assign/all" onclick="assign_all();">Assignments for All Active Sites</br></br>
 <input type="submit" name="submit" id="test_t" value="test/t" onclick="test_t();"></br>
 <input type="submit" name="submit" id="example" value="Parse JSON example" onclick="example();"><a href="https://gist.github.com/3720842">source code</a></br>
 <!-- <input type="submit" name="submit" id="example_grade" value="Parse Grade example" onclick="grade_example('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');"><a href="https://gist.github.com/3720842">source</a></br>-->

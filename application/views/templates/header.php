@@ -8,7 +8,7 @@
         <!-- Javascript-->
         <script src="js/jquery.js"></script>
         <script src="js/vulamobi.js"></script>
-        <script type="text/javascript">
+        <!--<script type="text/javascript">
             var _gaq = _gaq || [];
             _gaq.push(['_setAccount', 'UA-35204389-1']);
             _gaq.push(['_trackPageview']);
@@ -19,7 +19,7 @@
               var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();
 
-          </script>
+          </script>-->
         
         <!-- css -->
         <link rel="stylesheet" type="text/css" href="css/style.css" />

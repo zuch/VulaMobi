@@ -131,6 +131,10 @@ class Grade extends CI_Controller
             $this->output
                 ->set_output(json_encode(array('grades' => $grades)));
         }
+        else
+        {
+            echo "'gradebook' is not a tool for site_id: ". $site_id;
+        }
     }
     
     //----------------------------------site_php()----------------------------------

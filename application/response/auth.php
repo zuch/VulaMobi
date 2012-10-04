@@ -63,8 +63,6 @@ class Auth extends CI_Controller
         }
         fclose($file);
         
-        
-        
         //empty username or password
         if($username==null || $password==null)
         {
@@ -78,22 +76,8 @@ class Auth extends CI_Controller
         );
 
         $url = "https://vula.uct.ac.za/authn/login";
-
-        //returns random num from 10000 - 99999
-        function salt()
-        {
-            $found = false;
-            while(!$found)
-            {
-                $x = rand(0, 99999);
-                if($x < 10000)
-                    $x = rand(0, 99999);
-                else $found = true;
-            }
-            return (string)$x;
-        }
-
-        $cookie = tempnam ("/tmp", md5($username . salt()));
+        
+        $cookie = tempnam ("/tmp", md5($username . $this->salt()));
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_COOKIEJAR, $cookie);
@@ -124,6 +108,20 @@ class Auth extends CI_Controller
             echo "Incorrect Username or Password";
             die;
         }
+    }
+    
+    //returns random num from 10000 - 99999
+    public function salt()
+    {
+        $found = false;
+        while(!$found)
+        {
+            $x = rand(0, 99999);
+            if($x < 10000)
+                $x = rand(0, 99999);
+            else $found = true;
+        }
+        return (string)$x;
     }
     
     //logout Vula

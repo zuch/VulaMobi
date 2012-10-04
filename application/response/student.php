@@ -147,9 +147,6 @@ class Student extends CI_Controller
         $username = $this->input->post('username');
         $password = $this->input->post('password');
         
-        //$username = "wtrsas001";
-        //$password = "honours";
-        
         $credentials = array
         (
             'username' => $username,

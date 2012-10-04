@@ -57,12 +57,12 @@ class Announce extends CI_Controller
                 
                 switch ($t = $minime->getName()) 
                 {
-                    case 'attachments':
+                   /* case 'attachments':
                         $attachments = $minime->children();
                         break;
                     case 'body':
                         $body = $minime;
-                        break;
+                        break;*/
                     case 'createdByDisplayName'://Saved by
                         $createdByDisplayName = $minime;
                         break;
@@ -88,8 +88,8 @@ class Announce extends CI_Controller
                     default :
                         break;
                 }
-                $announcements[] = array('attachments' => $attachments,
-                                     'body' => $body,
+                $announcements[] = array(/*'attachments' => $attachments,
+                                    'body' => $body,*/
                                      'createdByDisplayName' => $createdByDisplayName,
                                      'createdOn' => $createdOn,
                                      'id' => $id,
@@ -171,8 +171,8 @@ class Announce extends CI_Controller
                         break;
                 }
             }
-            $announcements[] = array('attachments' => $attachments,
-                                     'body' => $body,
+            $announcements[] = array(//'attachments' => $attachments,
+                                     //'body' => $body,
                                      'createdByDisplayName' => $createdByDisplayName,
                                      'createdOn' => $createdOn,
                                      'id' => $id,
@@ -255,8 +255,8 @@ class Announce extends CI_Controller
                         break;
                 }
             }
-            $announcements[] = array('attachments' => $attachments,
-                                     'body' => $body,
+            $announcements[] = array(//'attachments' => $attachments,
+                                     //'body' => $body,
                                      'createdByDisplayName' => $createdByDisplayName,
                                      'createdOn' => $createdOn,
                                      'id' => $id,
@@ -309,8 +309,8 @@ class Announce extends CI_Controller
                 $site_xml = $this->site_php($site_id);
                 foreach ($site_xml as $announcement)
                 { 
-                    $announcements[] = array('attachments' => $announcement['attachments'],
-                                             'body' => $announcement['body'],
+                    $announcements[] = array(//'attachments' => $announcement['attachments'],
+                                             //'body' => $announcement['body'],
                                              'createdByDisplayName' => $announcement['createdByDisplayName'],
                                              'createdOn' => $announcement['createdOn'],
                                              'id' => $announcement['id'],
