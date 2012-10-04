@@ -37,13 +37,6 @@
 <input type="submit" name="submit" id="example" value="Parse JSON example" onclick="example();"><a href="https://gist.github.com/3720842">source code</a></br>
 <!-- <input type="submit" name="submit" id="example_grade" value="Parse Grade example" onclick="grade_example('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');"><a href="https://gist.github.com/3720842">source</a></br>-->
 <span style="color:green"></span>
-</br>
-<form id="myForm" action="comment.php" method="post"> 
-    Name: <input type="text" name="name" /> 
-    Comment: <textarea name="comment"></textarea> 
-    <input type="submit" value="Submit Comment" /> 
-</form>
-</br>
 <div id="results"></div>
 <h3><a href="https://github.com/zuch/VulaMobi/wiki">documentation</a></h3>
 <h2>Source Code</h2>
