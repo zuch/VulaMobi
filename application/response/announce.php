@@ -316,7 +316,8 @@ class Announce extends CI_Controller
                                              'id' => $announcement['id'],
                                              'siteTitle' => $announcement['siteTitle'],
                                              'title' => $announcement['title'], 
-                                             'entityURL' => $announcement['entityURL'] );
+                                             'entityURL' => $announcement['entityURL'],
+                                             'number' => $announce_count);
                     $announce_count++;
                 }
             }
@@ -326,7 +327,6 @@ class Announce extends CI_Controller
         $this->output
          ->set_output(json_encode(array('shumba_all' => $announcements)));
     }
-    
     
     //Return active sites of User
     public function sites() 

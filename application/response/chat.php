@@ -33,7 +33,7 @@ class Chat extends CI_Controller
         $cookiepath = realpath($cookie);
 
         //check "chatroom" in supported tools for site
-        $sup_tools = /*include_once 'sup_tools.php'*/$this->sup_tools($site_id);
+        $sup_tools = $this->sup_tools($site_id);
         
         foreach ($sup_tools as $tool) 
         {
@@ -46,10 +46,6 @@ class Chat extends CI_Controller
 
         if($exists)
         {
-            //  include_once 'login.php';
-        
-            //CodeIgniter Session Class
-            //$username = $this->session->userdata('username');
             $cookie = $this->session->userdata('cookie');
             $cookiepath = realpath($cookie);
 
@@ -97,7 +93,7 @@ class Chat extends CI_Controller
         }
         else//404
         {
-            echo "you are not part of this site";
+            echo "'chatroom' is not a tool for site_id: ". $site_id;
         }
     }
     
