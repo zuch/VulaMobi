@@ -1,7 +1,7 @@
 <?php
 
 /* Donovan Thomson
- * Vulamobi CS Honours project
+ * VulaMobi CS Honours project
 */
 
 header('Access-Control-Allow-Origin: *');  

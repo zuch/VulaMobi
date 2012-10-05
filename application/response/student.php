@@ -1,7 +1,7 @@
 <?php
 
 /* Sascha Watermeyer - WTRSAS001
- * Vulamobi CS Honours project
+ * VulaMobi CS Honours project
  * sascha.watermeyer@gmail.com */
 
 header('Access-Control-Allow-Origin: *'); 

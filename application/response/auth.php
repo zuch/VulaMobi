@@ -1,7 +1,7 @@
 <?php
 
 /* Sascha Watermeyer - WTRSAS001
- * Vulamobi CS Honours project
+ * VulaMobi CS Honours project
  * sascha.watermeyer@gmail.com */
 
 header('Access-Control-Allow-Origin: *');  
@@ -57,7 +57,7 @@ class Auth extends CI_Controller
         if(!$found)
         {
            array_push($names, $username);
-           $file = fopen("./application/cache/users.txt", "w") or exit();
+           $file = fopen("./application/cache/users.txt", "w") or die();
            $names_separated = implode("\n", $names);
            fwrite($file, $names_separated); 
         }
