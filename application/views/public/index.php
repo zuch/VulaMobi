@@ -28,9 +28,9 @@
 <input type="submit" name="submit" id="upload" value="gallery/upload" onclick="upload();"></br>
 <input type="submit" name="submit" id="role" value="role/site" onclick="role('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
 <input type="submit" name="submit" id="roster" value="role/roster" onclick="roster('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
-<input type="submit" name="submit" id="announcement_all" value="announce/all" onclick="announcement_all();">Under My_WorkSpace</br>
+<input type="submit" name="submit" id="announcement_all" value="announce/all" onclick="announcement_all();">Announcements for All Active Sites</br>
 <input type="submit" name="submit" id="announcement_site" value="announce/site" onclick="announcement_site('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
-<input type="submit" name="submit" id="shumba_all" value="announce/shumba_all" onclick="shumba_all();">Announcements for All Active Sites</br>
+<input type="submit" name="submit" id="announcement_body" value="announce/body" onclick="announcement_body('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d&e3d7c66b-2fb4-44d0-8471-677af5a47a0b');">CS Honours 2012 random announcement</br>
 <input type="submit" name="submit" id="resource" value="resource/site" onclick="resource('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
 <input type="submit" name="submit" id="chat" value="chat/site" onclick="chat('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
 <input type="submit" name="submit" id="chat" value="assign/site" onclick="assign('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>

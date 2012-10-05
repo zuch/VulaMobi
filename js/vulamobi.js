@@ -38,30 +38,21 @@ function login(user, pwd)
         success: function(response)
         {
             console.log(response);
-            if(response == "empty")//username or password empty
+            if(response == "Empty Username or Password")//username or password empty
             {
-                alert("empty");
-                return "empty";
+                alert(response);
             }
-            else if(response == "incorrect")//username or password incorrect
+            else if(response == "Incorrect Username or Password")//username or password incorrect
             {
-                alert("incorrect");
-                return "incorrect";
-            }
-            else if(response == "already")//already logged in - reroute to home page
-            {
-                alert("already");
-                return "already";
+                alert(response);
             }
             else if(response == "logged_in") //logged_in
             {
-                alert("logged_in");
-                return "logged_in";
+               alert(response);
             }
             else if(response == "logged_out") //logged_out
             {
-                alert("logged_out");
-                return "logged_out";
+                alert(response);
             }
         },
         dataType: "text"    
@@ -250,27 +241,15 @@ function gallery()
 /********************************** upload ***********************************/
 function upload()
 {
-    var form_data = {
-        username: username,
-        password: password
-    };
-    
-    $('form').ajaxForm({
-        url: base_url + "ajax.php?gallery/upload",
-        data: form_data,
-        beforeSubmit: function() {
-            $('#results').html('Submitting...');
-        },
-        success: function(data) {
-            var $out = $('#results');
-            $out.html('Your results:');
-            $out.append('<div><pre>'+ data +'</pre></div>');
-        }
-    });
-    
-    /*var image = "rthhfghfghfghth";
+    var image = "rthhfghfghfghth";
     
     var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        image: image,
+        is_ajax: 1
+    };
     
 
     $.ajax({
@@ -284,7 +263,7 @@ function upload()
             return response;
         },
         dataType: "text"//set to JSON    
-    })*/
+    })
 }
 
 /********************************** role **************************************/
@@ -397,10 +376,9 @@ function announcement_site(site_id)
     
 }
 
-/*********************** announcement_shumba************************************/
-function shumba_all()
+/*********************** announcement_body ************************************/
+function announcement_body(announce_id)
 {
-    
     var response = "";
     var form_data = {
         username: username,
@@ -410,7 +388,7 @@ function shumba_all()
 
     $.ajax({
         type: "POST", 
-        url: base_url + "ajax.php?announce/shumba_all/", 
+        url: base_url + "ajax.php?announce/body/" + announce_id, 
         data: form_data,
         success: function(response)
         {

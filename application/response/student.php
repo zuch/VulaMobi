@@ -30,12 +30,10 @@ class Student extends CI_Controller
     {
         $this->login();
         
-        //CodeIgniter Session Class
         $cookie = $this->session->userdata('cookie');
-        $username = $this->session->userdata('username');
         $cookiepath = realpath($cookie);
 
-        $url = "https://vula.uct.ac.za/portal/site/~" . $username;
+        $url = "https://vula.uct.ac.za/portal/pda/";
 
         //eat cookie..yum
         $curl = curl_init($url);
@@ -50,35 +48,32 @@ class Student extends CI_Controller
         /* Scrap! */
 
         //create html dom object
-        $html_str = "";
         $html_str = str_get_html($response);
         $html = new simple_html_dom($html_str);
 
         //Get User's Active Sites
-        $count = 0;
         $active_sites = array();
-        $ul = $html->find('ul', 0); //first ul tag
-        foreach ($ul->find('li') as $li) 
+        $count = 0;
+        if (($ul = $html->find('#pda-portlet-site-menu', 0)) != null)
         {
-            foreach ($li->find('a') as $a) 
+            $li = $ul->find('li');
+            foreach($li as $val)
             {
                 if ($count > 0)//skip workspace link  
                 {
-                    $site_id = substr($a->href, 35);
-                    if($a->title != "- more sites -")
-                    {
-                        $site = array('title' => $a->title,
+                    $href = $val->children(0)->children(0)->href;
+                    $title = $val->children(0)->children(0)->title;
+                    $site_id = substr($href, 34);
+                    $site = array('title' => $title,
                                   'site_id' => $site_id);
-                        $active_sites[] = $site;
-                    }
+                    $active_sites[] = $site;
                 }
                 $count++;
             }
         }
-        //array_slice($active_sites,1,count($active_sites)-1);
-        //$temp = '[{"title":"CS Honours, 2012","site_id":"fa532f3e-a2e1-48ec-9d78-3d5722e8b60d"},{"title":"Major Project","site_id":"43271a70-b78e-460b-a5b8-8356d0989a85"},{"title":"CS agents","site_id":"69e9386d-a772-47c6-8842-4d1d14a7650c"},{"title":"DBS","site_id":"0fecefa0-3afb-4504-a888-4bb4b48523a3"},{"title":"CSC3002F,2011","site_id":"e193c143-9d00-402b-811b-58ae999498c9"},{"title":"- more sites -","site_id":false}]';
+        
         $this->output
-        ->set_output(json_encode(array('active_sites' => $active_sites)   )   );
+            ->set_output(json_encode(array('active_sites' => $active_sites)   )   );
     }
     
     //Return name of User e.g Sascha Watermeyer
