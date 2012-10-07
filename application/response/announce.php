@@ -16,15 +16,12 @@ class Announce extends CI_Controller
     }
     
     //Get the body of an Announcement
-    public function body($announce_id)
+    public function body($site_id, $announce_id)
     {
         $this->login();
         
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
-        
-        //extract site_id & announcement_id
-        list($site_id, $announcement_id) = explode("&", $announce_id);
         
         //get last 100 announcements in the past 300 days for user
         $url = "https://vula.uct.ac.za/direct/announcement/site/" . $site_id . ".xml?n=100&d=300";
@@ -66,7 +63,7 @@ class Announce extends CI_Controller
                         break;
                 }
             }
-            $announcements[] = array('attachments' => $attachments,
+            $announcements[] = array(/*'attachments' => $attachments*/
                                      'body' => $body,
                                      'id' => $id );
         }
@@ -75,7 +72,7 @@ class Announce extends CI_Controller
         $return = "";
         foreach($announcements as $announce)
         {
-            if($announcement_id == $announce['id'])
+            if($announce_id == $announce['id'])
             {
                 $return = $announce['body'];
                 $found = true;
@@ -98,28 +95,18 @@ class Announce extends CI_Controller
     public function all()
     {
         //globals
-        $sites = array();
         $announcements = array();
-        $exists = false;
-        $announce_count = 1;
         
         //login
         $this->login();
         
-        //get Active Site id's
-        $active[] = $this->sites();
-        foreach($active as $site)
-        {
-            foreach($site as $val)
-            {
-                $sites[] = $val['site_id'];
-            }
-        }
+        //get Active Site id's   
+        $active = $this->sites();
         
         //Scrap Announcements of each Active Site
-        foreach($sites as $site_id)
+        foreach($active as $site)
         {
-            $site_xml = $this->site_php($site_id);
+            $site_xml = $this->site_php($site['site_id']);
             foreach ($site_xml as $announcement)
             { 
                 $announcements[] = array(//'attachments' => $announcement['attachments'],
@@ -127,14 +114,19 @@ class Announce extends CI_Controller
                                          'createdOn' => $announcement['createdOn'],
                                          'title' => $announcement['title'],
                                          'siteTitle' => $announcement['siteTitle'],
+                                         'site_id' => $announcement['site_id'],
                                          'announce_id' => $announcement['announce_id']);
-                $announce_count++;
             }
         }
         
+        /*foreach($announcements as $annc)
+        {
+            echo $annc['createdOn']."</br>";
+        }*/
+        
         //output
         $this->output
-         ->set_output(json_encode(array('announcements_all' => $announcements)));
+            ->set_output(json_encode(array('announcements_all' => $announcements)));
     }
     
     public function site($site_id)
@@ -204,7 +196,8 @@ class Announce extends CI_Controller
                                      'createdOn' => $createdOn,
                                      'title' => $title,
                                      'siteTitle' => $siteTitle,
-                                     'announce_id' => $site_id . "&" . $id);
+                                     'site_id' => $site_id,
+                                     'announce_id' => $id);
         }
         
         //output
@@ -249,6 +242,7 @@ class Announce extends CI_Controller
                         $createdByDisplayName = $minime;
                         break;
                     case 'createdOn':
+                        $number = $minime;
                         foreach($minime[0]->attributes() as $a => $b) 
                         {
                            if($a == "date")
@@ -273,9 +267,11 @@ class Announce extends CI_Controller
             }
             $announcements[] = array('createdByDisplayName' => $createdByDisplayName,
                                      'createdOn' => $createdOn,
+                                     'number' => $number,
                                      'title' => $title,
                                      'siteTitle' => $siteTitle,
-                                     'announce_id' => $site_id . "&" . $id);
+                                     'site_id' => $site_id, 
+                                     'announce_id' => $id );
         }
         return $announcements;
     }

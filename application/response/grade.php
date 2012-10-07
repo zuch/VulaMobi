@@ -233,21 +233,13 @@ class Grade extends CI_Controller
         //login
         $this->login();
         
-        //get Active Site id's
-        $active[] = $this->sites();
-        foreach($active as $site)
-        {
-            foreach($site as $val)
-            {
-                $sites[] = $val['site_id'];
-            }
-        }
+        //get Active Site id's   
+        $active = $this->sites();
         
         //Scrap Announcements of each Active Site
-        foreach($sites as $site_id)
+        foreach($active as $site)
         {
-            $Site_grades = $this->site_php($site_id);
-
+            $Site_grades = $this->site_php($site['site_id']);
             if(isset($Site_grades))
             {
                 foreach($Site_grades as $grade)
@@ -416,10 +408,8 @@ class Grade extends CI_Controller
     //login Vula
     public function login() 
     {        
-        //$username = $this->input->post('username');
-        //$password = $this->input->post('password');
-         $username = "wtrsas001";
-         $password = "honours";
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
         
         $credentials = array
         (
