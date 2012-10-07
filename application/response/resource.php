@@ -52,7 +52,6 @@ class Resource extends CI_Controller
 
         $base = "https://vula.uct.ac.za/access/content/group/";
         $url = $base . $site_id;
-        //echo "resource path:". $url ."</br>";
 
         //eat cookie..yum
         $curl = curl_init($url);

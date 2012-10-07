@@ -47,8 +47,8 @@ class Role extends CI_Controller
 
         if($exists)
         {
-            $url = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/" . $tool_id;
-
+            $url = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool/" . $tool_id;   
+            
             //eat cookie..yum
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -67,49 +67,39 @@ class Role extends CI_Controller
             $id = array();
             $email = array();
             $role = array();
-
-            if (($iframe_url = $html->find('iframe', 0)->src) != null) 
+            
+            if (($results_table = $html->find('form#roster_form', 0)->children(4)) != null)
             {
-                //echo "iframe_url: " . $iframe_url . "</br>";
-
-                curl_setopt($curl, CURLOPT_URL, $iframe_url);
-                $result = curl_exec($curl);
-                curl_close($curl);
-
-                $html = str_get_html($result);
-
-                if (($results_table = $html->find('form#roster_form', 0)->children(4)) != null)
+                // loop over rows
+                foreach ($results_table->find('tr') as $row) 
                 {
-                    // loop over rows
-                    foreach ($results_table->find('tr') as $row) 
+                    $td_count = 1;
+                    $td = $row->find('td');
+                    foreach ($td as $val) 
                     {
-                        $td_count = 1;
-                        $td = $row->find('td');
-                        foreach ($td as $val) 
+                        if ($td_count == 1) 
                         {
-                            if ($td_count == 1) 
-                            {
-                                $str = $val->find('a',0)->innertext;
-                                $name[] = $str;
-                            }
-                            if ($td_count == 2) 
-                            {
-                                $id[] = $val->innertext;
-                            }
-                            if ($td_count == 3) 
-                            {
-                                $str = $val->find('a',0)->innertext;
-                                $email[] = $str;
-                            }
-                            if ($td_count == 4) 
-                            {
-                                $role[] = $val->innertext;
-                            }
-                            $td_count++;
+                            $str = $val->find('a',0)->innertext;
+                            $name[] = $str;
                         }
+                        if ($td_count == 2) 
+                        {
+                            $id[] = $val->innertext;
+                        }
+                        if ($td_count == 3) 
+                        {
+                            $str = $val->find('a',0)->innertext;
+                            $email[] = $str;
+                        }
+                        if ($td_count == 4) 
+                        {
+                            $role[] = $val->innertext;
+                        }
+                        $td_count++;
                     }
                 }
             }
+         
 
             for($i = 0; $i < count($name); $i++)
             {
@@ -125,7 +115,7 @@ class Role extends CI_Controller
         }
         else//404
         {
-            echo "you are not part of this site";
+             echo "'participants' is not a tool for site_id: ". $site_id;
         }
     }
     
@@ -142,7 +132,7 @@ class Role extends CI_Controller
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
 
-        //check "gradebook" in supported tools for site
+        //check "participants" in supported tools for site
         $sup_tools = $this->sup_tools($site_id);
         foreach ($sup_tools as $tool) 
         {
@@ -155,7 +145,7 @@ class Role extends CI_Controller
 
         if($exists)
         {
-            $url = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/" . $tool_id;
+            $url = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool/" . $tool_id; 
 
             //eat cookie..yum
             $curl = curl_init($url);
@@ -171,47 +161,32 @@ class Role extends CI_Controller
             $html = new simple_html_dom($html_str);
 
             //globals
-            $name = array();
             $id = array();
-            $email = array();
-            $role = array();
-
-            if (($iframe_url = $html->find('iframe', 0)->src) != null) 
+            
+            if (($results_table = $html->find('form#roster_form', 0)->children(4)) != null)
             {
-                //echo "iframe_url: " . $iframe_url . "</br>";
-
-                curl_setopt($curl, CURLOPT_URL, $iframe_url);
-                $result = curl_exec($curl);
-                curl_close($curl);
-
-                $html = str_get_html($result);
-
-                if (($results_table = $html->find('form#roster_form', 0)->children(4)) != null)
+                // loop over rows
+                foreach ($results_table->find('tr') as $row) 
                 {
-                    // loop over rows
-                    foreach ($results_table->find('tr') as $row) 
+                    $found = false;
+                    $td_count = 1;
+                    $td = $row->find('td');
+                    foreach ($td as $val) 
                     {
-                        $found = false;
-                        $td_count = 1;
-                        $td = $row->find('td');
-                        foreach ($td as $val) 
+                        if ($td_count == 2)//username 
                         {
-                            if ($td_count == 2)//username 
+                            $id = $val->innertext;
+                            if($id == $username)
                             {
-                                $id = $val->innertext;
-                                if($id == $username)
-                                {
-                                    $found = true;
-                                }
+                                $found = true;
                             }
-                            if ($td_count == 4 && ($found))//role 
-                            {
-                                $this->output
-                                ->set_content_type('text/plain')
-                                ->set_output($val->innertext);
-                            }
-                            $td_count++;
                         }
+                        if ($td_count == 4 && ($found))//role 
+                        {
+                            $this->output
+                            ->set_output($val->innertext);
+                        }
+                        $td_count++;
                     }
                 }
             }
@@ -223,17 +198,14 @@ class Role extends CI_Controller
     }
     
     //returns array of supported tools for a site
-    // - name e.g. "CS Honours"
-    // - id e.g. "fa532f3e-a2e1-48ec-9d78-3d5722e8b60d"
-    //set "$json = 1" if want JSON resposnse else "0"
-    public function sup_tools($site_id)
-    {
+    public function sup_tools($site_id)              
+    {        
         $this->login();
         
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
 
-        $url = "https://vula.uct.ac.za/portal/site/" . $site_id;
+        $url = "https://vula.uct.ac.za/portal/pda/" . $site_id;
 
         //eat cookie..yum
         $curl = curl_init($url);
@@ -246,19 +218,20 @@ class Role extends CI_Controller
         curl_close($curl);
 
         //create html dom object
-        $html_str = "";
         $html_str = str_get_html($response);
         $html = new simple_html_dom($html_str);
-
+        
+        //scrap site title
+        $site_title = $html->find('.currentSiteLink', 0)->children(0)->children(0)->innertext;
+        
         //scrap tools list
         $tools = array();
-        $tools_ul = $html->find('#toolMenu', 0);
-        $ul = $tools_ul->children(0);
-        foreach ($ul->find('li') as $li) 
+        if (($ul = $html->find('#pda-portlet-page-menu', 0)) != null)
         {
-            foreach ($li->find('a') as $a)
+            $li = $ul->find('li');
+            foreach($li as $val)
             {
-                $tools[] = $a;
+               $tools[] = $val->children(0)->children(0);// find <a>
             }
         }
 
@@ -267,45 +240,53 @@ class Role extends CI_Controller
         foreach ($tools as $a) 
         {
             switch ($a->class) 
-            {
+            { 
                 case 'icon-sakai-announcements'://announcements
-                    $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-
-                    $tool = array('announcements' => 'announcements'
-                                  ,'tool_id' => $tool_id);
+                    $tool = array('announcements' => 'announcements',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
                     $sup_tools[] = $tool;
                     break;
                 case 'icon-sakai-chat'://chatroom
-                    $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-
-                    $tool = array('chatroom' => 'chatroom'
-                                  ,'tool_id' => $tool_id);
+                    $tool = array('chatroom' => 'chatroom',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
                     $sup_tools[] = $tool;
                     break;
                 case 'icon-sakai-gradebook-tool'://gradebook
-                    $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-
-                    $tool = array('gradebook' => 'gradebook'
-                                  ,'tool_id' => $tool_id);
+                    $tool = array('gradebook' => 'gradebook',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
                     $sup_tools[] = $tool;
                     break;
                 case 'icon-sakai-site-roster'://participants
-                    $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-
-                    $tool = array('participants' => 'participants'
-                                  ,'tool_id' => $tool_id);
+                    $tool = array('participants' => 'participants',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
                     $sup_tools[] = $tool;
                     break;
                 case 'icon-sakai-resources'://resources
-                    $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-
-                    $tool = array('resources' => 'resources'
-                                  ,'tool_id' => $tool_id);
+                    $tool = array('resources' => 'resources',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
+                    $sup_tools[] = $tool;
+                    break;
+                case 'icon-sakai-assignment-grades'://assignments
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
+                    $tool_id = str_replace($temp_replace, "", $a->href);
+                    $tool = array('assignments' => 'assignments',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
                     $sup_tools[] = $tool;
                     break;
                 default:
@@ -320,7 +301,7 @@ class Role extends CI_Controller
     {        
         $username = $this->input->post('username');
         $password = $this->input->post('password');
-
+        
         $credentials = array
         (
             'username' => $username,

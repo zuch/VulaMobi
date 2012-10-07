@@ -27,7 +27,6 @@ class Chat extends CI_Controller
         //globals
         $tool_id = "";
         $exists = false;
-        $links = array();
 
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
@@ -49,8 +48,8 @@ class Chat extends CI_Controller
             $cookie = $this->session->userdata('cookie');
             $cookiepath = realpath($cookie);
 
-            $url = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/" . $tool_id;
-
+            $url = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool/" . $tool_id;
+           
             //eat cookie..yum
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -67,27 +66,22 @@ class Chat extends CI_Controller
             //globals
             $messages = array();
 
-            if (($iframe_url = $html->find('iframe', 0)->src) != null) 
+            $chat_messages = "";
+
+            if (($chat_messages = $html->find(".chatList", 0)) != null) 
             {
-                //echo "iframe_url: " . $iframe_url . "</br>";
-
-                curl_setopt($curl, CURLOPT_URL, $iframe_url);
-                $result = curl_exec($curl);
-                $html = str_get_html($result);
-
-                $chat_messages = "";
-
-                if (($chat_messages = $html->find(".chatList", 0)) != null) 
+                if (( $li = $chat_messages->find("li")) != null)
                 {
-                    if (( $li = $chat_messages->find("li")) != null)
+                    foreach($li as $val)
                     {
-                        foreach($li as $val)
-                        {
-                            $messages[] = $val->innertext;
-                        }
+                        $message = $val->innertext;
+                        $msg = str_replace("\t", "", $message);
+                        $messages[] = $msg;
                     }
                 }
-            }//END iframe
+            }
+     
+            //output
             $this->output
             ->set_output(json_encode(array('chat' => $messages)));
         }
@@ -97,19 +91,15 @@ class Chat extends CI_Controller
         }
     }
     
-    
     //returns array of supported tools for a site
-    // - name e.g. "CS Honours"
-    // - id e.g. "fa532f3e-a2e1-48ec-9d78-3d5722e8b60d"
-    //set "$json = 1" if want JSON resposnse else "0"
-    public function sup_tools($site_id)
-    {
+    public function sup_tools($site_id)              
+    {        
         $this->login();
         
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
 
-        $url = "https://vula.uct.ac.za/portal/site/" . $site_id;
+        $url = "https://vula.uct.ac.za/portal/pda/" . $site_id;
 
         //eat cookie..yum
         $curl = curl_init($url);
@@ -122,19 +112,20 @@ class Chat extends CI_Controller
         curl_close($curl);
 
         //create html dom object
-        $html_str = "";
         $html_str = str_get_html($response);
         $html = new simple_html_dom($html_str);
-
+        
+        //scrap site title
+        $site_title = $html->find('.currentSiteLink', 0)->children(0)->children(0)->innertext;
+        
         //scrap tools list
         $tools = array();
-        $tools_ul = $html->find('#toolMenu', 0);
-        $ul = $tools_ul->children(0);
-        foreach ($ul->find('li') as $li) 
+        if (($ul = $html->find('#pda-portlet-page-menu', 0)) != null)
         {
-            foreach ($li->find('a') as $a)
+            $li = $ul->find('li');
+            foreach($li as $val)
             {
-                $tools[] = $a;
+               $tools[] = $val->children(0)->children(0);// find <a>
             }
         }
 
@@ -143,45 +134,53 @@ class Chat extends CI_Controller
         foreach ($tools as $a) 
         {
             switch ($a->class) 
-            {
+            { 
                 case 'icon-sakai-announcements'://announcements
-                    $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-
-                    $tool = array('announcements' => 'announcements'
-                                  ,'tool_id' => $tool_id);
+                    $tool = array('announcements' => 'announcements',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
                     $sup_tools[] = $tool;
                     break;
                 case 'icon-sakai-chat'://chatroom
-                    $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-
-                    $tool = array('chatroom' => 'chatroom'
-                                  ,'tool_id' => $tool_id);
+                    $tool = array('chatroom' => 'chatroom',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
                     $sup_tools[] = $tool;
                     break;
                 case 'icon-sakai-gradebook-tool'://gradebook
-                    $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-
-                    $tool = array('gradebook' => 'gradebook'
-                                  ,'tool_id' => $tool_id);
+                    $tool = array('gradebook' => 'gradebook',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
                     $sup_tools[] = $tool;
                     break;
                 case 'icon-sakai-site-roster'://participants
-                    $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-
-                    $tool = array('participants' => 'participants'
-                                  ,'tool_id' => $tool_id);
+                    $tool = array('participants' => 'participants',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
                     $sup_tools[] = $tool;
                     break;
                 case 'icon-sakai-resources'://resources
-                    $temp_replace = "https://vula.uct.ac.za/portal/site/" . $site_id . "/page/";
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-
-                    $tool = array('resources' => 'resources'
-                                  ,'tool_id' => $tool_id);
+                    $tool = array('resources' => 'resources',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
+                    $sup_tools[] = $tool;
+                    break;
+                case 'icon-sakai-assignment-grades'://assignments
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
+                    $tool_id = str_replace($temp_replace, "", $a->href);
+                    $tool = array('assignments' => 'assignments',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
                     $sup_tools[] = $tool;
                     break;
                 default:
@@ -196,7 +195,7 @@ class Chat extends CI_Controller
     {        
         $username = $this->input->post('username');
         $password = $this->input->post('password');
-
+        
         $credentials = array
         (
             'username' => $username,
