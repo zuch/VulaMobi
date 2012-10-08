@@ -63,8 +63,10 @@ class Chat extends CI_Controller
             $html_str = str_get_html($response);
             $html = new simple_html_dom($html_str);
 
-            //globals
+            //arrays
             $messages = array();
+            $names = array();
+            $times = array();
 
             $chat_messages = "";
 
@@ -75,15 +77,25 @@ class Chat extends CI_Controller
                     foreach($li as $val)
                     {
                         $message = $val->innertext;
-                        $msg = str_replace("\t", "", $message);
+                        $msg = str_replace("\\t", "", $message);
                         $messages[] = $msg;
                     }
                 }
             }
-     
+            
+            $return = array();
+            for($i = 0; $i < count($names); $i++)
+            {
+                $msg = array('name' => $names[$i],
+                             'time' => $times[$i],
+                             'text' => $messages[$i]);
+                
+                $return[] = $msg;
+            }
+            
             //output
             $this->output
-            ->set_output(json_encode(array('chat' => $messages)));
+                ->set_output(json_encode(array('chat' => $messages)));
         }
         else//404
         {
@@ -91,11 +103,28 @@ class Chat extends CI_Controller
         }
     }
     
+    //http://bit.ly/Tbk1g7
+    public function removeTag($content, $tagName) 
+    {
+        $dom = new DOMDocument();
+        $dom->loadXML($content);
+
+        $nodes = $dom->getElementsByTagName($tagName);
+
+        while ($node = $nodes->item(0)) {
+            $replacement = $dom->createDocumentFragment();
+            while ($inner = $node->childNodes->item(0)) {
+                $replacement->appendChild($inner);
+            }
+            $node->parentNode->replaceChild($replacement, $node);
+        }
+
+        return $dom->saveHTML();
+    }
+    
     //returns array of supported tools for a site
     public function sup_tools($site_id)              
     {        
-        $this->login();
-        
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
 
@@ -193,8 +222,11 @@ class Chat extends CI_Controller
     //login Vula
     public function login() 
     {        
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
+        //$username = $this->input->post('username');
+        //$password = $this->input->post('password');
+        
+        $username = "wtrsas001";
+        $password  = "honours";
         
         $credentials = array
         (

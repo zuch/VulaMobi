@@ -97,7 +97,7 @@ class Auth extends CI_Controller
         {
             $newdata = array(
                   'cookie' => $cookie,
-                  'logged_in' => TRUE
+                  'logged_in' => true
               );
             $this->session->set_userdata($newdata);
             echo "logged_in";

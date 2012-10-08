@@ -119,14 +119,14 @@ class Announce extends CI_Controller
             }
         }
         
-        /*foreach($announcements as $annc)
+        foreach($announcements as $annc)
         {
             echo $annc['createdOn']."</br>";
-        }*/
+        }
         
         //output
-        $this->output
-            ->set_output(json_encode(array('announcements_all' => $announcements)));
+        //$this->output
+        //    ->set_output(json_encode(array('announcements_all' => $announcements)));
     }
     
     public function site($site_id)
@@ -328,8 +328,11 @@ class Announce extends CI_Controller
     //login Vula
     public function login() 
     {        
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
+        //$username = $this->input->post('username');
+        //$password = $this->input->post('password');
+        
+         $username = "wtrsas001";
+         $password = "honours";
         
         $credentials = array
         (

@@ -200,8 +200,6 @@ class Role extends CI_Controller
     //returns array of supported tools for a site
     public function sup_tools($site_id)              
     {        
-        $this->login();
-        
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
 
