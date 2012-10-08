@@ -20,6 +20,7 @@ class Gallery extends CI_Controller
         //show_404();
     }
 
+    //list directory of '/uploads' for user
     public function dir() 
     {
         $this->login();
@@ -75,7 +76,6 @@ class Gallery extends CI_Controller
         $username = $this->session->userdata('username');
 
         $path = getcwd();
-        //echo $path;
 
         $upload_path = $path . "/uploads/" . $username . "/";
 
@@ -119,7 +119,7 @@ class Gallery extends CI_Controller
         } 
         else 
         {
-            echo "no POST";
+            echo "no 'image' POST parameter";
         }    
     }
     
