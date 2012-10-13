@@ -2,7 +2,7 @@
 
 /* Sascha Watermeyer - WTRSAS001
  * VulaMobi CS Honours project
- * sascha.watermeyer@gmail.com */
+ * saschawatermeyer@gmail.com */
 
 header('Access-Control-Allow-Origin: *');  
 

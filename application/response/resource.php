@@ -2,7 +2,7 @@
 
 /* Sascha Watermeyer - WTRSAS001
  * VulaMobi CS Honours project
- * sascha.watermeyer@gmail.com */
+ * saschawatermeyer@gmail.com */
 
 header('Access-Control-Allow-Origin: *');  
 
@@ -10,7 +10,7 @@ include_once 'simple_html_dom.php';
 
 class Resource extends CI_Controller 
 {
-    public $global = array();
+   // public $global = array();
     
     public function __construct() 
     {
@@ -30,8 +30,8 @@ class Resource extends CI_Controller
         $files = array();
         
         $this->login();
-      
-        $result = $this->getResource($site_id);
+        
+        $result = $this->getResource($site_id);//start recursion from root
 
         foreach($result as $resource)
         {
@@ -44,6 +44,53 @@ class Resource extends CI_Controller
         $this->output
             ->set_output(json_encode(array('resources' => $files)));  
     }
+    
+    /*public function getResource($site_id, &$global = array())
+    {
+        $cookie = $this->session->userdata('cookie');
+        $cookiepath = realpath($cookie);
+
+        $base = "https://vula.uct.ac.za /access/content/group/";
+        $url = $base . $site_id;
+
+        //eat cookie..yum
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+        $response = curl_exec($curl);
+
+        //create html dom object
+        $html_str = str_get_html($response);
+        $html = new simple_html_dom($html_str);
+
+        if (($li = $html->find('ul li')) != null)//find all <li>
+        {
+            foreach($li as $val)
+            {
+                $folder_name = "";
+                
+                if($val->class == "folder")
+                {    
+                    //folder name
+                    $folder_name = $val->children(0)->href;
+                    
+                    //pass through new folder name for recursion
+                    $this->getResource($site_id . "/". $folder_name, $global);
+                }
+                if($val->class == "file")
+                {   
+                    $file = array('folder' => $folder_name,
+                                  'title' => $val->children(0)->innertext,
+                                  'href' => $base . $val->children(0)->href );
+                    $global[] = $file;
+                }
+            }
+        }
+        return $global;
+    }*/
     
     public function getResource($site_id, &$global = array())
     {
@@ -85,7 +132,7 @@ class Resource extends CI_Controller
         }
         return $global;
     }
-        
+    
     //login Vula
     public function login() 
     {        

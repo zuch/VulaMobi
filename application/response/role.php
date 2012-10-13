@@ -2,7 +2,7 @@
 
 /* Sascha Watermeyer - WTRSAS001
  * VulaMobi CS Honours project
- * sascha.watermeyer@gmail.com */
+ * saschawatermeyer@gmail.com */
 
 header('Access-Control-Allow-Origin: *');  
 
@@ -34,7 +34,7 @@ class Role extends CI_Controller
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
 
-        //check "gradebook" in supported tools for site
+        //check "participants" in supported tools for site
         $sup_tools = $this->sup_tools($site_id, 0);
         foreach ($sup_tools as $tool) 
         {
@@ -77,21 +77,21 @@ class Role extends CI_Controller
                     $td = $row->find('td');
                     foreach ($td as $val) 
                     {
-                        if ($td_count == 1) 
+                        if ($td_count == 1)//name
                         {
                             $str = $val->find('a',0)->innertext;
                             $name[] = $str;
                         }
-                        if ($td_count == 2) 
+                        if ($td_count == 2)//student number 
                         {
                             $id[] = $val->innertext;
                         }
-                        if ($td_count == 3) 
+                        if ($td_count == 3)//email
                         {
                             $str = $val->find('a',0)->innertext;
                             $email[] = $str;
                         }
-                        if ($td_count == 4) 
+                        if ($td_count == 4)//role
                         {
                             $role[] = $val->innertext;
                         }

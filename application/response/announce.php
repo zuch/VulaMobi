@@ -2,7 +2,7 @@
 
 /* Sascha Watermeyer - WTRSAS001
  * VulaMobi CS Honours project
- * sascha.watermeyer@gmail.com */
+ * saschawatermeyer@gmail.com */
 
 header('Access-Control-Allow-Origin: *');  
 
@@ -121,12 +121,12 @@ class Announce extends CI_Controller
         
         foreach($announcements as $annc)
         {
-            echo $annc['createdOn']."</br>";
+            //echo $annc['createdOn']."</br>";
         }
         
         //output
-        //$this->output
-        //    ->set_output(json_encode(array('announcements_all' => $announcements)));
+        $this->output
+            ->set_output(json_encode(array('announcements_all' => $announcements)));
     }
     
     public function site($site_id)

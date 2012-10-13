@@ -2,7 +2,7 @@
 
 /* Sascha Watermeyer - WTRSAS001
  * VulaMobi CS Honours project
- * sascha.watermeyer@gmail.com */
+ * saschawatermeyer@gmail.com */
 
 header('Access-Control-Allow-Origin: *');  
 
@@ -20,7 +20,6 @@ class Assign extends CI_Controller
         //show_404();
     }
     
-    //-----------------------------------all()----------------------------------
     //return all Assignments for Active Sites
     public function all()
     {
@@ -39,6 +38,7 @@ class Assign extends CI_Controller
                 $sites[] = $val['site_id'];
             }
         }
+        
         //Scrap Announcements of each Active Site
         foreach($sites as $site_id)
         {
@@ -117,21 +117,17 @@ class Assign extends CI_Controller
                 foreach ($td as $val)
                 {
                     if ($td_count == 2)//Assignment Title
-                    {
                         $title[] = $val->children(0)->children(0)->innertext;
-                    }
+                    
                     if ($td_count == 4)//Status
-                    {
                        $status[] = $val->innertext;
-                    }
+                    
                     if ($td_count == 5)//Open
-                    {
                         $open[] = $val->innertext;
-                    }
+                    
                     if ($td_count == 6)//Due
-                    {
                        $due[] = $val->innertext;
-                    }
+                    
                     $td_count++;
                 }
             }
@@ -213,21 +209,17 @@ class Assign extends CI_Controller
                 foreach ($td as $val)
                 {
                     if ($td_count == 2)//Assignment Title
-                    {
                         $title[] = $val->children(0)->children(0)->innertext;
-                    }
+                    
                     if ($td_count == 4)//Status
-                    {
                        $status[] = $val->innertext;
-                    }
+                    
                     if ($td_count == 5)//Open
-                    {
                         $open[] = $val->innertext;
-                    }
+                    
                     if ($td_count == 6)//Due
-                    {
                        $due[] = $val->innertext;
-                    }
+                    
                     $td_count++;
                 }
             }

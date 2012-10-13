@@ -2,7 +2,7 @@
 
 /* Sascha Watermeyer - WTRSAS001
  * VulaMobi CS Honours project
- * sascha.watermeyer@gmail.com */
+ * saschawatermeyer@gmail.com */
 
 header('Access-Control-Allow-Origin: *'); 
 
@@ -134,6 +134,106 @@ class Student extends CI_Controller
         $this->login();
         
         echo $this->session->userdata('username');
+    }
+    
+    //returns array of supported tools for a site
+    public function sup_tools($site_id)              
+    {        
+        $cookie = $this->session->userdata('cookie');
+        $cookiepath = realpath($cookie);
+
+        $url = "https://vula.uct.ac.za/portal/pda/" . $site_id;
+
+        //eat cookie..yum
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        //create html dom object
+        $html_str = str_get_html($response);
+        $html = new simple_html_dom($html_str);
+        
+        //scrap site title
+        $site_title = $html->find('.currentSiteLink', 0)->children(0)->children(0)->innertext;
+        
+        //scrap tools list
+        $tools = array();
+        if (($ul = $html->find('#pda-portlet-page-menu', 0)) != null)
+        {
+            $li = $ul->find('li');
+            foreach($li as $val)
+            {
+               $tools[] = $val->children(0)->children(0);// find <a>
+            }
+        }
+
+        //Check for supported tools
+        $sup_tools = array();
+        foreach ($tools as $a) 
+        {
+            switch ($a->class) 
+            { 
+                case 'icon-sakai-announcements'://announcements
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
+                    $tool_id = str_replace($temp_replace, "", $a->href);
+                    $tool = array('announcements' => 'announcements',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
+                    $sup_tools[] = $tool;
+                    break;
+                case 'icon-sakai-chat'://chatroom
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
+                    $tool_id = str_replace($temp_replace, "", $a->href);
+                    $tool = array('chatroom' => 'chatroom',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
+                    $sup_tools[] = $tool;
+                    break;
+                case 'icon-sakai-gradebook-tool'://gradebook
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
+                    $tool_id = str_replace($temp_replace, "", $a->href);
+                    $tool = array('gradebook' => 'gradebook',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
+                    $sup_tools[] = $tool;
+                    break;
+                case 'icon-sakai-site-roster'://participants
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
+                    $tool_id = str_replace($temp_replace, "", $a->href);
+                    $tool = array('participants' => 'participants',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
+                    $sup_tools[] = $tool;
+                    break;
+                case 'icon-sakai-resources'://resources
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
+                    $tool_id = str_replace($temp_replace, "", $a->href);
+                    $tool = array('resources' => 'resources',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
+                    $sup_tools[] = $tool;
+                    break;
+                case 'icon-sakai-assignment-grades'://assignments
+                    $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
+                    $tool_id = str_replace($temp_replace, "", $a->href);
+                    $tool = array('assignments' => 'assignments',
+                                  'site_title' => $site_title,
+                                  'tool_id' => $tool_id);
+                    $sup_tools[] = $tool;
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+        //output
+        $this->output
+            ->set_output(json_encode(array('sup_tools' => $sup_tools)));
     }
     
     //login Vula

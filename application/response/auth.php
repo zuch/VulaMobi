@@ -2,7 +2,7 @@
 
 /* Sascha Watermeyer - WTRSAS001
  * VulaMobi CS Honours project
- * sascha.watermeyer@gmail.com */
+ * saschawatermeyer@gmail.com */
 
 header('Access-Control-Allow-Origin: *');  
 
@@ -41,6 +41,16 @@ class Auth extends CI_Controller
         
         $path = getcwd();
 
+        $upload_path = $path . "/uploads/" . $username . "/";
+
+        if (!is_dir($upload_path))
+             mkdir($upload_path, 0777, true);
+        if (!is_dir($upload_path . 'thumbs/'))
+            mkdir($upload_path . 'thumbs/', 0777, true);
+        
+        //log
+        /*$path = getcwd();
+
         $file_path = $path . "/application/cache/users.txt";
         
         $file = fopen($file_path, "r") or exit();
@@ -61,7 +71,7 @@ class Auth extends CI_Controller
            $names_separated = implode("\n", $names);
            fwrite($file, $names_separated); 
         }
-        fclose($file);
+        fclose($file);*/
         
         //empty username or password
         if($username==null || $password==null)

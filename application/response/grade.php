@@ -1,8 +1,8 @@
 <?php
 
 /* Sascha Watermeyer - WTRSAS001
-* VulaMobi CS Honours project
-* sascha.watermeyer@gmail.com */
+ * VulaMobi CS Honours project
+ * saschawatermeyer@gmail.com */
 
 header('Access-Control-Allow-Origin: *');
 
@@ -78,14 +78,12 @@ class Grade extends CI_Controller
                     $td = $row->find('td');
                     foreach ($td as $val)
                     {
-                        if ($td_count == 1)
-                        {
+                        if ($td_count == 1)//test names
                             $test_names[] = $val->innertext;
-                        }
-                        if ($td_count == 2)
-                        {
+                        
+                        if ($td_count == 2)//test dates
                             $test_dates[] = $val->innertext;
-                        }
+                        
                         if ($td_count == 3)//test marks
                         {
                             //parse for Don
@@ -121,7 +119,7 @@ class Grade extends CI_Controller
         }
         else
         {
-            echo "'gradebook' is not a tool for ". $site_title;
+            echo "'gradebook' is not a tool for ". $site_id;
         }
     }
     
@@ -182,14 +180,12 @@ class Grade extends CI_Controller
                     $td = $row->find('td');
                     foreach ($td as $val)
                     {
-                        if ($td_count == 1)
-                        {
+                        if ($td_count == 1)//test names
                             $test_names[] = $val->innertext;
-                        }
-                        if ($td_count == 2)
-                        {
+                        
+                        if ($td_count == 2)//test dates
                             $test_dates[] = $val->innertext;
-                        }
+                        
                         if ($td_count == 3)//test marks
                         {
                             //parse for Don
