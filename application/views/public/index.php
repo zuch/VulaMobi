@@ -31,6 +31,7 @@
 <input type="submit" name="submit" id="announcement_body" value="announce/body" onclick="announcement_body('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d','3c40ff32-680f-42ee-8f34-fa5271e39c17');">CS Honours 2012 random announcement</br>
 <input type="submit" name="submit" id="announcement_all" value="announce/all" onclick="announcement_all();">Announcements for All Active Sites</br>
 <input type="submit" name="submit" id="resource" value="resource/site" onclick="resource('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
+<input type="submit" name="submit" id="resource" value="resource/page" onclick="page('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
 <input type="submit" name="submit" id="chat" value="chat/site" onclick="chat('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
 <input type="submit" name="submit" id="chat" value="assign/site" onclick="assign('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
 <input type="submit" name="submit" id="chat" value="assign/all" onclick="assign_all();">Assignments for All Active Sites</br></br>

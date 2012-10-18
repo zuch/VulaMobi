@@ -103,8 +103,8 @@ class Gallery extends CI_Controller
                 
                 //create thumb nail
                 $thumb_path = $upload_path . "thumbs/thumb_" . $filename;
-                $tn_height = "100"; 
-                $tn_width = "100";
+                $tn_height = "75"; 
+                $tn_width = "75";
                 
                 $src = @ImageCreateFromJpeg($file); 
                 $dst = ImageCreateTrueColor($tn_width,$tn_height);
