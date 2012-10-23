@@ -156,19 +156,12 @@ class Chat extends CI_Controller
                 }
             }
             
-            $return = array();
-            for($i = 0; $i < count($names); $i++)
-            {
-                $msg = array('name' => $names[$i],
-                             'time' => $times[$i],
-                             'text' => $messages[$i]);
-                
-                $return[] = $msg;
-            }
+            //reverse order to show latest at top
+            $return = array_reverse($messages);
             
             //output
             $this->output
-                ->set_output(json_encode(array('chat' => $messages)));
+                ->set_output(json_encode(array('chat' => $return)));
         }
         else//404
         {
