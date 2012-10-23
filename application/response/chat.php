@@ -20,6 +20,79 @@ class Chat extends CI_Controller
         //show_404();
     }
     
+    public function submit($site_id)
+    {
+        $this->login();
+        
+        //globals
+        $tool_id = "";
+        $exists = false;
+        $username = $this->session->userdata('username');
+        $password = $this->session->userdata('password');
+        $body = $this->input->post('body');
+
+        $cookie = $this->session->userdata('cookie');
+        $cookiepath = realpath($cookie);
+
+        //check "chatroom" in supported tools for site
+        $sup_tools = $this->sup_tools($site_id, 0);
+        foreach ($sup_tools as $tool) 
+        {
+            if(array_key_exists('chatroom',$tool))
+            {
+                $exists = true;
+                $tool_id = $tool['tool_id'];
+            }
+        }
+
+        if($exists)
+        {
+            $url = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool/" . $tool_id;   
+            
+            //eat cookie..yum
+            $curl = curl_init($url);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+            $response = curl_exec($curl);
+            curl_close($curl);
+            
+            //create html dom object
+            $html_str = str_get_html($response);
+            $html = new simple_html_dom($html_str);
+            
+            if(($channel_id = $html->find('input[id=topForm:chatidhidden]',0)->value) != null)//get Channel ID
+            {
+                $url = "https://vula.uct.ac.za/direct/chat-message/new";
+                $curl = curl_init($url);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($curl, CURLOPT_USERPWD, "$username:$password");
+                curl_setopt($curl, CURLOPT_POSTFIELDS, array('chatChannelId' => $channel_id, 'body' => $body));
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
+
+                $response = curl_exec($curl);
+
+                $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                if($http_status == "400")//Invalid Channel ID
+                {
+                    echo "Invalid Channel ID";
+                }
+                else
+                {
+                    echo "Success";
+                }
+            }
+        }
+        else//404
+        {
+            echo "'chatroom' is not a tool for site_id: ". $site_id;
+        }
+    }
+    
     public function site($site_id)
     {   
         $this->login();
@@ -224,7 +297,7 @@ class Chat extends CI_Controller
     {        
         $username = $this->input->post('username');
         $password = $this->input->post('password');
- 
+        
         $credentials = array
         (
             'username' => $username,

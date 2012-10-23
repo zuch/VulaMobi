@@ -427,6 +427,34 @@ function chat(site_id)
     
 }
 
+/********************************** submit *************************************/
+function submit(site_id)
+{  
+    var body = $("#msg").val();
+    //var body = $.('#chattext'   ).text();
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        body: body,
+        is_ajax: 1
+    };
+        
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?chat/submit/" + site_id, 
+        data: form_data,
+        success: function(response)
+        {
+            console.log(response);
+            alert(response);
+            return response;
+        }
+        /*dataType: "text"//set to JSON*/      
+    })
+    
+}
+
 /********************************** resources *********************************/
 function resource(site_id)
 {
