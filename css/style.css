@@ -20,8 +20,33 @@ h2{color:blue }
 
 h3{color:blue }
 
+#wrapper
+{
+    margin: 0 auto;
+    width: 700px;
+}
 #content
 {
+    width: 100%;
+}
+#status
+{
+    /*visibility:hidden;*/
+    margin: 0 auto;
+    width: 200px;
     text-align:center;
-    margin:0 auto;
+    background-color:yellow;
+}
+#login
+{
+    text-align:center;
+    width: 100%;
+}
+#heading
+{
+    text-align:center;
+}
+#footer
+{
+    text-align:center;
 }

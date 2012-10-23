@@ -1,15 +1,17 @@
 /****************************************
-*   Sascha Watermeyer - WTRSAS001       *
-*   Vulamobi CS Honours project         *
-*   sascha.watermeyer@gmail.com         *
-*   ----------------------------------  *
-*   Client Side Javascript to           *
-*   interact with the VulaMobi Backend  *
-*****************************************/
+ *   Sascha Watermeyer - WTRSAS001       *
+ *   Vulamobi CS Honours project         *
+ *   sascha.watermeyer@gmail.com         *
+ *   ----------------------------------  *
+ *   Client Side Javascript to           *
+ *   interact with the VulaMobi Backend  *
+ *****************************************/
 
+
+    
 /* Globals*/
-//var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';//production
-var base_url = 'http://localhost/VulaMobi/';//development
+var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';//production
+//var base_url = 'http://localhost/VulaMobi/';//development
 
 var username = "";//global username set when you initially login
 var password = "";//global password set when you initially login
@@ -40,19 +42,15 @@ function login(user, pwd)
             console.log(response);
             if(response == "Empty Username or Password")//username or password empty
             {
-                alert(response);
+                $('#status').fadeIn('slow').text(response).fadeOut(1500);
             }
             else if(response == "Incorrect Username or Password")//username or password incorrect
             {
-                alert(response);
+                $('#status').fadeIn('slow').text(response).fadeOut(1500);
             }
             else if(response == "logged_in") //logged_in
             {
-               alert(response);
-            }
-            else if(response == "logged_out") //logged_out
-            {
-                alert(response);
+                $('#status').fadeIn('slow').text('Logged In').fadeOut(1500);
             }
         },
         dataType: "text"    
@@ -75,8 +73,7 @@ function logout()
         success: function(response)
         {
             console.log(response);
-            alert(response);
-            return "logged_out";
+            $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
         },
         dataType: "text"    
     })
@@ -102,11 +99,16 @@ function sites()
         data: form_data,
         success: function(response)
         {
-            console.log(response);
-            alert(response);
-            return response;
-        },
-        dataType: "text"    
+            if(response == "Empty Username or Password")//username or password empty
+            {
+               $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            }
+        }  
     })
     
 }
@@ -127,11 +129,17 @@ function grade(site_id)
         data: form_data,
         success: function(response)
         {
-            console.log(response);
-            alert(response);
-            return response;
-        },
-        dataType: "text"//set to JSON    
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            }
+
+        }
     })
     
 }
@@ -152,11 +160,16 @@ function grade_all(site_id)
         data: form_data,
         success: function(response)
         {
-            console.log(response);
-            alert(response);
-            return response;
-        },
-        dataType: "text"//set to JSON    
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            }
+        }
     })
 }
 
@@ -177,11 +190,16 @@ function user_name()
         data: form_data,
         success: function(response)
         {
-            console.log(response);
-            alert(response);
-            return response;
-        },
-        dataType: "text"    
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            }
+        }   
     })
     
 } 
@@ -203,11 +221,16 @@ function user_id()
         data: form_data,
         success: function(response)
         {
-            console.log(response);
-            alert(response);
-            return response;
-        },
-        dataType: "text"    
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            }
+        }  
     })
      
 } 
@@ -229,41 +252,19 @@ function gallery()
         data: form_data,
         success: function(response)
         {
-            console.log(response);
-            alert(response);
-            return response;
-        },
-        dataType: "text"//set to JSON    
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            }
+        }    
     })
     
 
-}
-/********************************** upload ***********************************/
-function upload()
-{
-    var image = "rthhfghfghfghth";
-    
-    var response = "";
-    var form_data = {
-        username: username,
-        password: password,
-        image: image,
-        is_ajax: 1
-    };
-    
-
-    $.ajax({
-        type: "POST", 
-        url: base_url + "ajax.php?gallery/upload", 
-        data: form_data,
-        success: function(response)
-        {
-            console.log(response);
-            alert(response);
-            return response;
-        },
-        dataType: "text"//set to JSON    
-    })
 }
 
 /********************************** role **************************************/
@@ -283,11 +284,16 @@ function role(site_id)
         data: form_data,
         success: function(response)
         {
-            console.log(response);
-            alert(response);
-            return response;
-        },
-        dataType: "text"  
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            }
+        } 
     })
     
 }
@@ -309,11 +315,16 @@ function roster(site_id)
         data: form_data,
         success: function(response)
         {
-            console.log(response);
-            alert(response);
-            return response; 
-        },
-        dataType: "text"//set to JSON    
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            }
+        }  
     })
     
 }
@@ -335,19 +346,17 @@ function announcement_all()
         data: form_data,
         success: function(response)
         {
-            console.log(response);
-            alert(response);
-            return response;
-        },
-        dataType: "text"//set to JSON   
-    })
-    
-    $.getJSON( base_url + "ajax.php?announce/all/" , function(data) 
-    {
-        
-  });
-    
-       
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            }
+        } 
+    })   
 }
 
 /*********************** announcement_site ************************************/
@@ -367,11 +376,16 @@ function announcement_site(site_id)
         data: form_data,
         success: function(response)
         {
-            console.log(response);
-            alert(response);
-            return response; 
-        },
-        dataType: "text"//set to JSON    
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            }
+        } 
     })
     
 }
@@ -392,11 +406,16 @@ function announcement_body(site_id, announce_id)
         data: form_data,
         success: function(response)
         {
-            console.log(response);
-            alert(response);
-            return response; 
-        },
-        dataType: "text"//set to JSON    
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            } 
+        }   
     })
     
 }
@@ -418,11 +437,16 @@ function chat(site_id)
         data: form_data,
         success: function(response)
         {
-            console.log(response);
-            alert(response);
-            return response;
-        },
-        dataType: "text"//set to JSON      
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            }
+        }  
     })
     
 }
@@ -446,11 +470,16 @@ function submit(site_id)
         data: form_data,
         success: function(response)
         {
-            console.log(response);
-            alert(response);
-            return response;
-        }
-        /*dataType: "text"//set to JSON*/      
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            }
+        }   
     })
     
 }
@@ -470,8 +499,15 @@ function resource(site_id)
         url: base_url + "ajax.php?resource/site/" + site_id, 
         data: form_data, 
         success: function(response){
-            console.log(response)
-            alert(response);
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            }
         }
     });
     
@@ -490,8 +526,15 @@ function assign(site_id)
         url: base_url + "ajax.php?assign/site/" + site_id, 
         data: form_data, 
         success: function(response){
-            console.log(response)
-            alert(response);
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            }
         }
     });
     
@@ -511,8 +554,15 @@ function assign_all()
         url: base_url + "ajax.php?assign/all", 
         data: form_data, 
         success: function(response){
-            console.log(response)
-            alert(response);
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                console.log(response);
+                alert(response);
+            }
         }
     });
     
@@ -555,7 +605,7 @@ function example()
                            {"Language":"Ruby","ID":"9"}]'*/
             console.log(response);
             
-	    var json_obj = $.parseJSON(response);//parse JSON
+            var json_obj = $.parseJSON(response);//parse JSON
             
             var output="<ul>";
             for (var i in json_obj) 
@@ -568,47 +618,4 @@ function example()
         },
         dataType: "json"//set to JSON    
     })    
-}
-
-/********************************** grade example **************************************/
-function active_sites_example()
-{
-    //$.ajaxSetup({ dataType: 'json' });
-    
-    var response = "";
-    var form_data = {
-        username: username,
-        password: password,
-        is_ajax: 1
-    };
-    
-    
-    $.ajax({
-        type: "POST", 
-        url: base_url + "ajax.php?student/sites", 
-        data: form_data,
-        dataType: "json",
-        cache: false,
-        success: function(response, status)
-        {
-           console.log(response);
-           console.log(status);
-            //var json_str = '[{"title":"CS Honours, 2012","site_id":"fa532f3e-a2e1-48ec-9d78-3d5722e8b60d"},{"title":"Major Project","site_id":"43271a70-b78e-460b-a5b8-8356d0989a85"},{"title":"CS agents","site_id":"69e9386d-a772-47c6-8842-4d1d14a7650c"},{"title":"DBS","site_id":"0fecefa0-3afb-4504-a888-4bb4b48523a3"},{"title":"CSC3002F,2011","site_id":"e193c143-9d00-402b-811b-58ae999498c9"},{"title":"- more sites -","site_id":false}]';
-            
-	    var json = $.parseJSON(response);//parse JSON
-            
-            var output="<ul>";
-            for (var i = 0; i < json.length; i++) 
-            {
-                var site = json[i];
-                output+="<li>" + site.title + ",  " + site.site_id + "</li>";
-            }
-
-            output+="</ul>";
-            
-            var t = "<h1>test</h1>";
-            
-            $('span').html(output);
-        }   
-    })   
 }

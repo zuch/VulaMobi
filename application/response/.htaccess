@@ -1,0 +1,2 @@
+#Some systems might restrict access to remote unrecognized paths. This ensures the files are here are readable.
+deny from all
