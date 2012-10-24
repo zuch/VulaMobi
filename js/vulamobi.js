@@ -15,6 +15,9 @@ var base_url = 'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/';//production
 
 var username = "";//global username set when you initially login
 var password = "";//global password set when you initially login
+var on = false;
+
+//++++++++++++++++++++++++++++++++++ DEMO ++++++++++++++++++++++++++++++++++++++
 
 /********************************** login *************************************/
 function login(user, pwd)
@@ -51,10 +54,19 @@ function login(user, pwd)
             else if(response == "logged_in") //logged_in
             {
                 $('#status').fadeIn('slow').text('Logged In').fadeOut(1500);
+                home();
             }
         },
         dataType: "text"    
     })
+}
+
+/************************************* logout *********************************/
+function home()
+{
+    $('#home').html('');
+    user_name();
+    active_sites();
 }
 
 /************************************* logout *********************************/
@@ -72,20 +84,19 @@ function logout()
         data: form_data,
         success: function(response)
         {
-            console.log(response);
+            $('#home').html('');
+            $('#demo_heading').html('');
+            $('#demo_content').html('');
             $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-        },
-        dataType: "text"    
+            username = "";
+            password = "";
+        } 
     })
-    
-    username = "";
-    password = "";
 }
 
-/********************************** sites *************************************/
-function sites()
+/********************************** active_sites *************************************/
+function active_sites()
 {  
-    
     var response = "";
     var form_data = {
         username: username,
@@ -105,10 +116,141 @@ function sites()
             }
             else
             {
+                var json_obj = $.parseJSON(response);//parse JSON
+            
                 console.log(response);
-                alert(response);
+                
+                var output="<ul>";
+                for (var i in json_obj.active_sites) 
+                {
+                    var site_id = json_obj.active_sites[i].site_id;
+                    var title = json_obj.active_sites[i].title;
+                    var site_id_temp = "'"+site_id+"'";
+                    var onclick = 'onclick="sup_tools(' + site_id_temp + ');"';   
+                    output += "<li><a " + onclick +     ">" + title + "</a></li>";
+                }
+                output+="</ul>";
+
+                $('#demo_content').html(output);
             }
         }  
+    }) 
+}
+
+/********************************** sup_tools *************************************/
+function sup_tools(site_id)
+{
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
+        
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?student/sup_tools/" + site_id, 
+        data: form_data,
+        success: function(response)
+        {
+            console.log(response);
+            var json_obj = $.parseJSON(response);//parse JSON
+               
+            var output='<ul>';
+            for (var i in json_obj.sup_tools) 
+            {
+                var type = json_obj.sup_tools[i].type; 
+                var site_title = json_obj.sup_tools[i].site_title;
+                
+                if(type == "announcements")
+                {
+                    output+='<li><a onclick="announcement_site_demo('+ site_id +');">' + "Announcements" + '</a></li>';
+                }
+                else if(type == "chatroom")
+                {
+                    output+='<li><a onclick="chat_demo('+ site_id +');">' + "Chatroom" + '</a></li>';
+                }
+                else if(type == "gradebook")
+                {
+                    output+='<li><a onclick="grade_demo('+ site_id +');">' + "Gradebook" + '</a></li>';
+                }
+                else if(type == "participants")
+                {
+                    output+='<li><a onclick="role_demo('+ site_id +');">' + "Participants" + '</a></li>';
+                }
+                else//resources
+                {
+                    output+='<li><a onclick="resource_demo('+ site_id +');">' + "Resources" + '</a></li>';
+                }
+            }
+            output+="</ul>";
+
+            $('#demo_heading').html(site_title);
+            $('#demo_content').html(output);
+            $('#home').html('<button type="button" onclick="home();">Home</button> ');
+        }  
+    })
+}
+
+/********************************** user_name **************************************/
+function user_name()
+{  
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
+
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?student/name", 
+        data: form_data,
+        success: function(response)
+        {
+            console.log(response);
+            if(response == "Empty Username or Password")//username or password empty
+            {
+                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
+            }
+            else
+            {
+                $('#demo_heading').html(response);
+            }
+        }   
+    })
+    
+}
+
+//+++++++++++++++++++++++++++++++++END DEMO+++++++++++++++++++++++++++++++++++++
+
+/*********************************** show *************************************/
+function show()
+{
+    if(on)
+    getElementById('docs').style.display = 'block'
+}
+
+/********************************** sites *************************************/
+function sites()
+{
+    
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
+        
+    $.ajax({
+        type: "POST",
+        url: base_url + "ajax.php?student/sites",
+        data: form_data,
+        success: function(response)
+        {            
+            console.log(response);
+            alert(response);   
+        }
     })
     
 }
@@ -129,16 +271,8 @@ function grade(site_id)
         data: form_data,
         success: function(response)
         {
-            if(response == "Empty Username or Password")//username or password empty
-            {
-                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-            }
-            else
-            {
-                console.log(response);
-                alert(response);
-            }
-
+            console.log(response);
+            alert(response);
         }
     })
     
@@ -146,7 +280,7 @@ function grade(site_id)
 
 
 /********************************** grade_all *************************************/
-function grade_all(site_id)
+function grade_all()
 {  
     var response = "";
     var form_data = {
@@ -160,22 +294,15 @@ function grade_all(site_id)
         data: form_data,
         success: function(response)
         {
-            if(response == "Empty Username or Password")//username or password empty
-            {
-                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-            }
-            else
-            {
-                console.log(response);
-                alert(response);
-            }
+            console.log(response);
+            alert(response);   
         }
     })
 }
 
-/********************************** name **************************************/
-function user_name()
-{  
+/********************************** s_name **************************************/
+function s_name()
+{
     
     var response = "";
     var form_data = {
@@ -185,21 +312,14 @@ function user_name()
     };
 
     $.ajax({
-        type: "POST", 
-        url: base_url + "ajax.php?student/name", 
+        type: "POST",
+        url: base_url + "ajax.php?student/name",
         data: form_data,
         success: function(response)
         {
-            if(response == "Empty Username or Password")//username or password empty
-            {
-                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-            }
-            else
-            {
-                console.log(response);
-                alert(response);
-            }
-        }   
+            console.log(response);
+            alert(response);   
+        }
     })
     
 } 
@@ -221,15 +341,8 @@ function user_id()
         data: form_data,
         success: function(response)
         {
-            if(response == "Empty Username or Password")//username or password empty
-            {
-                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-            }
-            else
-            {
-                console.log(response);
-                alert(response);
-            }
+            console.log(response);
+            alert(response);   
         }  
     })
      
@@ -252,15 +365,8 @@ function gallery()
         data: form_data,
         success: function(response)
         {
-            if(response == "Empty Username or Password")//username or password empty
-            {
-                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-            }
-            else
-            {
-                console.log(response);
-                alert(response);
-            }
+            console.log(response);
+            alert(response);   
         }    
     })
     
@@ -284,15 +390,8 @@ function role(site_id)
         data: form_data,
         success: function(response)
         {
-            if(response == "Empty Username or Password")//username or password empty
-            {
-                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-            }
-            else
-            {
-                console.log(response);
-                alert(response);
-            }
+            console.log(response);
+            alert(response);   
         } 
     })
     
@@ -315,15 +414,8 @@ function roster(site_id)
         data: form_data,
         success: function(response)
         {
-            if(response == "Empty Username or Password")//username or password empty
-            {
-                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-            }
-            else
-            {
-                console.log(response);
-                alert(response);
-            }
+            console.log(response);
+            alert(response);   
         }  
     })
     
@@ -346,15 +438,8 @@ function announcement_all()
         data: form_data,
         success: function(response)
         {
-            if(response == "Empty Username or Password")//username or password empty
-            {
-                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-            }
-            else
-            {
-                console.log(response);
-                alert(response);
-            }
+            console.log(response);
+            alert(response);   
         } 
     })   
 }
@@ -376,15 +461,8 @@ function announcement_site(site_id)
         data: form_data,
         success: function(response)
         {
-            if(response == "Empty Username or Password")//username or password empty
-            {
-                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-            }
-            else
-            {
-                console.log(response);
-                alert(response);
-            }
+            console.log(response);
+            alert(response);   
         } 
     })
     
@@ -406,15 +484,8 @@ function announcement_body(site_id, announce_id)
         data: form_data,
         success: function(response)
         {
-            if(response == "Empty Username or Password")//username or password empty
-            {
-                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-            }
-            else
-            {
-                console.log(response);
-                alert(response);
-            } 
+            console.log(response);
+            alert(response);   
         }   
     })
     
@@ -437,15 +508,8 @@ function chat(site_id)
         data: form_data,
         success: function(response)
         {
-            if(response == "Empty Username or Password")//username or password empty
-            {
-                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-            }
-            else
-            {
-                console.log(response);
-                alert(response);
-            }
+            console.log(response);
+            alert(response);   
         }  
     })
     
@@ -470,15 +534,8 @@ function submit(site_id)
         data: form_data,
         success: function(response)
         {
-            if(response == "Empty Username or Password")//username or password empty
-            {
-                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-            }
-            else
-            {
-                console.log(response);
-                alert(response);
-            }
+            console.log(response);
+            alert(response);   
         }   
     })
     
@@ -499,15 +556,8 @@ function resource(site_id)
         url: base_url + "ajax.php?resource/site/" + site_id, 
         data: form_data, 
         success: function(response){
-            if(response == "Empty Username or Password")//username or password empty
-            {
-                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-            }
-            else
-            {
-                console.log(response);
-                alert(response);
-            }
+            console.log(response);
+            alert(response);
         }
     });
     
@@ -526,15 +576,9 @@ function assign(site_id)
         url: base_url + "ajax.php?assign/site/" + site_id, 
         data: form_data, 
         success: function(response){
-            if(response == "Empty Username or Password")//username or password empty
-            {
-                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-            }
-            else
-            {
-                console.log(response);
-                alert(response);
-            }
+            console.log(response);
+            alert(response);
+            
         }
     });
     
@@ -554,15 +598,8 @@ function assign_all()
         url: base_url + "ajax.php?assign/all", 
         data: form_data, 
         success: function(response){
-            if(response == "Empty Username or Password")//username or password empty
-            {
-                $('#status').fadeIn('slow').text('Logged Out').fadeOut(1500);
-            }
-            else
-            {
-                console.log(response);
-                alert(response);
-            }
+            console.log(response);
+            alert(response);
         }
     });
     

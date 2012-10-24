@@ -138,7 +138,9 @@ class Student extends CI_Controller
     
     //returns array of supported tools for a site
     public function sup_tools($site_id)              
-    {        
+    {    
+        $this->login();
+        
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
 
@@ -181,49 +183,43 @@ class Student extends CI_Controller
                 case 'icon-sakai-announcements'://announcements
                     $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-                    $tool = array('announcements' => 'announcements',
-                                  'site_title' => $site_title,
-                                  'tool_id' => $tool_id);
+                    $tool = array('type' => 'announcements',
+                                  'site_title' => $site_title);
                     $sup_tools[] = $tool;
                     break;
                 case 'icon-sakai-chat'://chatroom
                     $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-                    $tool = array('chatroom' => 'chatroom',
-                                  'site_title' => $site_title,
-                                  'tool_id' => $tool_id);
+                    $tool = array('type' => 'chatroom',
+                                  'site_title' => $site_title);
                     $sup_tools[] = $tool;
                     break;
                 case 'icon-sakai-gradebook-tool'://gradebook
                     $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-                    $tool = array('gradebook' => 'gradebook',
-                                  'site_title' => $site_title,
-                                  'tool_id' => $tool_id);
+                    $tool = array('type' => 'gradebook',
+                                  'site_title' => $site_title);
                     $sup_tools[] = $tool;
                     break;
                 case 'icon-sakai-site-roster'://participants
                     $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-                    $tool = array('participants' => 'participants',
-                                  'site_title' => $site_title,
-                                  'tool_id' => $tool_id);
+                    $tool = array('type' => 'participants',
+                                  'site_title' => $site_title);
                     $sup_tools[] = $tool;
                     break;
                 case 'icon-sakai-resources'://resources
                     $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-                    $tool = array('resources' => 'resources',
-                                  'site_title' => $site_title,
-                                  'tool_id' => $tool_id);
+                    $tool = array('type' => 'resources',
+                                  'site_title' => $site_title);
                     $sup_tools[] = $tool;
                     break;
                 case 'icon-sakai-assignment-grades'://assignments
                     $temp_replace = "https://vula.uct.ac.za/portal/pda/" . $site_id . "/tool-reset/";
                     $tool_id = str_replace($temp_replace, "", $a->href);
-                    $tool = array('assignments' => 'assignments',
-                                  'site_title' => $site_title,
-                                  'tool_id' => $tool_id);
+                    $tool = array('type' => 'assignments',
+                                  'site_title' => $site_title);
                     $sup_tools[] = $tool;
                     break;
                 default:
@@ -238,7 +234,7 @@ class Student extends CI_Controller
     
     //login Vula
     public function login() 
-    {        
+    { 
         $username = $this->input->post('username');
         $password = $this->input->post('password');
         
