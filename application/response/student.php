@@ -106,7 +106,6 @@ class Student extends CI_Controller
             /* Scrap! */
 
             //create html dom object
-            $html_str = "";
             $html_str = str_get_html($response);
             $html = new simple_html_dom($html_str);
 
@@ -123,7 +122,6 @@ class Student extends CI_Controller
             $this->session->set_userdata($newdata);
             
             $this->output
-            ->set_content_type('text/plain')
             ->set_output($loginUser_title);
         }
     }

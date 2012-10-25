@@ -81,7 +81,7 @@ class Test extends CI_Controller
         //empty username or password
         if($username==null || $password==null)
         {
-            echo "Empty Username or Password";;
+            echo "Empty Username or Password";
             die;
         }
 

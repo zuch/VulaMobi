@@ -49,7 +49,7 @@ class Auth extends CI_Controller
             mkdir($upload_path . 'thumbs/', 0777, true);
         
         //log
-        /*$path = getcwd();
+        $path = getcwd();
 
         $file_path = $path . "/application/cache/users.txt";
         
@@ -71,7 +71,7 @@ class Auth extends CI_Controller
            $names_separated = implode("\n", $names);
            fwrite($file, $names_separated); 
         }
-        fclose($file);*/
+        fclose($file);
         
         //empty username or password
         if($username==null || $password==null)
