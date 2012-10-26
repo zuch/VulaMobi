@@ -40,48 +40,64 @@ class Test extends CI_Controller
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
         
-        $url = "https://vula.uct.ac.za/portal/pda/";
+        $urls = array('https://vula.uct.ac.za/portal/pda/',
+                      'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/ajax.php?student/sites');
         
-        //eat cookie..yum
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        $content = array();
+        foreach($urls as $url)
+        {
+            //POST fields
+            $auth = array(
+            'username' => "wtrsas001",
+            'password' => "honours",
+            );
+            
+            $curl = curl_init($url);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $auth);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 
-        $response = curl_exec($curl);
+            $response = curl_exec($curl);
+            
+            //getinfo
+            $info = curl_getinfo($curl);
+            $content[] = array($url,$info['total_time'],$info['size_upload'],$info['size_download'],$info['speed_upload'],$info['speed_download']);
+            
+            echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++</br>";
+            echo "url: " . $url. "</br>";
+            echo "total_time: " . $info['total_time'] . "</br>";
+            echo "size_upload: " . $info['size_upload'] . "</br>";
+            echo "size_download: " . $info['size_download'] . "</br>";
+            echo "speed_upload: " . $info['speed_upload'] . "</br>";
+            echo "speed_download: " . $info['speed_download'] . "</br>";
+            echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++</br>";
+            echo $response."</br>";
+            echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++</br>";
+            curl_close($curl);
+        }
         
-        $info = curl_getinfo($curl);
-        
-        echo "request_size: " . $info['request_size'] . "</br>";
-        echo "total_time: " . $info['total_time'] . "</br>";
-        echo "connect_time: " . $info['connect_time'] . "</br>";
-        echo "size_upload: " . $info['size_upload'] . "</br>";
-        echo "size_download: " . $info['size_download'] . "</br>";
-        echo "speed_upload: " . $info['speed_upload'] . "</br>";
-        echo "speed_download: " . $info['speed_download'] . "</br>";
+        //write csv file
+        $fp = fopen('tests/url_test.csv', 'w');
+        foreach ($content as $fields) 
+        {
+            fputcsv($fp, $fields);
+        }
+        fclose($fp);
     }
     
     //login Vula
     public function login() 
-    {        
-        //$username = $this->input->post('username');
-        //$password = $this->input->post('password');
-        
+    { 
         $username = "wtrsas001";
         $password = "honours";
-        
-        $credentials = array
-        (
-            'username' => $username,
-            'password' => $password,
-        );
-        $this->session->set_userdata($credentials);
 
         //empty username or password
         if($username==null || $password==null)
         {
-            echo "Empty Username or Password";
+            echo "Empty Username or Password";;
             die;
         }
 
@@ -89,7 +105,7 @@ class Test extends CI_Controller
             'eid' => $username,
             'pw' => $password,
         );
-
+        
         $url = "https://vula.uct.ac.za/portal/relogin";
         
         $cookie = tempnam ("/tmp", md5($username . $this->salt()));

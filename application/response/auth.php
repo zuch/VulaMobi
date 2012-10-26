@@ -39,40 +39,6 @@ class Auth extends CI_Controller
         );
         $this->session->set_userdata($credentials);
         
-        $path = getcwd();
-
-        $upload_path = $path . "/uploads/" . $username . "/";
-
-        if (!is_dir($upload_path))
-             mkdir($upload_path, 0777, true);
-        if (!is_dir($upload_path . 'thumbs/'))
-            mkdir($upload_path . 'thumbs/', 0777, true);
-        
-        //log
-        $path = getcwd();
-
-        $file_path = $path . "/application/cache/users.txt";
-        
-        $file = fopen($file_path, "r") or exit();
-        $found = false;
-        $names = array();
-        while(!feof($file))
-        {
-            $names[] = fgets($file);
-            if(fgets($file) == $username)
-            {
-                $found = true;
-            }
-        }
-        if(!$found)
-        {
-           array_push($names, $username);
-           $file = fopen("./application/cache/users.txt", "w") or die();
-           $names_separated = implode("\n", $names);
-           fwrite($file, $names_separated); 
-        }
-        fclose($file);
-        
         //empty username or password
         if($username==null || $password==null)
         {
@@ -105,6 +71,37 @@ class Auth extends CI_Controller
 
         if ($resultStatus['url'] == "https://vula.uct.ac.za/portal") //if redirected it means its logged in
         {
+            $path = getcwd();
+
+            $upload_path = $path . "/uploads/" . $username . "/";
+
+            if (!is_dir($upload_path))
+                 mkdir($upload_path, 0777, true);
+            if (!is_dir($upload_path . 'thumbs/'))
+                mkdir($upload_path . 'thumbs/', 0777, true);
+            
+            $file_path = $path . "/application/cache/users.txt";
+
+            $file = fopen($file_path, "r") or exit();
+            $found = false;
+            $names = array();
+            while(!feof($file))
+            {
+                $names[] = fgets($file);
+                if(fgets($file) == $username)
+                {
+                    $found = true;
+                }
+            }
+            if(!$found)
+            {
+               array_push($names, $username);
+               $file = fopen("./application/cache/users.txt", "w") or die();
+               $names_separated = implode("\n", $names);
+               fwrite($file, $names_separated); 
+            }
+            fclose($file);
+        
             $newdata = array(
                   'cookie' => $cookie,
                   'logged_in' => true

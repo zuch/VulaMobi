@@ -81,49 +81,36 @@ class Student extends CI_Controller
     {        
         $this->login();
         
-        if($this->session->userdata('name'))
-        {
-            echo $this->session->userdata('name');
-        }
-        else//session variable not set
-        {
-            $cookie = $this->session->userdata('cookie');
-            $username = $this->session->userdata('username');
-            $cookiepath = realpath($cookie);
+        $cookie = $this->session->userdata('cookie');
+        $username = $this->session->userdata('username');
+        $cookiepath = realpath($cookie);
 
-            $url = "https://vula.uct.ac.za/portal/site/~" . $username;
+        $url = "https://vula.uct.ac.za/portal/site/~" . $username;
 
-            //eat cookie..yum
-            $curl = curl_init($url);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        //eat cookie..yum
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
-            $response = curl_exec($curl);
-            curl_close($curl);
+        $response = curl_exec($curl);
+        curl_close($curl);
 
-            /* Scrap! */
+        /* Scrap! */
 
-            //create html dom object
-            $html_str = str_get_html($response);
-            $html = new simple_html_dom($html_str);
+        //create html dom object
+        $html_str = str_get_html($response);
+        $html = new simple_html_dom($html_str);
 
-            //Get User's name
-            $temp_replace = '(' . $username . ') |';
-            $loginUser_str = $html->find('#loginUser', 0);
-            $loginUser = $loginUser_str->innertext;
-            $loginUser_title = str_replace($temp_replace, "", $loginUser);
+        //Get User's name
+        $temp_replace = '(' . $username . ') |';
+        $loginUser_str = $html->find('#loginUser', 0);
+        $loginUser = $loginUser_str->innertext;
+        $loginUser_title = str_replace($temp_replace, "", $loginUser);
 
-            $newdata = array(
-               'name'  => $loginUser_title
-           );
-
-            $this->session->set_userdata($newdata);
-            
-            $this->output
-            ->set_output($loginUser_title);
-        }
+        $this->output
+        ->set_output($loginUser_title);
     }
     
     //Return Student Number of User e.g WTRSAS001
