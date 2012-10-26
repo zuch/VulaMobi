@@ -1,4 +1,5 @@
 <body>
+    <div id="header"><h1>VulaMobi API</h1></div>
     <div id="wrapper">
         <div id="status_wrapper">
             <div id="status">
@@ -7,7 +8,6 @@
         </div>
         <div id="content">
             <div id="login">
-                <h1 id="heading">VulaMobi API</h1>
                 <p>
                     <label for="username"><b>Username</b></label>
                     </br>
@@ -35,37 +35,35 @@
             </div> 
             <div id="docs">
                 <h2>Documentation</h2>
-                <a href="https://github.com/zuch/VulaMobi/wiki"><img src="./images/github.png" alt="GitHub"></a> 
+                <a href="https://github.com/zuch/VulaMobi/wiki"><img src="./images/github-icon.png" alt="GitHub"></a> 
                 <h2>Functions</h2>
                 <p>
                     Test out the jQuery AJAX calls to the VulaMobi Backend hosted on nightmare
                 </p>
-                <input type="submit" name="submit" id="name" value="student/name" onclick="s_name();"></br>
-                <input type="submit" name="submit" id="sites" value="student/sites" onclick="sites();">Active Sites</br>
-                <input type="submit" name="submit" id="id" value="student/id" onclick="user_id();"></br>
-                <input type="submit" name="submit" id="grade" value="grade/site" onclick="grade('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
-                <input type="submit" name="submit" id="grade_all" value="grade/all" onclick="grade_all();">Grades for All Active Sites</br>
-                <input type="submit" name="submit" id="gallery" value="gallery/dir" onclick="gallery();"></br>
-                <input type="submit" name="submit" id="role" value="role/site" onclick="role('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
-                <input type="submit" name="submit" id="roster" value="role/roster" onclick="roster('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
-                <input type="submit" name="submit" id="announcement_site" value="announce/site" onclick="announcement_site('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
-                <input type="submit" name="submit" id="announcement_body" value="announce/body" onclick="announcement_body('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d','3c40ff32-680f-42ee-8f34-fa5271e39c17');">CS Honours 2012 random announcement</br>
-                <input type="submit" name="submit" id="announcement_all" value="announce/all" onclick="announcement_all();">Announcements for All Active Sites</br>
-                <input type="submit" name="submit" id="resource" value="resource/site" onclick="resource('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
-                <input type="submit" name="submit" id="resource" value="resource/page" onclick="page('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
-                <input type="submit" name="submit" id="assign" value="assign/site" onclick="assign('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
-                <input type="submit" name="submit" id="assign_all" value="assign/all" onclick="assign_all();">Assignments for All Active Sites</br>
-                <input type="submit" name="submit" id="chat" value="chat/site" onclick="chat('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">CS Honours 2012</br>
+                <button type="button" onclick="s_name();">student/name</button></br>
+                <button type="button" onclick="sites();">student/sites</button>Active Sites</br>
+                <button type="button" onclick="user_id();">student/id</button></br>
+                <button type="button" onclick="grade('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">grade/site</button>CS Honours 2012</br>
+                <button type="button" onclick="grade_all();">grade/all</button>Grades for All Active Sites</br>
+                <button type="button" onclick="gallery();">gallery/dir</button></br>
+                <button type="button" onclick="role('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">role/site</button>CS Honours 2012</br>
+                <button type="button" onclick="roster('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">role/roster</button>CS Honours 2012</br>
+                <button type="button" onclick="announcement_site('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">announce/site</button>Honours 2012</br>
+                <button type="button" onclick="announcement_body('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d','3c40ff32-680f-42ee-8f34-fa5271e39c17');">announce/body</button>CS Honours 2012 random announcement</br>
+                <button type="button" onclick="announcement_all();">announce/all</button>Announcements for All Active Sites</br>
+                <button type="button" onclick="resource('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');;">resource/site</button>CS Honours 2012</br>
+                <button type="button" onclick="assign('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">assign/site</button>CS Honours 2012</br>
+                <button type="button" onclick="assign_all();">assign/all</button>Assignments for All Active Sites</br>
+                <button type="button" onclick="chat('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">chat/site</button>CS Honours 2012Sites</br>
                 </br>
                 <form name = "myform">
                     <textarea name="msg"  rows="5" cols="25" id="msg">
                     </textarea>
                 </form>
-                <input type="button" name="submit" id="chat" value="chat/submit" onclick="submit('43271a70-b78e-460b-a5b8-8356d0989a85');">Send a message to Major Projects</br>
-
+                <button type="button" onclick="submit('43271a70-b78e-460b-a5b8-8356d0989a85');">chat/submit</button>Send a message to Major Projects</br>
                 <h2>Test</h2>
-                <input type="submit" name="submit" id="test_t" value="test/t" onclick="test_t();"></br>
-                <input type="submit" name="submit" id="example" value="Parse JSON example" onclick="example();"><a href="https://gist.github.com/3720842">source code</a></br>
+                <button type="button" onclick="test_t();">test/t</button></br>
+                <button type="button" onclick="example();">Parse JSON example</button><a href="https://gist.github.com/3720842">source code</a></br>
                 <span style="color:green"></span>
                 <div id="results"></div>
                 <h2>Source Code</h2>

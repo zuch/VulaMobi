@@ -40,6 +40,9 @@ class Test extends CI_Controller
         $cookie = $this->session->userdata('cookie');
         $cookiepath = realpath($cookie);
         
+        if (!is_dir('tests'))
+                 mkdir('tests', 0777, true);
+        
         $urls = array('https://vula.uct.ac.za/portal/pda/',
                       'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/ajax.php?student/sites');
         
@@ -52,27 +55,76 @@ class Test extends CI_Controller
             'password' => "honours",
             );
             
-            $curl = curl_init($url);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $auth);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+            $total_time = array();
+            $size_upload = array();
+            $size_download = array();
+            $speed_upload = array();
+            $speed_download = array();
+            for($i = 0;$i < 5; $i++)
+            {
+                $curl = curl_init($url);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $auth);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 
-            $response = curl_exec($curl);
+                $response = curl_exec($curl);
+
+                //getinfo
+                $info = curl_getinfo($curl);
+                $total_time[] = $info['total_time'];
+                $size_upload[] = $info['size_upload'];
+                $size_download[] = $info['size_download'];
+                $speed_upload[] = $info['speed_upload'];
+                $speed_download[] = $info['speed_download'];
+            }
             
-            //getinfo
-            $info = curl_getinfo($curl);
-            $content[] = array($url,$info['total_time'],$info['size_upload'],$info['size_download'],$info['speed_upload'],$info['speed_download']);
+            $total = 0;
+            foreach($total_time as $val)
+                $total += $val;
+            
+            $total_time_avg = $total/count($total_time);
+            
+            $total_1 = 0;
+            foreach($size_upload as $val)
+                $total += $val;
+            
+            $size_upload_avg = $total_1/count($total_time);
+            
+            $total_2 = 0;
+            foreach($size_download as $val)
+                $total_2 += $val;
+            
+            $size_download_avg = $total_2/count($total_time);
+            
+            $total_3 = 0;
+            foreach($speed_upload as $val)
+                $total_3 += $val;
+            
+            $speed_upload_avg = $total_3/count($total_time);
+            
+            $total_4 = 0;
+            foreach($speed_download as $val)
+                $total_4 += $val;
+            
+            $speed_download_avg = $total_4/count($total_time);
+            
+            $content[] = array($url,
+                               $total_time_avg,
+                               $size_upload_avg,
+                               $size_download_avg,
+                               $speed_upload_avg,
+                               $speed_download_avg );
             
             echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++</br>";
             echo "url: " . $url. "</br>";
-            echo "total_time: " . $info['total_time'] . "</br>";
-            echo "size_upload: " . $info['size_upload'] . "</br>";
-            echo "size_download: " . $info['size_download'] . "</br>";
-            echo "speed_upload: " . $info['speed_upload'] . "</br>";
-            echo "speed_download: " . $info['speed_download'] . "</br>";
+            echo "total_time: " . $total_time_avg . "</br>";
+            echo "size_upload: " . $size_upload_avg . "</br>";
+            echo "size_download: " . $size_download_avg . "</br>";
+            echo "speed_upload: " . $speed_upload_avg . "</br>";
+            echo "speed_download: " . $speed_download_avg . "</br>";
             echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++</br>";
             echo $response."</br>";
             echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++</br>";

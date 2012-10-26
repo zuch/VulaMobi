@@ -1,25 +1,29 @@
 body 
 {
-    
+   margin: 0 auto; 
 }
 a
 { 
     text-decoration:none;
-    color:#444444;  
+    color:#0090cf;  
 }
 
-a:link{	color:#444444;}
+/*a:link{	color:#444444;}*/
 
 a:hover{
-    color:#0090cf;
-    text-decoration:none;
+    color:#444444;
+    text-decoration:underline;
 }
 
 a:visted{color:#444444;}
 
-a:active{color:#0090cf;}
+a:active{color:black;}
 
-h1{color:blue; }
+h1
+{
+    font-size:40px;
+    color:white; 
+}
 
 h2{color:blue }
 
@@ -27,17 +31,48 @@ h3{color:blue }
 
 input:focus
 {
-background-color:yellow;
+  border: 2px solid yellow;
 }
 
+button:hover
+{
+    background-color: yellow;
+}
+textarea:focus 
+{
+  border: 2px solid yellow;
+}
 #wrapper
 {
-    margin: 0 auto;
+    margin  : 0 auto;
+    padding: 10px;
     width: 700px;
+    background-color:#F0F0F0;
+    /*border-top-right-radius:20px;
+    border-top-left-radius:20px;*/
+    border-bottom-right-radius:20px;
+    border-bottom-left-radius:20px;
+    -moz-border-bottom-right-radius:20px;
+    -moz-border-bottom-left-radius:20px;
+    /*-moz-border-top-right-radius: 20px;
+    -moz-border-top-left-radius: 20px;*/
 }
 #content
 {
     width: 100%;
+}
+#header
+{
+    margin: 0 auto;
+    width: 860px;
+    height: 70px;
+    padding: 20px;
+    text-align:center;
+    background: #1111C9;
+    border-bottom-right-radius:20px;
+    border-bottom-left-radius:20px;
+    -moz-border-bottom-right-radius:20px;
+    -moz-border-bottom-left-radius:20px;
 }
 #status_wrapper
 {
@@ -89,6 +124,12 @@ background-color:yellow;
 #docs
 {
     display:none;
+    /*border-left-style:solid;
+    border-left-color:#444444;
+    border-left-width: 1px;
+    border-right-style:solid;
+    border-right-color:#444444;
+    border-right-width: 1px;*/
 }
 #heading
 {
