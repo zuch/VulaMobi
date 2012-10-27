@@ -43,8 +43,18 @@ class Test extends CI_Controller
         if (!is_dir('tests'))
                  mkdir('tests', 0777, true);
         
-        $urls = array('https://vula.uct.ac.za/portal/pda/',
-                      'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/ajax.php?student/sites');
+        $urls = array('http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/ajax.php?student/sites',
+                      'https://vula.uct.ac.za/portal/pda/',
+                      'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/ajax.php?student/sup_tools/fa532f3e-a2e1-48ec-9d78-3d5722e8b60d',
+                      'https://vula.uct.ac.za/portal/pda/fa532f3e-a2e1-48ec-9d78-3d5722e8b60d',
+                      'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/ajax.php?grade/site/fa532f3e-a2e1-48ec-9d78-3d5722e8b60d',
+                      'https://vula.uct.ac.za/portal/pda/fa532f3e-a2e1-48ec-9d78-3d5722e8b60d/tool/bd422298-b893-4816-9eaf-b2bb9052be57/studentView.jsf',
+                      'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/ajax.php?role/roster/fa532f3e-a2e1-48ec-9d78-3d5722e8b60d',
+                      'https://vula.uct.ac.za/portal/pda/fa532f3e-a2e1-48ec-9d78-3d5722e8b60d/tool/92491917-5f13-4da5-8425-4af8c522200c/main',
+                      'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/ajax.php?announce/site/fa532f3e-a2e1-48ec-9d78-3d5722e8b60d',
+                      'https://vula.uct.ac.za/portal/pda/fa532f3e-a2e1-48ec-9d78-3d5722e8b60d/tool/f872e364-3c5d-497b-89a7-c1f64f377d76',
+                      'http://people.cs.uct.ac.za/~swatermeyer/VulaMobi/ajax.php?chat/site/fa532f3e-a2e1-48ec-9d78-3d5722e8b60d',
+                      'https://vula.uct.ac.za/portal/pda/fa532f3e-a2e1-48ec-9d78-3d5722e8b60d/tool/56b64810-9e2a-4197-a05f-0046c4aa0900/room' );
         
         $content = array();
         foreach($urls as $url)
@@ -60,7 +70,7 @@ class Test extends CI_Controller
             $size_download = array();
             $speed_upload = array();
             $speed_download = array();
-            for($i = 0;$i < 5; $i++)
+            for($i = 0;$i < 10; $i++)
             {
                 $curl = curl_init($url);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $auth);
@@ -126,8 +136,6 @@ class Test extends CI_Controller
             echo "speed_upload: " . $speed_upload_avg . "</br>";
             echo "speed_download: " . $speed_download_avg . "</br>";
             echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++</br>";
-            echo $response."</br>";
-            echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++</br>";
             curl_close($curl);
         }
         
@@ -140,6 +148,10 @@ class Test extends CI_Controller
         fclose($fp);
     }
     
+    public function info()
+    {
+        echo phpinfo();
+    }
     //login Vula
     public function login() 
     { 

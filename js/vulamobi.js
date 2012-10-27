@@ -222,14 +222,23 @@ function user_name()
     
 }
 
-//+++++++++++++++++++++++++++++++++END DEMO+++++++++++++++++++++++++++++++++++++
-
 /*********************************** show *************************************/
 function show()
 {
     if(on)
-    getElementById('docs').style.display = 'block'
+    {
+        getElementById('docs').style.display = 'hidden';
+        on = false
+    }
+    else
+    {
+        getElementById('docs').style.display = 'block';
+        on = true
+    }
 }
+
+//+++++++++++++++++++++++++++++++++END DEMO+++++++++++++++++++++++++++++++++++++
+
 
 /********************************** sites *************************************/
 function sites()

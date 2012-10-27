@@ -1,5 +1,9 @@
 <body>
-    <div id="header"><h1>VulaMobi API</h1></div>
+    <div id="header">
+        <div id="header_content">
+            <h1>VulaMobi API</h1>
+        </div>
+    </div>
     <div id="wrapper">
         <div id="status_wrapper">
             <div id="status">
@@ -31,7 +35,7 @@
             </div>
             <div id="show_docs">
                 </br>
-                <button onclick="getElementById('docs').style.display = 'block'">Show Docs</button>
+                <button onclick="show();">Show Docs</button>
             </div> 
             <div id="docs">
                 <h2>Documentation</h2>

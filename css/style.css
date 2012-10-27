@@ -74,6 +74,10 @@ textarea:focus
     -moz-border-bottom-right-radius:20px;
     -moz-border-bottom-left-radius:20px;
 }
+#header_content
+{
+    /*margin: 0 auto;*/
+}
 #status_wrapper
 {
     height: 15px;
