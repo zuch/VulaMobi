@@ -1,7 +1,7 @@
 <body>
     <div id="header">
         <div id="header_content">
-            <h1>VulaMobi API</h1>
+            <a href="/"><img src="images/VulaMobiAPI.png"></a>
         </div>
     </div>
     <div id="wrapper">
@@ -47,6 +47,7 @@
                 <button type="button" onclick="s_name();">student/name</button></br>
                 <button type="button" onclick="sites();">student/sites</button>Active Sites</br>
                 <button type="button" onclick="user_id();">student/id</button></br>
+                <button type="button" onclick="sup_tools('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">student/sup_tools</button></br>
                 <button type="button" onclick="grade('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">grade/site</button>CS Honours 2012</br>
                 <button type="button" onclick="grade_all();">grade/all</button>Grades for All Active Sites</br>
                 <button type="button" onclick="gallery();">gallery/dir</button></br>

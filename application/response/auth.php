@@ -29,7 +29,7 @@ class Auth extends CI_Controller
     //login Vula
     public function login() 
     {
-        $username = $this->input->post('username');
+        $username = strtolower($this->input->post('username'));
         $password = $this->input->post('password');
         
         $credentials = array
@@ -88,7 +88,8 @@ class Auth extends CI_Controller
             while(!feof($file))
             {
                 $names[] = fgets($file);
-                if(fgets($file) == $username)
+                $file_lwr = strtolower(fgets($file));
+                if($file_lwr == $username)
                 {
                     $found = true;
                 }

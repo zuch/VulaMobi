@@ -357,6 +357,30 @@ function user_id()
      
 } 
 
+/********************************** sup_tools ****************************************/
+function sup_tools()
+{  
+    
+    var response = "";
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
+
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?student/id", 
+        data: form_data,
+        success: function(response)
+        {
+            console.log(response);
+            alert(response);   
+        }  
+    })
+     
+} 
+
 /********************************** gallery ***********************************/
 function gallery()
 {
@@ -528,13 +552,11 @@ function chat(site_id)
 function submit(site_id)
 {  
     var body = $("#msg").val();
-    //var body = $.('#chattext'   ).text();
     var response = "";
     var form_data = {
         username: username,
         password: password,
-        body: body,
-        is_ajax: 1
+        body: body
     };
         
     $.ajax({
@@ -568,9 +590,63 @@ function resource(site_id)
             console.log(response);
             alert(response);
         }
-    });
-    
+    }); 
 }
+
+function getResource(id)
+{
+    var form_data = {
+        username: username,
+        password: password
+    };
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?resource/page/" + id, 
+        data: form_data, 
+        success: function(response){
+            console.log(response);
+            alert(response);
+        }
+    });
+}
+
+function folderSelected(id)
+{
+    var form_data = {
+        username: username,
+        password: password,
+        courseid: id
+    };
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?resource/folder", 
+        data: form_data, 
+        success: function(response){
+            console.log(response);
+            alert(response);
+        }
+    });
+}
+
+function resourceSelected(id)
+{
+    var form_data = {
+        username: username,
+        password: password,
+        item: id
+    };
+	
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?resource/item", 
+        data: form_data, 
+        success: function(response){
+            console.log(response);
+            alert(response);
+        }
+    });
+}
+
 /********************************** assign ************************************/
 function assign(site_id)
 { 
