@@ -1,7 +1,8 @@
 <body>
     <div id="header">
         <div id="header_content">
-            <a href="/"><img src="images/VulaMobiAPI.png"></a>
+            <!-- <a href="/"><img src="images/VulaMobiAPI.png"></a> -->
+            <h1>VulaMobi API</h1>
         </div>
     </div>
     <div id="wrapper">
@@ -33,10 +34,6 @@
                 <div id="demo_content"></div>
                 <div id="home"></div>
             </div>
-            <div id="show_docs">
-                </br>
-                <button onclick="show();">Show Docs</button>
-            </div> 
             <div id="docs">
                 <h2>Documentation</h2>
                 <a href="https://github.com/zuch/VulaMobi/wiki"><img src="./images/github-icon.png" alt="GitHub"></a> 
@@ -57,6 +54,7 @@
                 <button type="button" onclick="announcement_body('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d','3c40ff32-680f-42ee-8f34-fa5271e39c17');">announce/body</button>CS Honours 2012 random announcement</br>
                 <button type="button" onclick="announcement_all();">announce/all</button>Announcements for All Active Sites</br>
                 <button type="button" onclick="resource('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');;">resource/site</button>CS Honours 2012</br>
+                <button type="button" onclick="resource_page('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">resource/page</button>CS Honours 2012</br>
                 <button type="button" onclick="assign('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">assign/site</button>CS Honours 2012</br>
                 <button type="button" onclick="assign_all();">assign/all</button>Assignments for All Active Sites</br>
                 <button type="button" onclick="chat('fa532f3e-a2e1-48ec-9d78-3d5722e8b60d');">chat/site</button>CS Honours 2012Sites</br>

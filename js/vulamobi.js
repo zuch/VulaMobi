@@ -224,17 +224,9 @@ function user_name()
 
 /*********************************** show *************************************/
 function show()
-{
-    if(on)
-    {
-        getElementById('docs').style.display = 'hidden';
-        on = false
-    }
-    else
-    {
-        getElementById('docs').style.display = 'block';
-        on = true
-    }
+{    
+    $.('#docs').css(display, hidden);
+    //getElementById('docs').style.display = 'hidden';
 }
 
 //+++++++++++++++++++++++++++++++++END DEMO+++++++++++++++++++++++++++++++++++++
@@ -358,7 +350,7 @@ function user_id()
 } 
 
 /********************************** sup_tools ****************************************/
-function sup_tools()
+function sup_tools(site_id)
 {  
     
     var response = "";
@@ -370,7 +362,7 @@ function sup_tools()
 
     $.ajax({
         type: "POST", 
-        url: base_url + "ajax.php?student/id", 
+        url: base_url + "ajax.php?student/sup_tools/" + site_id, 
         data: form_data,
         success: function(response)
         {
@@ -593,6 +585,26 @@ function resource(site_id)
     }); 
 }
 
+/********************************** resources *********************************/
+function resource_page(site_id)
+{
+    var form_data = {
+        username: username,
+        password: password,
+        is_ajax: 1
+    };
+        
+    $.ajax({
+        type: "POST", 
+        url: base_url + "ajax.php?resource/page/" + site_id, 
+        data: form_data, 
+        success: function(response){
+            console.log(response);
+            alert(response);
+        }
+    }); 
+}
+
 function getResource(id)
 {
     var form_data = {
@@ -611,11 +623,11 @@ function getResource(id)
 }
 
 function folderSelected(id)
-{
+{    
     var form_data = {
         username: username,
         password: password,
-        courseid: id
+        folderid: id
     };
     $.ajax({
         type: "POST", 
@@ -628,12 +640,14 @@ function folderSelected(id)
     });
 }
 
-function resourceSelected(id)
+function resourceSelected(id, title)
 {
+    alert(title);
     var form_data = {
         username: username,
         password: password,
-        item: id
+        item: id,
+        title: title
     };
 	
     $.ajax({

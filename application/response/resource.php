@@ -86,6 +86,8 @@ class Resource extends CI_Controller {
 
     public function page($site_id) 
     {
+        //echo '<script src="js/vulamobi.js"></script>';
+        //echo '<script src="js/jquery.js"></script>';
         $this->login();
         
         //globals
@@ -143,6 +145,9 @@ class Resource extends CI_Controller {
                                         'title' => $title,
                                         'onclick' => $onclick);
                         $resources[] = $folder;
+                        
+                        //echo '<div style="background-color:#C2D1FF; margin-top: 5px; overflow: hidden; padding: 5px;" 
+                        //           onclick="'.$onclick.'">'.$title.'</div>';
                     } 
                     else//resource 
                     {
@@ -155,6 +160,9 @@ class Resource extends CI_Controller {
                                       'title' => $title,
                                       'onclick' => $onclick);
                         $resources[] = $item;
+                        
+                        //echo '<div style="background-color:#439643; margin-top: 5px; overflow: hidden; padding: 5px;" 
+                        //           onclick="'.$onclick.'">'.$title.'</div>';
                     }
                 }
                 $count++;
@@ -239,7 +247,13 @@ class Resource extends CI_Controller {
     {
         $item = $this->input->post('item');
         
-        $name = split("/", $item);
+        $path = getcwd();
+        $temp_path = $path . "/temp/";
+        
+        if (!is_dir($temp_path))
+                 mkdir($temp_path, 0777, true);
+        
+        $name = explode("/", $item);
         $newname = end( $name );
         $newname = str_replace(' ', '+', $newname);
         $newname = strtoupper($newname);
@@ -260,6 +274,8 @@ class Resource extends CI_Controller {
         $fh = fopen("temp/" . $newname,'w');
         fwrite($fh,$result2);
         fclose($fh);
+        
+        echo '<a href="'. $path ."/temp/" . $newname .'"></a>';
     }
 
     //returns array of supported tools for a site
@@ -360,12 +376,10 @@ class Resource extends CI_Controller {
     }
     
     //login Vula
-    public function login() {
-        $username = "wtrsas001";
-        $password = "honours";
-
-        //$username = $this->input->post('username');
-        //$password = $this->input->post('password');
+    public function login() 
+    {
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
 
         $credentials = array
             (
