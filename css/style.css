@@ -101,7 +101,7 @@ textarea:focus
 {
     margin: 0 auto;
     /*height: 250px;*/
-    width: 200px;
+    width: 270px;
     border-top-style:solid;
     border-top-color:#444444;
     border-top-width: 1px;
@@ -110,17 +110,30 @@ textarea:focus
     border-bottom-color:#444444;
     border-bottom-width: 1px;
 }
-#demo_heading
+
+#demo_header
+{
+    
+}
+
+#demo_title
+{
+    /*width: 150px;*/
+    text-align:center;
+}
+#home
 {
     text-align:center;
+    /*width: 50px;*/
 }
 #demo_content   
 {
     
 }
-#home
+
+.folder
 {
-    text-align:center;
+    
 }
 #show_docs
 {

@@ -138,12 +138,12 @@ class Resource extends CI_Controller {
                         $valuearray = explode("'", $innerhtml->find('a', 1)->onclick);
                         $link = "https://vula.uct.ac.za/access/content" . $valuearray[7];
                         $snip = $innerhtml->find('a', 1)->plaintext;
-                        $title = str_replace(array('.', ' ', "\n", "\t", "\r"), '', $snip);
-                        $onclick = "folderSelected('" . $link . "')";
+                        $title = str_replace(array(' ', "\n", "\t", "\r"), '', $snip);
+                       // $onclick = "folderSelected('" . $link . "')";
 
                         $folder = array('type' => "folder",
                                         'title' => $title,
-                                        'onclick' => $onclick);
+                                        'href' => $link);
                         $resources[] = $folder;
                         
                         //echo '<div style="background-color:#C2D1FF; margin-top: 5px; overflow: hidden; padding: 5px;" 
@@ -153,12 +153,12 @@ class Resource extends CI_Controller {
                     {
                         $href = $innerhtml->find('a', 1)->href;
                         $snip = $innerhtml->find('a', 1)->plaintext;
-                        $title = str_replace(array('.', ' ', "\n", "\t", "\r"), '', $snip);
-                        $onclick = "resourceSelected('" . $href . "')";
+                        $title = str_replace(array(' ', "\n", "\t", "\r"), '', $snip);
+                        //$onclick = "resourceSelected('" . $href . "')";
 
                         $item = array('type' => "file",
                                       'title' => $title,
-                                      'onclick' => $onclick);
+                                      'href' => $href);
                         $resources[] = $item;
                         
                         //echo '<div style="background-color:#439643; margin-top: 5px; overflow: hidden; padding: 5px;" 
@@ -201,11 +201,11 @@ class Resource extends CI_Controller {
 
         $position = strripos($folderid,"/",-3);
         $newfolderid = substr($folderid,0,$position);
-        $root_onclick = "folderSelected('" . $newfolderid . "/". "')";
+        $root_href = $newfolderid . "/";
         
         $folder = array('type' => "folder",
                         'title' => "Up One Level",
-                        'onclick' => $root_onclick);
+                        'href' => $root_href);
         $resources[] = $folder;
 
         if($html == null)
@@ -220,22 +220,20 @@ class Resource extends CI_Controller {
             {	
                 $foldername = $folderid . $element->find('a',0)->href;
                 $title = $element->find('a',0)->plaintext;
-                $onclick = "folderSelected('" . $foldername . "')";
 
                 $folder = array('type' => "folder",
                                 'title' => $title,
-                                'onclick' => $onclick);
+                                'href' => $foldername);
                 $resources[] = $folder;
             }
             if($element->class == "file")
             {
                 $filename = $folderid . $element->find('a',0)->href;
                 $title = $element->find('a',0)->plaintext;
-                $onclick = "resourceSelected('" . $filename . "')";
 
                 $folder = array('type' => "file",
                                 'title' => $title,
-                                'onclick' => $onclick);
+                                'href' => $filename);
                 $resources[] = $folder;
             }
         }
@@ -245,6 +243,11 @@ class Resource extends CI_Controller {
     
     public function item()
     {
+        $this->login();
+        
+        $cookie = $this->session->userdata('cookie');
+        $cookiepath = realpath($cookie);
+        
         $item = $this->input->post('item');
         
         $path = getcwd();
@@ -261,12 +264,11 @@ class Resource extends CI_Controller {
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename="'.$newname.'"');
         
-        $this->login();
-        
         $curl = curl_init();
         curl_setopt ($curl, CURLOPT_BINARYTRANSFER, 1);
         curl_setopt ($curl, CURLOPT_FOLLOWLOCATION, 0);
         curl_setopt ($curl, CURLOPT_RETURNTRANSFER, 0);
+        curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiepath);
         curl_setopt ($curl, CURLOPT_URL, $item);
 
         $result2 = curl_exec($curl);
